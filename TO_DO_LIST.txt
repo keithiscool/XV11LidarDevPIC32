@@ -1,0 +1,7 @@
+1)	Work with TFT touch screen display to visualize what the x,y data from the pic32 is like
+2)	Attempt to utilize the derivative between points on x,y plot.
+	This will show us if a corner is detected
+	This will also help identify the object due to its size
+3)	Utilize the warning flags
+	The "flag data" can be used to identify whether the object that is being looked at is the correct shade and allows
+	the amount of reflected light to verify the object(s) being tracked.

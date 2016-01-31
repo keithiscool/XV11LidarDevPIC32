@@ -1,0 +1,395 @@
+﻿First Commit
+Distance[360] array not populating
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	new file:   61105F_TimersManual_pic32.pdf
+#	new file:   DMAControllerPIC32.pdf
+#	new file:   Lidar Development Using PIC32MX Microcontroller.pptx
+#	new file:   PIC32MX575F512_datasheet.pdf
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/Delay/Delay.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/Delay/Delay.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/DisplayLIDAR.m
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/LCD/inc/GUIConf.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/LCD/inc/LCDConf.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/LCD/src/GUIConf.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/LCD/src/GUIDRV_stm32f429i_discovery.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/LICENSE
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/README.md
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/fonts.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/fonts.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery_i2c_ee.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery_i2c_ee.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery_ioe.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery_ioe.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery_lcd.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery_lcd.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery_sdram.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429IDISCOVERY/stm32f429i_discovery_sdram.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/STM32F429ZI_FLASH.ld
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/Serial.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/Serial.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11.cogui
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11.comarker
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11.coproj
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/bin/XV11.bin
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/bin/XV11.elf
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/bin/XV11.hex
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/bin/XV11.map
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/bin/history.xml
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/Delay.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/Serial.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/dependencies.xml
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/fonts.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/history.xml
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/main.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/misc.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/printf.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/startup_stm32f429_439xx.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/startup_stm32f4xx.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f429i_discovery_ioe.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f429i_discovery_lcd.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f429i_discovery_sdram.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_dma.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_dma2d.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_fmc.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_fsmc.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_gpio.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_i2c.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_it.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_ltdc.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_rcc.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_spi.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/stm32f4xx_usart.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/syscalls.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/Debug/obj/system_stm32f4xx.o
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/XV11/XV11.elf.xcodeproj/project.pbxproj
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis/core_cm4.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis/core_cm4_simd.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis/core_cmFunc.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis/core_cmInstr.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_boot/startup/startup_stm32f429_439xx.s
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_boot/stm32f4xx.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_boot/stm32f4xx_conf.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_boot/system_stm32f4xx.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_boot/system_stm32f4xx.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/misc.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/stm32f4xx_dma.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/stm32f4xx_dma2d.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/stm32f4xx_fmc.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/stm32f4xx_gpio.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/stm32f4xx_i2c.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/stm32f4xx_ltdc.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/stm32f4xx_rcc.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/stm32f4xx_spi.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/include/stm32f4xx_usart.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/misc.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/stm32f4xx_dma.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/stm32f4xx_dma2d.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/stm32f4xx_fmc.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/stm32f4xx_gpio.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/stm32f4xx_i2c.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/stm32f4xx_ltdc.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/stm32f4xx_rcc.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/stm32f4xx_spi.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/cmsis_lib/source/stm32f4xx_usart.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/main.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/main_from_dude_getting ridofLCDstuff.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/stdio/printf.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/stm32f4xx_it.c
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/stm32f4xx_it.h
+#	new file:   REFERENCE_CODE_XV11Lidar_STM32F429/syscalls/syscalls.c
+#	new file:   TestingTrigLookupTable/TestingTrigLookupTable.cbp
+#	new file:   TestingTrigLookupTable/TestingTrigLookupTable.depend
+#	new file:   TestingTrigLookupTable/TestingTrigLookupTable.layout
+#	new file:   TestingTrigLookupTable/TrigLookupTable.xlsx
+#	new file:   TestingTrigLookupTable/bin/Debug/TestingTrigLookupTable.exe
+#	new file:   TestingTrigLookupTable/main.c
+#	new file:   TestingTrigLookupTable/main.h
+#	new file:   TestingTrigLookupTable/obj/Debug/main.o
+#	new file:   TestingTrigLookupTable/~$TrigLookupTable.xlsx
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ER-AS-SSD1963_Datasheet.pdf
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ER-TFTM070-4V2.1_Datasheet (3).pdf
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ER-TFTM070-5_Arduino_Interfacing.pdf
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/ER-TFTM043-4_Datasheet.pdf
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/Exe/demo_tft43.hex
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/arial14.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/arial14.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/arial_bold.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/arial_bold14.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/bargraph.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/bargraph.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/button.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/button.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/cancel_glyph.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/cancel_glyph.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/courier7x14.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/courier7x14.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/courier_bold14.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/courier_bold14.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/demo_tft43.cproj
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/demo_tft43.prj
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/demo_tft43.txt
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/image.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/image.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/la_bamba17.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/la_bamba17.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/main.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/meter.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/meter.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/ok_glyph.c
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/ReferenceCode/SSD1963/ok_glyph.h
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/SSD1963.pdf
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/UTFT_Demo_800x480/UTFT_Demo_800x480.ino
+#	new file:   TouchScreenDevelopmentRA8875/ARCHIVE_1963/UTouch_QuickPaint/UTouch_QuickPaint.ino
+#	new file:   TouchScreenDevelopmentRA8875/Adafruit_RA8875-master/Adafruit_RA8875.cpp
+#	new file:   TouchScreenDevelopmentRA8875/Adafruit_RA8875-master/Adafruit_RA8875.h
+#	new file:   TouchScreenDevelopmentRA8875/Adafruit_RA8875-master/examples/buildtest/buildtest.ino
+#	new file:   TouchScreenDevelopmentRA8875/Adafruit_RA8875-master/examples/parrot.bmp
+#	new file:   TouchScreenDevelopmentRA8875/Adafruit_RA8875-master/examples/ra8875_bitmap/ra8875_bitmap.ino
+#	new file:   TouchScreenDevelopmentRA8875/Adafruit_RA8875-master/examples/textmode/textmode.ino
+#	new file:   TouchScreenDevelopmentRA8875/Adafruit_RA8875-master/examples/ts_calibration/ts_calibration.ino
+#	new file:   TouchScreenDevelopmentRA8875/Adafruit_RA8875-master/library.properties
+#	new file:   TouchScreenDevelopmentRA8875/Arduino_MEGA_2560-Rev3.brd
+#	new file:   TouchScreenDevelopmentRA8875/Arduino_MEGA_2560-Rev3.sch
+#	new file:   TouchScreenDevelopmentRA8875/China LCD Manufacturer for Graphic,OLED,TFT LCD Module Display.pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/DUE.zip
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ER-CON08HB-2_Drawing (1).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ER-CON10HB-2.pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ER-CON40HB-2 (1).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ER-TFTM070-5-with-CTP-SD_Arduino_Libraries_Examples (2).zip
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ER-TFTM070-5_Arduino_Interfacing (1).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ER-TFTM070-5_Datasheet (3).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ER-TP070-1_Drawing.pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ER-TPC070-3_Drawing (1).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ER3304-1_Datasheet (3).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/FT5206 (1).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/MicroSD-Card-Slot_Drawing (1).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/RA8875 (1).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/Summary_for_Font_Chip (2).pdf
+#	new file:   TouchScreenDevelopmentRA8875/Documentation/ra8875 app note.pdf
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/Touch_ButtonTest/Touch_ButtonTest.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/Touch_ButtonTest/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/Touch_Calibration/Touch_Calibration.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/Touch_Calibration/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/Touch_QuickDraw/Touch_QuickDraw.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/Touch_QuickDraw/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/Touch_QuickPaint/Touch_QuickPaint.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/Touch_QuickPaint/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/examples_480x272/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/480272/examples_480x272/examples_480x272.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/ER-TFTM070-4Capacitive_touch_tese/ER-TFTM070-4Capacitive_touch_tese.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/ER-TFTM070-4Capacitive_touch_tese/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/Touch_ButtonTest/Touch_ButtonTest.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/Touch_ButtonTest/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/Touch_Calibration/Touch_Calibration.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/Touch_Calibration/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/Touch_QuickDraw/Touch_QuickDraw.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/Touch_QuickDraw/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/Touch_QuickPaint/Touch_QuickPaint.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/Touch_QuickPaint/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/examples_800x480/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/800480/examples_800x480/examples_800x480.ino
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/DefaultFonts.c
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/arm/HW_ARM.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/arm/HW_ARM_defines.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/arm/HW_MX20DX256.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/arm/HW_SAM3X8E.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/arm/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/avr/HW_ATmega1280.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/avr/HW_ATmega1284P.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/avr/HW_ATmega328P.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/avr/HW_ATmega32U4.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/avr/HW_AVR.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/avr/HW_AVR_defines.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/avr/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/pic32/HW_PIC32.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/pic32/HW_PIC32MX320F128H.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/pic32/HW_PIC32MX340F512H.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/pic32/HW_PIC32MX795F512L.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/pic32/HW_PIC32_defines.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/hardware/pic32/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/cpld/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/cpld/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/cpld/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8340b/8/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8340b/8/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8340b/8/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8340b/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8340b/s/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8340b/s/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8340b/s/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8347a/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8347a/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8347a/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8352a/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8352a/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8352a/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8353c/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8353c/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/hx8353c/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325c/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325c/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325c/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325d/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325d/alt/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325d/alt/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325d/alt/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325d/default/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325d/default/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9325d/default/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9327/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9327/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9327/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/16B/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/16B/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/16B/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/8B/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/8B/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/8B/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/s4p/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/s4p/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/s4p/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/s5p/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/s5p/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9341/s5p/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9481/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9481/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9481/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9486/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9486/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ili9486/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/pcf8833/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/pcf8833/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/pcf8833/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/r61581/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/r61581/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/r61581/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/s1d19122/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/s1d19122/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/s1d19122/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/s6d0164/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/s6d0164/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/s6d0164/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/s6d1121/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/s6d1121/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/s6d1121/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1289/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1289/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1289/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/480/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/480/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/480/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/800/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/800/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/800/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/800alt/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/800alt/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/800alt/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/ssd1963/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735/alt/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735/alt/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735/alt/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735/std/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735/std/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735/std/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735s/_desktop.ini
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735s/initlcd.h
+#	new file:   TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/tft_drivers/st7735s/setxy.h
+#	new file:   TouchScreenDevelopmentRA8875/attempt2.txt
+#	new file:   lidarpic_FixedPoint.X/Makefile
+#	new file:   lidarpic_FixedPoint.X/SinLookupTable.h
+#	new file:   lidarpic_FixedPoint.X/build/default/production/initialize.o
+#	new file:   lidarpic_FixedPoint.X/build/default/production/initialize.o.d
+#	new file:   lidarpic_FixedPoint.X/build/default/production/interrupt_handler.o
+#	new file:   lidarpic_FixedPoint.X/build/default/production/interrupt_handler.o.d
+#	new file:   lidarpic_FixedPoint.X/build/default/production/lidar_decoder.o
+#	new file:   lidarpic_FixedPoint.X/build/default/production/lidar_decoder.o.d
+#	new file:   lidarpic_FixedPoint.X/build/default/production/uart_handler.o
+#	new file:   lidarpic_FixedPoint.X/build/default/production/uart_handler.o.d
+#	new file:   lidarpic_FixedPoint.X/initialize.c
+#	new file:   lidarpic_FixedPoint.X/initialize.h
+#	new file:   lidarpic_FixedPoint.X/interrupt_handler.c
+#	new file:   lidarpic_FixedPoint.X/lidar_decoder.c
+#	new file:   lidarpic_FixedPoint.X/lidar_decoder.h
+#	new file:   lidarpic_FixedPoint.X/main.c
+#	new file:   lidarpic_FixedPoint.X/main.h
+#	new file:   lidarpic_FixedPoint.X/nbproject/Makefile-default.mk
+#	new file:   lidarpic_FixedPoint.X/nbproject/Makefile-genesis.properties
+#	new file:   lidarpic_FixedPoint.X/nbproject/Makefile-impl.mk
+#	new file:   lidarpic_FixedPoint.X/nbproject/Makefile-local-default.mk
+#	new file:   lidarpic_FixedPoint.X/nbproject/Makefile-variables.mk
+#	new file:   lidarpic_FixedPoint.X/nbproject/Package-default.bash
+#	new file:   lidarpic_FixedPoint.X/nbproject/configurations.xml
+#	new file:   lidarpic_FixedPoint.X/nbproject/private/configurations.xml
+#	new file:   lidarpic_FixedPoint.X/nbproject/private/private.properties
+#	new file:   lidarpic_FixedPoint.X/nbproject/private/private.xml
+#	new file:   lidarpic_FixedPoint.X/nbproject/project.properties
+#	new file:   lidarpic_FixedPoint.X/nbproject/project.xml
+#	new file:   lidarpic_FixedPoint.X/uart_handler.c
+#	new file:   lidarpic_FixedPoint.X/uart_handler.h
+#	new file:   lidarpic_UsingDecimal.X/Makefile
+#	new file:   lidarpic_UsingDecimal.X/SinLookupTable.h
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/initialize.o
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/initialize.o.d
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/interrupt_handler.o
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/interrupt_handler.o.d
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/lidar_decoder.o
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/lidar_decoder.o.d
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/main.o
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/main.o.d
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/uart_handler.o
+#	new file:   lidarpic_UsingDecimal.X/build/default/production/uart_handler.o.d
+#	new file:   lidarpic_UsingDecimal.X/dist/default/production/lidarpic_UsingDecimal.X.production.elf
+#	new file:   lidarpic_UsingDecimal.X/dist/default/production/lidarpic_UsingDecimal.X.production.hex
+#	new file:   lidarpic_UsingDecimal.X/dist/default/production/lidarpic_UsingDecimal.X.production.map
+#	new file:   lidarpic_UsingDecimal.X/initialize.c
+#	new file:   lidarpic_UsingDecimal.X/initialize.h
+#	new file:   lidarpic_UsingDecimal.X/interrupt_handler.c
+#	new file:   lidarpic_UsingDecimal.X/lidar_decoder.c
+#	new file:   lidarpic_UsingDecimal.X/lidar_decoder.h
+#	new file:   lidarpic_UsingDecimal.X/main.c
+#	new file:   lidarpic_UsingDecimal.X/main.h
+#	new file:   lidarpic_UsingDecimal.X/nbproject/Makefile-default.mk
+#	new file:   lidarpic_UsingDecimal.X/nbproject/Makefile-genesis.properties
+#	new file:   lidarpic_UsingDecimal.X/nbproject/Makefile-impl.mk
+#	new file:   lidarpic_UsingDecimal.X/nbproject/Makefile-local-default.mk
+#	new file:   lidarpic_UsingDecimal.X/nbproject/Makefile-variables.mk
+#	new file:   lidarpic_UsingDecimal.X/nbproject/Package-default.bash
+#	new file:   lidarpic_UsingDecimal.X/nbproject/configurations.xml
+#	new file:   lidarpic_UsingDecimal.X/nbproject/private/configurations.xml
+#	new file:   lidarpic_UsingDecimal.X/nbproject/private/private.properties
+#	new file:   lidarpic_UsingDecimal.X/nbproject/private/private.xml
+#	new file:   lidarpic_UsingDecimal.X/nbproject/project.properties
+#	new file:   lidarpic_UsingDecimal.X/nbproject/project.xml
+#	new file:   lidarpic_UsingDecimal.X/uart_handler.c
+#	new file:   lidarpic_UsingDecimal.X/uart_handler.h
+#	new file:   pic32Peripheral-Library-Guide.pdf
+#
+# Untracked files:
+#	TO_DO_LIST.txt
+#	TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/_desktop.ini
+#	TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/Tools/
+#	TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/UTFT.cpp
+#	TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/UTFT.h
+#	TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTFT/_desktop.ini
+#	TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/UTouch/
+#	TouchScreenDevelopmentRA8875/ER-AS-SSD1963_Samples+Libraries/libraries/_desktop.ini
+#	TouchScreenDevelopmentRA8875/ER-TFTM070-5-with-CTP-SD_Arduino_Libraries_Examples/
+#	TouchScreenDevelopmentRA8875/RA8875-0.70/
+#	UART_Ref_Manual.pdf
+#	xc32CompilerMaunual.pdf
+#	xv11LidarPCBDevelopment/
+#
+
