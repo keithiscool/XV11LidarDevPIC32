@@ -109,7 +109,7 @@ void main(void){
     TRISEbits.TRISE3 = 0;
     LATEbits.LATE3 = 1;
     initialize();
-    printf("Initialize_Test_Power_Up_PIC\r\n");
+    printf("PIC_RST\r\n");
     short j = 0;
     short DistanceDifferences[360];
     short startOfDetectedObject = 0;
@@ -127,22 +127,23 @@ void main(void){
 
             if(AnglesCoveredTotal >= 180) {
                 //Show first index as zero
-                printf("Deg:\r\n%4d: ",0);
+                //printf("Degree:\r\n%4d: ",0);
 
                 if(operationMode==TESTMODE) {
                     U5STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
                     U5MODEbits.ON = 0; // disable whole uart5 module
-                    printf("DisplayPolarData\r\n");
+                    printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen)
                     for(i=0;i<360;i++) {
                         if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
-                            if ((i % 8) == 0) { //print 8 distances per line
-                                printf("\r\n%4d: ",i); //print 8 distances per line '\r\n' causes prompt to carraige return
+                            if ((i % 16) == 0) { //print 16 distances per line
+                                printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
                             }
                             printf("%4u ",Distance[i]); //Print out the data to 4, 16-bit unsigned integer digits
-                        }
-                        else
+                        } else {
                             i--; //keep index at same value if the UART1 TX debug buffer is full
-                    
+                        }
+//                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
+
                         //Check whether the Distances between each degree are large -> indicates object or wall
                         if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
                             DistanceDifferences[i] = abs((Distance[360]-Distance[0])); //use abs() function to get unsigned magnitude
@@ -153,35 +154,28 @@ void main(void){
                         if(startOfDetectedObject > 0) {
                             endOfDetectedObject = i; // found end of an object (object was detected)
                         }
-
                         if(DistanceDifferences[i] > 500) // object protruded from surrounding measurements by 50cm (500mm)
                             startOfDetectedObject = i; // found start of an object (object's corner was detected)
-
                     }
 
-                    printf("\r\n");
-                    printf("\r\n--------------------------------\r\n");
-
-                    printf("DisplayCartesianData\r\n");
-                    printf("XCoordMeters , YCoordMeters:\r\n");
-                    for(i=0;i<360;i++) {
-//                        while(U1STAbits.TRMT == 1) { //check to see if the UART buffer is empty - if it is, send debug data out UART1
-                        if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
-                            if ((i % 4) == 0)  //print 4 x,y distances per line
-                                printf("\r\n%4d: ",i); //print 4 distances per line '\r\n' causes prompt to carraige return
-
-                            printf(" %d,%d//", XCoordMeters[i], YCoordMeters[i]);
-                        }
-                        else 
-                            i--; //keep index at same value if the UART1 TX debug buffer is full
-                    }
-                    printf("\r\n--------------------------------\r\n");
+////////
+////////                    printf("DisplayCartesianData\r\n");
+////////                    printf("XCoordMeters , YCoordMeters:\r\n");
+////////                    for(i=0;i<360;i++) {
+//////////                        while(U1STAbits.TRMT == 1) { //check to see if the UART buffer is empty - if it is, send debug data out UART1
+////////                        if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
+////////                            if ((i % 4) == 0)  //print 4 x,y distances per line
+////////                                printf("\r\n%4d: ",i); //print 4 distances per line '\r\n' causes prompt to carraige return
+////////
+////////                            printf(" %d,%d//", XCoordMeters[i], YCoordMeters[i]);
+////////                        }
+////////                        else
+////////                            i--; //keep index at same value if the UART1 TX debug buffer is full
+////////                    }
+////////                    printf("\r\n--------------------------------\r\n");
                 }
-
-
-                
-            U5STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
-            U5MODEbits.ON = 1; // enable whole uart module
+                U5STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
+                U5MODEbits.ON = 1; // enable whole uart module
             }
         }
     }

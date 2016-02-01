@@ -7,7 +7,6 @@
 void initialize(void){
      SYSTEMConfig(80000000, SYS_CFG_ALL); // sets up periferal and clock configuration
      INTEnableSystemMultiVectoredInt();
-     INTEnableInterrupts(); // enable interrupts
      delay();
      timers();
      delay();
@@ -15,6 +14,7 @@ void initialize(void){
      delay();
      UART();
      delay();
+     INTEnableInterrupts(); // enable interrupts
      beginLIDARdecoder(returned_data, &buffer_five);
 }
 
@@ -37,7 +37,8 @@ void PWM(void){
     T2CONbits.T32 = 0; //16 bit mode
     T2CONbits.TCKPS = 0b001; //prescalar of 2
     T2CONbits.TGATE = 0;
-    PR2 = 4000;
+//    PR2 = 4000;
+    PR2 = 3800;
     OC2CONbits.ON = 0;
     OC2CONbits.OCM = 0b110;
     OC2R = 2180; // near 200rpm
@@ -70,7 +71,7 @@ void UART(void){
     U1MODEbits.PDSEL = 0b00; // 8-bit no parity
     U1MODEbits.STSEL = 0; // 1 stop bit
     IFS0bits.U1TXIF = 0;
-    IEC0bits.U1TXIE = 1; // transmit interrupt enable 
+//    IEC0bits.U1TXIE = 1; // transmit interrupt enable
     IPC6bits.U1IP = 1; // priority 1
     IPC6bits.U1IS = 1; // sub priority 1
 //    U1STAbits.UTXISEL = 0b01; // interrupt when transmit complete
