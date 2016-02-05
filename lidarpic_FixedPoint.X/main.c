@@ -87,19 +87,16 @@ int AllMeasurementsTaken(void){
     for(j=0;j<90;j++) {
         LIDARdecode();
     }
-
     //Verify that all 360 degrees have a distance measurement
     for(i=0;i<360;i++) {
         AnglesCoveredTotal += SuccessfulMeasurements[i];
     }
-    
-    if(AnglesCoveredTotal >=359) {
+    if(AnglesCoveredTotal >=359) { // all angles have data in them
         return 1;
-    }else {
+    }else { //not all angles have distance data in them
         AnglesCoveredTotal = 0;
         return 0;
     }
-    
     return 0;
 }
 
@@ -109,15 +106,15 @@ void main(void){
     TRISEbits.TRISE3 = 0;
     LATEbits.LATE3 = 1;
     initialize();
-    printf("PIC_RST\r\n");
+    printf("\r\nPIC_RST\r\n");
     short j = 0;
     short DistanceDifferences[360];
     short startOfDetectedObject = 0;
     short endOfDetectedObject = 0;
 
-    //Initialize all distances to '99' so I can see which ones are not getting written to
+    //Initialize all distances to '1' so I can see which ones are not getting written to
     for(i=0;i<360;i++) {
-        Distance[i] = 99;
+        Distance[i] = 1;
     }
 
     while (1){
@@ -127,7 +124,8 @@ void main(void){
 
             if(AnglesCoveredTotal >= 180) {
                 //Show first index as zero
-                //printf("Degree:\r\n%4d: ",0);
+                printf("ChkPass \r\n",0);
+                IEC0bits.U1TXIE = 1; // enable TX1 interrupt so the pic starts sending debug data
 
                 if(operationMode==TESTMODE) {
                     U5STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
@@ -175,6 +173,7 @@ void main(void){
 ////////                    printf("\r\n--------------------------------\r\n");
                 }
                 U5STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
+                IEC0bits.U1TXIE = 0; // disable TX1 interrupt so the pic stops sending debug data
                 U5MODEbits.ON = 1; // enable whole uart module
             }
         }

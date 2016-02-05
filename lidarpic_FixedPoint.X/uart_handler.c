@@ -12,7 +12,6 @@ void _mon_putc(char c){
     }
     U1TXREG = c;
 }
-
 //Interrupt Driven Printf to UART 1 (debug output to PC) is not showing data 0-360 distance points
 //This is only showing Distances 272-360
 //void _mon_putc(char c){
@@ -25,6 +24,31 @@ void _mon_putc(char c){
 //        ring_buff_put(&buffer_one, c);
 //    }
 //}
+
+
+//TX computer debugging
+void __ISR(_UART_1_VECTOR, IPL1AUTO) Uart1Handler(void) {
+    static unsigned int count = 0;
+    count ++;
+
+    LATEbits.LATE3 ^= 1; //test 2 LED
+    if(ring_buff_size(&buffer_one) > 0) {
+        U1TXREG = ring_buff_get(&buffer_one);
+        IFS1bits.U3TXIF = 0; //Clear the TX interrupt flag before transmitting again
+    }
+
+    else {
+        IEC0bits.U1TXIE = 0; // disable interrupt
+        stalled = true;
+        memset(&buffer_one, 0, RING_BUF_SIZE); //set all elements in ring buffer to zero
+    }
+//    IFS0CLR = _IFS0_U1TXIF_MASK;
+
+//    if(IFS0 & _IFS0_U1EIF_MASK) {
+//        U1STAbits.OERR = 0; // OERR == 0: Receive buffer has not overflowed
+//        IFS0CLR = _IFS0_U1EIF_MASK;
+//    }
+}
 ////TX computer debugging
 //void __ISR(_UART_1_VECTOR, IPL1AUTO) Uart1Handler(void)
 //{
@@ -58,8 +82,7 @@ void __ISR(_UART_5_VECTOR, IPL1AUTO) Uart5Handler(void)
    //while(U5STAbits.URXDA == 1)
    // {
         ring_buff_put(&buffer_five, U5RXREG);
-   // }
-    IFS2CLR = _IFS2_U5RXIF_MASK;
+   // 
 
     if(IFS2 & _IFS2_U5EIF_MASK)
     {
@@ -85,8 +108,7 @@ void ring_buff_init(struct ringBuff* _this)
 
 
 //place a character into the ring buffer
-void ring_buff_put(struct ringBuff* _this, const unsigned char c)
-{
+void ring_buff_put(struct ringBuff* _this, const unsigned char c) {
     if (_this->count < RING_BUF_SIZE)
     {
         _this->buf[_this->head] = c;
@@ -97,7 +119,6 @@ void ring_buff_put(struct ringBuff* _this, const unsigned char c)
         _this->buf[_this->head] = c;
         _this->head = modulo_inc(_this->head, RING_BUF_SIZE);
         _this->tail = modulo_inc(_this->tail, RING_BUF_SIZE);
-
     }
 }
 

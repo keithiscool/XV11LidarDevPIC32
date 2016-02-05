@@ -108,10 +108,10 @@ bool LIDARdecode(void){
                         SuccessfulMeasurements[DegreeIndex] = 1;
                         AnglesCoveredTotal++;
                     } else { //The data is not valid and has invalid flags within the present 22byte packet
-                        Distance[DegreeIndex+i] = 0;
-                        XCoordMeters[DegreeIndex] = 0;
-                        YCoordMeters[DegreeIndex] = 0;
-                        SuccessfulMeasurements[DegreeIndex] = 0;
+                        Distance[DegreeIndex+i] = 9999;
+                        XCoordMeters[DegreeIndex+i] = 9999;
+                        YCoordMeters[DegreeIndex+i] = 9999;
+                        SuccessfulMeasurements[DegreeIndex+i] = 0;
                     }
                 }
                 transmission_in_progress = false;
