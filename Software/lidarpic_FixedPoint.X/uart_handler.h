@@ -33,8 +33,9 @@ void ring_buff_put(struct ringBuff* _this, const unsigned char c);
 void ring_buff_flush(struct ringBuff* _this, const int clearBuffer);
 unsigned int modulo_inc(const unsigned int value, const unsigned int modulus);
 
-bool secondTransmission; //Used flag to place 2 bytes into ring buffer prior to using intterupts for U1TX
-bool serialTransmission; //Used flag to show uart is operating normally with ring buffer
+
+bool Done_Printing_Debug(void);
+
 
 #endif	/* UART_HANDLER_H */
 

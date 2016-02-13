@@ -18,7 +18,7 @@
 
 //A full revolution will yield 90 packets, containing 4 consecutive readings each.
 //The length of a packet is 22 bytes.
-//This amounts to a total of 360 readings (1 per degree) on 1980 bytes.
+//This amounts to a total of 360 readings (1 per degree) on 90*22 = 1980 bytes.
 //[Data 0] to [Data 3] are the 4 readings. Each one is 4 bytes long, and organized as follows :
 //<start> <index> <speed_L> <speed_H> [Data 0] [Data 1] [Data 2] [Data 3] <checksum_L> <checksum_H>
 
@@ -75,7 +75,7 @@ bool LIDARdecode(void){
             unsigned short received_CRC = assemble(data_buffer[20], data_buffer[21]);
 
             //Now check if the lidar data can pass the CRC error-checking
-            if (received_CRC == calculated_CRC) { // Used to see if incoming data passed the CRC                
+            if (received_CRC == calculated_CRC) { // Used to see if incoming data passed the CRC
                 LATEbits.LATE4 ^= 1; // Toggle LEDtest1 AFTER CHECKSUM IS PASSES
                 //Packet Index
                 output_data[0] = (data_buffer[1] - 0xA0); //0xA0 is offset that lidar uses for index (not sure why...)
@@ -83,7 +83,7 @@ bool LIDARdecode(void){
                 DegreeIndex = (data_buffer[1] - 0xA0) * 4;
                 //Speed - in 6 floating point precision format in 64th of an rpm
                 returned_speed = ((data_buffer[3] << 8) | data_buffer[2]) / 64;
-                
+
                 //Keep Track of the Status Bits for Each Distance Measurement
                 InvalidFlag[0] = (data_buffer[5] & 0x80) >> 7;
                 InvalidFlag[1] = (data_buffer[9] & 0x80) >> 7;
@@ -108,9 +108,9 @@ bool LIDARdecode(void){
                         SuccessfulMeasurements[DegreeIndex] = 1;
                         AnglesCoveredTotal++;
                     } else { //The data is not valid and has invalid flags within the present 22byte packet
-                        Distance[DegreeIndex+i] = 9999;
-                        XCoordMeters[DegreeIndex+i] = 9999;
-                        YCoordMeters[DegreeIndex+i] = 9999;
+                        Distance[DegreeIndex+i] = 0;
+                        XCoordMeters[DegreeIndex+i] = 0;
+                        YCoordMeters[DegreeIndex+i] = 0;
                         SuccessfulMeasurements[DegreeIndex+i] = 0;
                     }
                 }
@@ -133,11 +133,11 @@ bool LIDARdecode(void){
 
 //Check whether the change in Distance between each degree is large -> indicates object or wall
 short objectDetection(unsigned short i, unsigned short *DistanceArr[360], unsigned short *DistanceDifferencesArr[360], unsigned short *DetectedObjects[360]) {
-    
+
     short startOfDetectedObject = 0;
     short endOfDetectedObject = 0;
     short ObjectDetectionThreshold = 500;
-    
+
     if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
         DistanceDifferencesArr[i] = abs((DistanceArr[360]-DistanceArr[0])); //use abs() function to get unsigned magnitude
         i = 0; //reset index to - degrees after 359 degrees

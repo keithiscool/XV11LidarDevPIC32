@@ -15,7 +15,6 @@ unsigned char buff_index = 0;
 unsigned char data_buffer[22];
 unsigned short *output_data;
 unsigned short CRC_calculator(unsigned char * _this);
-short objectDetection(unsigned short i, unsigned short *DistanceArr[360], unsigned short *DistanceDifferencesArr[360], unsigned short *DetectedObjects[360]);
 unsigned short assemble(unsigned char lower, unsigned char upper);
 
 extern struct ringBuff buffer_five;
@@ -40,7 +39,6 @@ short YCoordMeters[360];
 unsigned short DegreeIndex;
 short AnglesCoveredTotal;
 
-
 //Object Detection "Objects" using C programming (cannot use classes in C)
 typedef struct DetectedRock{
     short xPos;
@@ -63,3 +61,4 @@ typedef struct DetectedRobot{
 };
 
 #endif	/* LIDAR_DECODER_H */
+

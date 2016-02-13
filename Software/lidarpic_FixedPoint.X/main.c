@@ -10,6 +10,47 @@
 #include <string.h>
 
 
+// PIC32MX575F512H Configuration Bit Settings
+
+// 'C' source line config statements
+
+// DEVCFG3
+// USERID = No Setting
+#pragma config FSRSSEL = PRIORITY_7     // SRS Select (SRS Priority 7)
+#pragma config FCANIO = OFF             // CAN I/O Pin Select (Alternate CAN I/O)
+#pragma config FUSBIDIO = OFF           // USB USID Selection (Controlled by Port Function)
+#pragma config FVBUSONIO = OFF          // USB VBUS ON Selection (Controlled by Port Function)
+
+// DEVCFG2
+#pragma config FPLLIDIV = DIV_6         // PLL Input Divider (6x Divider)
+#pragma config FPLLMUL = MUL_20         // PLL Multiplier (20x Multiplier)
+#pragma config UPLLIDIV = DIV_6         // USB PLL Input Divider (6x Divider)
+#pragma config UPLLEN = ON              // USB PLL Enable (Enabled)
+#pragma config FPLLODIV = DIV_1         // System PLL Output Clock Divider (PLL Divide by 1)
+
+// DEVCFG1
+#pragma config FNOSC = PRIPLL           // Oscillator Selection Bits (Primary Osc w/PLL (XT+,HS+,EC+PLL))
+#pragma config FSOSCEN = OFF            // Secondary Oscillator Enable (Disabled)
+#pragma config IESO = OFF               // Internal/External Switch Over (Disabled)
+#pragma config POSCMOD = HS             // Primary Oscillator Configuration (HS osc mode)
+#pragma config OSCIOFNC = OFF           // CLKO Output Signal Active on the OSCO Pin (Disabled)
+#pragma config FPBDIV = DIV_1           // Peripheral Clock Divisor (Pb_Clk is Sys_Clk/1)
+#pragma config FCKSM = CSDCMD           // Clock Switching and Monitor Selection (Clock Switch Disable, FSCM Disabled)
+#pragma config WDTPS = PS1048576        // Watchdog Timer Postscaler (1:1048576)
+#pragma config FWDTEN = OFF             // Watchdog Timer Enable (WDT Disabled (SWDTEN Bit Controls))
+
+// DEVCFG0
+#pragma config DEBUG = ON               // Background Debugger Enable (Debugger is enabled)
+#pragma config ICESEL = ICS_PGx1        // ICE/ICD Comm Channel Select (ICE EMUC1/EMUD1 pins shared with PGC1/PGD1)
+#pragma config PWP = OFF                // Program Flash Write Protect (Disable)
+#pragma config BWP = OFF                // Boot Flash Write Protect bit (Protection Disabled)
+#pragma config CP = OFF                 // Code Protect (Protection Disabled)
+
+
+void delay(void){
+    for(v=0; v<60000; v++);
+}
+
 //  LCD Stuff:
 //void DrawDistanceMap(void) {
 //	// UP TO 3500 i distance = 3.5m
@@ -41,26 +82,24 @@
 //}
 
 
-void delay(void){
-    for(v=0; v<6000; v++);
-}
-
-
 int AllMeasurementsTaken(void){
     int j = 0;
     for(j=0;j<90;j++) {
         LIDARdecode();
     }
+
     //Verify that all 360 degrees have a distance measurement
     for(i=0;i<360;i++) {
         AnglesCoveredTotal += SuccessfulMeasurements[i];
     }
-    if(AnglesCoveredTotal >=359) { // all angles have data in them
+    
+    if(AnglesCoveredTotal >=359) {
         return 1;
-    }else { //not all angles have distance data in them
+    }else {
         AnglesCoveredTotal = 0;
         return 0;
     }
+    
     return 0;
 }
 
@@ -71,51 +110,52 @@ void main(void){
     LATEbits.LATE3 = 1;
     initialize();
     printf("PIC_RST\r\n");
-    short DistanceDifferencesArr[360]; // used within objectDetection() function to find objects
-    short MaximumObjectsToTrack = 100; //only track 100 objects within the arena dimensions
-    short TrackedObjects[360];
+    short j = 0;
+    short DistanceDifferences[360];
+    short startOfDetectedObject = 0;
+    short endOfDetectedObject = 0;
 
+    //Initialize all distances to '99' so I can see which ones are not getting written to
     for(i=0;i<360;i++) {
-        Distance[i] = 1; //Initialize all distances to '1' so I can see which ones are not getting written to
+        Distance[i] = 99;
     }
 
     while (1){
-        U5STAbits.URXEN = 1; // enable uart recieve
-        IEC2bits.U5RXIE = 1; // enable uart recieve
-        U1STAbits.UTXEN = 0; // disable uart transmit
-        IEC0bits.U1TXIE = 0; // transmit interrupt disable (used in code as needed to permit TXdata from pic32 to PC)
-
 ////////        if (AllMeasurementsTaken() == 1) {
         if(LIDARdecode()==1) {
             LATEbits.LATE4 ^= 0; //Toggle LED1 on,off,on,off
 
             if(AnglesCoveredTotal >= 180) {
                 //Show first index as zero
-                printf("ChkPass \r\n",0); //designates to the terminal output that a the lidar checksum passed
-                IEC0bits.U1TXIE = 1; // enable TX1 interrupt so the pic starts sending debug data
-                U1STAbits.UTXEN = 1; // enable uart transmit
+                //printf("Degree:\r\n%4d: ",0);
 
                 if(operationMode==TESTMODE) {
                     U5STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
                     U5MODEbits.ON = 0; // disable whole uart5 module
-                    printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: ("ESC[H" == home) & ("ESC[2J" == clear screen)
+                    printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen)
                     for(i=0;i<360;i++) {
                         if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
                             if ((i % 16) == 0) { //print 16 distances per line
-                                printf("\r\n%4u: ",i); //print the line degree number then print 16 distances after it '\r\n' causes prompt to carraige return
+                                printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
                             }
-                            printf("%4u ",Distance[i]); //Print out the data to 4 unsigned (short) integers, (short == 16-bit unsigned integer for pic32/xc32 compiler)
-
+                            printf("%4u ",Distance[i]); //Print out the data to 4, 16-bit unsigned integer digits
                         } else {
                             i--; //keep index at same value if the UART1 TX debug buffer is full
                         }
-//                        printf("\x1b[0J"); // ANSI Terminal code: ("ESC[2J" == clear screen below cursor)
-//                        if((objectDetection(&DistanceArr[360], &DistanceDifferencesArr[360]), TrackedObjects[360]) <= MaximumObjectsToTrack) {
-                        if( (objectDetection(i, &Distance, &DistanceDifferencesArr, &TrackedObjects)) <= MaximumObjectsToTrack) {
+//                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
 
-
+                        //Check whether the Distances between each degree are large -> indicates object or wall
+                        if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
+                            DistanceDifferences[i] = abs((Distance[360]-Distance[0])); //use abs() function to get unsigned magnitude
+                            i = 0; //reset index to - degrees after 359 degrees
+                        } else{
+                            DistanceDifferences[i] = abs((Distance[i]-Distance[i+1]));
                         }
-
+                        if(startOfDetectedObject > 0) {
+                            endOfDetectedObject = i; // found end of an object (object was detected)
+                        }
+                        if(DistanceDifferences[i] > 500) // object protruded from surrounding measurements by 50cm (500mm)
+                            startOfDetectedObject = i; // found start of an object (object's corner was detected)
                     }
 
 ////////
@@ -135,16 +175,11 @@ void main(void){
 ////////                    printf("\r\n--------------------------------\r\n");
                 }
                 U5STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
-                IEC0bits.U1TXIE = 0; // disable TX1 interrupt so the pic stops sending debug data
                 U5MODEbits.ON = 1; // enable whole uart module
             }
         }
     }
 }
-
-
-
-
 
 
 static enum
@@ -166,10 +201,9 @@ static enum
 } _excep_code;
 
 
-
-
 static unsigned int _epc_code;
 static unsigned int _excep_addr;
+
 
 // this function overrides the normal _weak_ generic handler
 void _general_exception_handler(void) {
