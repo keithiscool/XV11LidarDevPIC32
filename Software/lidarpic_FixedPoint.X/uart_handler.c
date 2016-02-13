@@ -2,9 +2,11 @@
 #include <stdbool.h>
 #include <sys/attribs.h>
 #include "uart_handler.h"
+//STICKY INTERRUPTS:: Some interrupts, including UART&ADC on pic32
+//are sticky which means that you have to remove the cause
+//of the interrupt before clearing the IFS# flag
 
-
-//Called when Printf() is used
+//Simple putchar function called when Printf() is used
 void _mon_putc(char c){
     if (U1STAbits.UTXBF == 1) { // uart transmit FIFO full
         int v;
@@ -12,43 +14,59 @@ void _mon_putc(char c){
     }
     U1TXREG = c;
 }
-//Interrupt Driven Printf to UART 1 (debug output to PC) is not showing data 0-360 distance points
-//This is only showing Distances 272-360
-//void _mon_putc(char c){
-//    if (stalled == true){
-//        stalled = false;
-//        U1TXREG = c;
-//        //IEC0bits.U1TXIE = 1; // enable interrupt
-//    }
-//    else{
-//        ring_buff_put(&buffer_one, c);
-//    }
-//}
 
-
-//TX computer debugging
-void __ISR(_UART_1_VECTOR, IPL1AUTO) Uart1Handler(void) {
-    static unsigned int count = 0;
-    count ++;
-
-    LATEbits.LATE3 ^= 1; //test 2 LED
-    if(ring_buff_size(&buffer_one) > 0) {
-        U1TXREG = ring_buff_get(&buffer_one);
-        IFS1bits.U3TXIF = 0; //Clear the TX interrupt flag before transmitting again
-    }
-
-    else {
-        IEC0bits.U1TXIE = 0; // disable interrupt
-        stalled = true;
-        memset(&buffer_one, 0, RING_BUF_SIZE); //set all elements in ring buffer to zero
-    }
-//    IFS0CLR = _IFS0_U1TXIF_MASK;
-
-//    if(IFS0 & _IFS0_U1EIF_MASK) {
-//        U1STAbits.OERR = 0; // OERR == 0: Receive buffer has not overflowed
-//        IFS0CLR = _IFS0_U1EIF_MASK;
-//    }
-}
+//////////Interrupt Driven by Printf to UART 1 (debug output to PC) (UART1 is not showing data 0-360 distance points)
+//////////This is only showing Distances 272-360
+////////void _mon_putc(char c){
+////////    if(secondTransmission == false) { //place first byte into ring buffer so that interrupt will work properly
+////////        ring_buff_put(&buffer_one, c); //first byte gets stored in U1TX ring buffer (buffer_one)
+////////        secondTransmission = true;
+////////        return;
+////////    }
+////////
+////////    if((secondTransmission == true) && (serialTransmission == false)) {
+////////        ring_buff_put(&buffer_one, c); //second byte gets stored in U1TX ring buffer (buffer_one)
+////////        U1TXREG = &buffer_one.head; //send first byte after the second byte is stored in the U1TX ring buffer (buffer_one)
+////////        return;
+////////    }
+////////
+////////    if (stalled == true){
+////////        serialTransmission = true; //operate the ring buffer normally
+////////        stalled = false;
+////////        U1TXREG = c;
+////////        //IEC0bits.U1TXIE = 1; // enable interrupt
+////////    }
+////////    else{
+////////        ring_buff_put(&buffer_one, c); //fill ring buffer if U1TXREG hardware FIFO is not empty
+////////    }
+////////}
+////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////
+//////////TX computer debugging (KEITH VERSION)
+////////void __ISR(_UART_1_VECTOR, IPL1AUTO) Uart1Handler(void) { //Copies bytes to the local UART TX1 from ring buffer
+////////    static unsigned int count = 0;
+////////    count ++;
+////////
+////////    LATEbits.LATE3 ^= 1; //test 2 LED
+////////    if(ring_buff_size(&buffer_one) > 0) {
+////////        U1TXREG = ring_buff_get(&buffer_one);
+////////        IFS0bits.U1TXIF = 0; //Clear the TX interrupt flag before transmitting again
+////////    }
+////////
+////////    else {
+////////        IEC0bits.U1TXIE = 0; // Disable the TX interrupt if we are done so that we don't keep entering this ISR
+////////        stalled = true;
+////////        memset(&buffer_one, 0, RING_BUF_SIZE); //set all elements in ring buffer to zero
+////////        secondTransmission = false; //reset the first two byte flag
+////////    }
+////////    IFS0CLR = _IFS0_U1TXIF_MASK;
+////////
+////////    if(IFS0 & _IFS0_U1EIF_MASK) {
+////////        U1STAbits.OERR = 0; // OERR == 0: Receive buffer has not overflowed
+////////        IFS0CLR = _IFS0_U1EIF_MASK;
+////////    }
+////////}
 ////TX computer debugging
 //void __ISR(_UART_1_VECTOR, IPL1AUTO) Uart1Handler(void)
 //{
@@ -74,7 +92,7 @@ void __ISR(_UART_1_VECTOR, IPL1AUTO) Uart1Handler(void) {
 //    }
 //}
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //RX lidar receive
 void __ISR(_UART_5_VECTOR, IPL1AUTO) Uart5Handler(void)

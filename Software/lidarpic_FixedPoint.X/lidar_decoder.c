@@ -131,7 +131,28 @@ bool LIDARdecode(void){
     return false;
 }
 
-unsigned short assemble(unsigned char lower, unsigned char upper)
-{
+//Check whether the change in Distance between each degree is large -> indicates object or wall
+short objectDetection(unsigned short i, unsigned short *DistanceArr[360], unsigned short *DistanceDifferencesArr[360], unsigned short *DetectedObjects[360]) {
+    
+    short startOfDetectedObject = 0;
+    short endOfDetectedObject = 0;
+    short ObjectDetectionThreshold = 500;
+    
+    if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
+        DistanceDifferencesArr[i] = abs((DistanceArr[360]-DistanceArr[0])); //use abs() function to get unsigned magnitude
+        i = 0; //reset index to - degrees after 359 degrees
+    } else{
+        DistanceDifferencesArr[i] = abs((DistanceArr[i]-DistanceArr[i+1]));
+    }
+    if(startOfDetectedObject > 0) {
+        endOfDetectedObject = i; // found end of an object (object was detected)
+    }
+    if(DistanceDifferencesArr[i] > ObjectDetectionThreshold) // object protruded from surrounding measurements by 50cm (500mm)
+        startOfDetectedObject = i; // found start of an object (object's corner was detected)
+
+}
+
+
+unsigned short assemble(unsigned char lower, unsigned char upper) {
     return (unsigned short)(lower + ((upper << 8) & 0xff00));
 }

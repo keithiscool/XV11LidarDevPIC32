@@ -55,12 +55,13 @@ void UART(void){
     U5BRG = 42; // 115200 baud  //85; // 57600 baud
     U5MODEbits.PDSEL = 0b00; // 8-bit no parity
     U5MODEbits.STSEL = 0; // 1 stop bit
-    IEC2bits.U5RXIE = 1; // enable uart recieve
+//    IEC2bits.U5RXIE = 1; // enable uart recieve
     IPC12bits.U5IP = 1; // priority 1
     IPC12bits.U5IS = 2; // sub priority 2
-    U5STAbits.URXEN = 1; // enable uart recieve
-    U5STAbits.URXISEL = 0b00; // interrupt generated with every reception
-    U5STAbits.UTXEN = 1; // enable uart transmit
+//    U5STAbits.URXEN = 1; // enable uart recieve
+//    U5STAbits.URXISEL = 0b00; // interrupt generated with every reception
+    U5STAbits.URXISEL = 0b01; //  Interrupt flag bit is asserted while receive buffer is 1/2 or more full (has 4 or more data characters)
+//    U5STAbits.UTXEN = 1; // enable uart transmit
     U5MODEbits.ON = 1; // enable whole uart module
     // uart 5 error
     IEC2bits.U5EIE = 1; // error interrupt enabed
@@ -71,12 +72,12 @@ void UART(void){
     U1MODEbits.PDSEL = 0b00; // 8-bit no parity
     U1MODEbits.STSEL = 0; // 1 stop bit
     IFS0bits.U1TXIF = 0;
-//    IEC0bits.U1TXIE = 1; // transmit interrupt enable
+//    IEC0bits.U1TXIE = 1; // transmit interrupt enable (used in code as needed to permit TXdata from pic32 to PC)
     IPC6bits.U1IP = 1; // priority 1
     IPC6bits.U1IS = 1; // sub priority 1
-//    U1STAbits.UTXISEL = 0b01; // interrupt when transmit complete
-//    U1STAbits.URXISEL = 0; // interrupt generated with every reception
-    U1STAbits.URXEN = 1; // enable uart recieve
+//    U1STAbits.UTXISEL = 0b01; //  interrupt is generated and asserted when all characters have been transmitted
+    U1STAbits.UTXISEL = 0b10; //  interrupt is generated and asserted while the transmit buffer is empty
+//    U1STAbits.URXEN = 1; // enable uart recieve
     U1STAbits.UTXEN = 1; // enable uart transmit
     U1MODEbits.ON = 1; // enable whole uart module
     // uart 1 error
