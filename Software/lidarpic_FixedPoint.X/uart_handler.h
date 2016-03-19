@@ -10,6 +10,8 @@
 
 
 #define RING_BUF_SIZE 500
+#define SIZE_OF_DMA_ARRAY 200
+
 
 struct ringBuff
 {
@@ -19,8 +21,8 @@ struct ringBuff
     int count;
 };
 
-struct ringBuff buffer_five;
-struct ringBuff buffer_one; 
+struct ringBuff buffer_five; //used for U5RX input UART (115200 baudrate from xv11 Lidar)
+struct ringBuff buffer_one; //used for U1TX output to PC for serial debugging (after pic32 parsed the Lidar data)
 
 bool stalled = true; 
 
@@ -32,6 +34,10 @@ unsigned char ring_buff_peek(struct ringBuff* _this);
 void ring_buff_put(struct ringBuff* _this, const unsigned char c);
 void ring_buff_flush(struct ringBuff* _this, const int clearBuffer);
 unsigned int modulo_inc(const unsigned int value, const unsigned int modulus);
+
+
+//dma arrays for transmit (make a separate array for each DMA channel)
+extern unsigned char dma_one_array[SIZE_OF_DMA_ARRAY];
 
 
 bool Done_Printing_Debug(void);

@@ -4,14 +4,31 @@
 #include "uart_handler.h"
 
 
+////Called when Printf() is used
+//void _mon_putc(char c){
+//    if (U1STAbits.UTXBF == 1) { // uart transmit FIFO full
+//        int v;
+////        for(v=0; v<500; v++); //delay for a few clock cycles
+//        for(v=0; v<400; v++); //delay for a few clock cycles
+//    }
+//    U1TXREG = c;
+//}
+
 //Called when Printf() is used
 void _mon_putc(char c){
+    static int v;
     if (U1STAbits.UTXBF == 1) { // uart transmit FIFO full
-        int v;
-        for(v=0; v<500; v++);
+//        for(v=0; v<400; v++); //delay for a few clock cycles
     }
-    U1TXREG = c;
+    dma_one_array[v] = c;
+    v++;
+    if(v >= 199)
+        _queue_send();
+        v=0;
 }
+
+
+
 
 //Interrupt Driven Printf to UART 1 (debug output to PC) is not showing data 0-360 distance points
 //This is only showing Distances 272-360

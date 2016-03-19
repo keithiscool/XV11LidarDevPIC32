@@ -132,7 +132,7 @@ bool LIDARdecode(void){
 }
 
 //Check whether the change in Distance between each degree is large -> indicates object or wall
-short objectDetection(unsigned short i, unsigned short *DistanceArr[360], unsigned short *DistanceDifferencesArr[360], unsigned short *DetectedObjects[360]) {
+short objectDetection(unsigned short i, unsigned short *DistanceArr, unsigned short *DistanceDifferencesArr, unsigned short *DetectedObjects[360]) {
 
     short startOfDetectedObject = 0;
     short endOfDetectedObject = 0;

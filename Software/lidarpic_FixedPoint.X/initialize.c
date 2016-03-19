@@ -3,7 +3,6 @@
 #include <plib.h>
 #include "initialize.h"
 
-
 void initialize(void){
      SYSTEMConfig(80000000, SYS_CFG_ALL); // sets up periferal and clock configuration
      INTEnableSystemMultiVectoredInt();
@@ -67,7 +66,7 @@ void UART(void){
 
     // uart 1 debug TX to computer terminal window
     U1MODEbits.BRGH = 0; // set to standard speed mode
-    U1BRG = 21; //230400 baud   //42;// 115200 baud  //85;// 57600 baud
+    U1BRG = 21; //21;230400 baud   //42;// 115200 baud  //85;// 57600 baud
     U1MODEbits.PDSEL = 0b00; // 8-bit no parity
     U1MODEbits.STSEL = 0; // 1 stop bit
     IFS0bits.U1TXIF = 0;
@@ -81,4 +80,45 @@ void UART(void){
     U1MODEbits.ON = 1; // enable whole uart module
     // uart 1 error
 //    IEC0bits.U1EIE = 1; // error interrupt enabed
+}
+
+void DMA(void) {
+    DMACONbits.ON = 1; // dma module enabled
+    DCRCCON = 0; // crc module disabled
+
+    //dma 1 for U1TX debugging
+    DCH1CONbits.CHPRI = 2; // channel priority 2
+    DCH1ECONbits.CHSIRQ = 28; // uart 1 tx IRQ
+    DCH1ECONbits.SIRQEN = 1; // enable cell transfer when IRQ triggered
+    DCH1INT = 0; // clear all existing flags, disable all interrupts
+    DCH1SSA = (unsigned int) &dma_one_array & 0x1FFFFFFF; // physical address conversion for transmit buffer
+    DCH1DSA = (unsigned int) &U1TXREG & 0x1FFFFFFF; // physical address conversion for uart send buffer
+    DCH1DSIZ = 1;
+    DCH1CSIZ = 1;
+
+
+//    //DMA 1 settings
+//    arrayOFdmaSettings[1].dma_array = (unsigned char*) &dma_one_array;
+//    arrayOFdmaSettings[1].dmacon = &DCH1CON;
+//    arrayOFdmaSettings[1].con_busy_mask = _DCH1CON_CHBUSY_MASK;
+//    arrayOFdmaSettings[1].con_en_mask = _DCH1CON_CHEN_MASK;
+//    arrayOFdmaSettings[1].dmasize = &DCH1SSIZ;
+//    arrayOFdmaSettings[1].dmaecon = &DCH1ECON;
+//    arrayOFdmaSettings[1].econ_force_mask = _DCH1ECON_CFORCE_MASK;
+
+
+    //DMA 1 settings
+    dmaOneSettings.dma_array = (unsigned char*) &dma_one_array;
+    dmaOneSettings.dmacon = &DCH1CON;
+    dmaOneSettings.con_busy_mask = _DCH1CON_CHBUSY_MASK;
+    dmaOneSettings.con_en_mask = _DCH1CON_CHEN_MASK;
+    dmaOneSettings.dmasize = &DCH1SSIZ;
+    dmaOneSettings.dmaecon = &DCH1ECON;
+    dmaOneSettings.econ_force_mask = _DCH1ECON_CFORCE_MASK;
+
+    
+    //After loading the DMA settings, start using the DMA
+    _queue_begin(&dmaOneSettings, 1);
+//    queue_pointer[1] = &DMA_one;
+    queue_One_Pointer = &DMA_Buffer_One;
 }

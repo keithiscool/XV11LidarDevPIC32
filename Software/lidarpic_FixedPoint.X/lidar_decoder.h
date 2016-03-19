@@ -39,26 +39,6 @@ short YCoordMeters[360];
 unsigned short DegreeIndex;
 short AnglesCoveredTotal;
 
-//Object Detection "Objects" using C programming (cannot use classes in C)
-typedef struct DetectedRock{
-    short xPos;
-    short yPos;
-    short size;
-};
-
-typedef struct DetectedCrater{
-    short xPos;
-    short yPos;
-    short craterRadius;
-    short craterDepth; //crater depth is approximately the difference in polar ditances while sweeping lidar vertically
-};
-
-typedef struct DetectedRobot{
-    short x;
-    short y;
-    short startingXPos;
-    short startingYPos;
-};
 
 #endif	/* LIDAR_DECODER_H */
 

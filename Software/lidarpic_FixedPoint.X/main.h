@@ -1,7 +1,5 @@
-/* 
- * File:   main.h
+/* File:   main.h
  * Author: Igor
- *
  * Created on July 3, 2015, 1:14 PM
  */
 
@@ -39,7 +37,6 @@ extern float returned_speed;
 extern unsigned char InvalidFlag[4];
 extern unsigned char WarningFlag[4];
 extern unsigned short Distance[360];
-float TrigValues[360];
 
 extern short XCoordMeters[360];
 extern short YCoordMeters[360];
