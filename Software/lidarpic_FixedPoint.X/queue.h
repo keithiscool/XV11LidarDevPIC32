@@ -65,7 +65,8 @@ unsigned char _queue_data_get(void);
 unsigned int _modulo_inc(const unsigned int value, const unsigned int modulus);
 //void _queue_begin(dmaSettings *_settings, int module_number);
 void _queue_begin(struct dmaSettings *_settings, int module_number);
-void _queue_put(unsigned char * what, unsigned char how_many, unsigned char where, unsigned char from_where);
+//void _queue_put(unsigned char * what, unsigned char how_many, unsigned char where, unsigned char from_where);
+void _queue_put(unsigned char *what, unsigned char how_many);
 bool _queue_send(void);
 unsigned int _fullError(void);
 

@@ -120,6 +120,11 @@ void main(void){
         Distance[i] = 99;
     }
 
+    // set everything in DMA output buffer to zeros
+    void _queue_init(void);
+
+    
+
     while (1){
 ////////        if (AllMeasurementsTaken() == 1) {
         if(LIDARdecode()==1) {
@@ -173,6 +178,11 @@ void main(void){
 ////////                            i--; //keep index at same value if the UART1 TX debug buffer is full
 ////////                    }
 ////////                    printf("\r\n--------------------------------\r\n");
+
+
+                    //kick the dma if the buffer exceeds the scond level count
+                    _queue_send();
+                    
                 }
                 U5STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
                 U5MODEbits.ON = 1; // enable whole uart module

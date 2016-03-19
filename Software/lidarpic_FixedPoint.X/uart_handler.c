@@ -16,15 +16,12 @@
 
 //Called when Printf() is used
 void _mon_putc(char c){
-    static int v;
+//    static int v;
     if (U1STAbits.UTXBF == 1) { // uart transmit FIFO full
 //        for(v=0; v<400; v++); //delay for a few clock cycles
     }
-    dma_one_array[v] = c;
-    v++;
-    if(v >= 199)
-        _queue_send();
-        v=0;
+//   extern void _queue_put(unsigned char *what, unsigned char how_many);
+    _queue_put(&c, 1);
 }
 
 

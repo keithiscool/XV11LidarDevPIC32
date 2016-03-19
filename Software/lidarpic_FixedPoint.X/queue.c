@@ -63,13 +63,14 @@ void _queue_init(void) {
 }
 
 
-void _queue_put(unsigned char *what, unsigned char how_many, unsigned char where, unsigned char from_where) {
+//void _queue_put(unsigned char *what, unsigned char how_many, unsigned char where, unsigned char from_where) {
+void _queue_put(unsigned char *what, unsigned char how_many) {
 
     if (DMA_Buffer_One.send_queue.count < TOP_LEVEL_QUEUE_DEPTH) {
-        _queue_data_put(0x06);
-        _queue_data_put(0x85);
-        _queue_data_put(where);
-        _queue_data_put(from_where);
+//        _queue_data_put(0x06);
+//        _queue_data_put(0x85);
+//        _queue_data_put(where);
+//        _queue_data_put(from_where);
         _queue_data_put(how_many);
         int i;
 
@@ -79,10 +80,10 @@ void _queue_put(unsigned char *what, unsigned char how_many, unsigned char where
         DMA_Buffer_One.send_queue.head = modulo_inc(DMA_Buffer_One.send_queue.head, TOP_LEVEL_QUEUE_DEPTH);
         DMA_Buffer_One.send_queue.count++;
     } else {
-        _queue_data_put(0x06);
-        _queue_data_put(0x85);
-        _queue_data_put(where);
-        _queue_data_put(from_where);
+//        _queue_data_put(0x06);
+//        _queue_data_put(0x85);
+//        _queue_data_put(where);
+//        _queue_data_put(from_where);
         _queue_data_put(how_many);
         int i;
 
@@ -161,6 +162,8 @@ unsigned int _modulo_inc(const unsigned int value, const unsigned int modulus) {
 //////    unsigned int econ_force_mask;
 //////    int module_ID;
 //////};
+
+
 bool _queue_send(void) {
     if (DMA_Buffer_One.send_queue.count > 0) { // if send queue is empty no need to send
         if ((*DMA_Buffer_One.dmacon & DMA_Buffer_One.con_busy_mask) == 0) { // if dma is busy then no need to send
