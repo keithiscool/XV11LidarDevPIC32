@@ -30,6 +30,9 @@ int i = 0;
 void delay(void);
 unsigned int v = 0;
 
+//////////////////////////////////////////////////////////////////////////////
+//LIDAR DATA STUFF
+
 extern short AnglesCoveredTotal;
 extern unsigned int SuccessfulMeasurements[360];
 
@@ -43,6 +46,10 @@ extern short YCoordMeters[360];
 extern unsigned short DegreeIndex;
 extern unsigned short GoodReadings;
 extern unsigned short BadReadings;
+
+//////////////////////////////////////////////////////////////////////////////
+
+
 
 #endif	/* MAIN_H */
 

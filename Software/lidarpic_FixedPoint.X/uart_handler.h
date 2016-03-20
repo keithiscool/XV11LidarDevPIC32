@@ -39,7 +39,7 @@ unsigned int modulo_inc(const unsigned int value, const unsigned int modulus);
 //dma arrays for transmit (make a separate array for each DMA channel)
 extern unsigned char dma_one_array[SIZE_OF_DMA_ARRAY];
 //extern void _queue_put(unsigned char *what, unsigned char how_many, unsigned char where, unsigned char from_where)
-extern void _queue_put(unsigned char *what, unsigned char how_many);
+extern void _queue_put(unsigned char what, unsigned char how_many);
 
 bool Done_Printing_Debug(void);
 

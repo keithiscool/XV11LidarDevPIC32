@@ -13,6 +13,8 @@ void initialize(void){
      delay();
      UART();
      delay();
+     DMA();
+     delay();
      INTEnableInterrupts(); // enable interrupts
      beginLIDARdecoder(returned_data, &buffer_five);
 }
@@ -96,17 +98,7 @@ void DMA(void) {
     DCH1DSIZ = 1;
     DCH1CSIZ = 1;
 
-
-//    //DMA 1 settings
-//    arrayOFdmaSettings[1].dma_array = (unsigned char*) &dma_one_array;
-//    arrayOFdmaSettings[1].dmacon = &DCH1CON;
-//    arrayOFdmaSettings[1].con_busy_mask = _DCH1CON_CHBUSY_MASK;
-//    arrayOFdmaSettings[1].con_en_mask = _DCH1CON_CHEN_MASK;
-//    arrayOFdmaSettings[1].dmasize = &DCH1SSIZ;
-//    arrayOFdmaSettings[1].dmaecon = &DCH1ECON;
-//    arrayOFdmaSettings[1].econ_force_mask = _DCH1ECON_CFORCE_MASK;
-
-
+    
     //DMA 1 settings
     dmaOneSettings.dma_array = (unsigned char*) &dma_one_array;
     dmaOneSettings.dmacon = &DCH1CON;
@@ -119,6 +111,5 @@ void DMA(void) {
     
     //After loading the DMA settings, start using the DMA
     _queue_begin(&dmaOneSettings, 1);
-//    queue_pointer[1] = &DMA_one;
     queue_One_Pointer = &DMA_Buffer_One;
 }

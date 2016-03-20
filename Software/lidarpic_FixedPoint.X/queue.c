@@ -64,7 +64,7 @@ void _queue_init(void) {
 
 
 //void _queue_put(unsigned char *what, unsigned char how_many, unsigned char where, unsigned char from_where) {
-void _queue_put(unsigned char *what, unsigned char how_many) {
+void _queue_put(unsigned char what, unsigned char how_many) {
 
     if (DMA_Buffer_One.send_queue.count < TOP_LEVEL_QUEUE_DEPTH) {
 //        _queue_data_put(0x06);
@@ -75,7 +75,8 @@ void _queue_put(unsigned char *what, unsigned char how_many) {
         int i;
 
         for (i = 0; i < (how_many + 1); i++) {
-            _queue_data_put(what[i]);
+//            _queue_data_put(what[i]);
+            _queue_data_put(what);
         }
         DMA_Buffer_One.send_queue.head = modulo_inc(DMA_Buffer_One.send_queue.head, TOP_LEVEL_QUEUE_DEPTH);
         DMA_Buffer_One.send_queue.count++;
@@ -88,7 +89,8 @@ void _queue_put(unsigned char *what, unsigned char how_many) {
         int i;
 
         for (i = 0; i <= how_many; i++) {
-            _queue_data_put(what[i]);
+//            _queue_data_put(what[i]);
+            _queue_data_put(what);
         }
         DMA_Buffer_One.send_queue.head = modulo_inc(DMA_Buffer_One.send_queue.head, TOP_LEVEL_QUEUE_DEPTH);
         DMA_Buffer_One.send_queue.tail = modulo_inc(DMA_Buffer_One.send_queue.tail, TOP_LEVEL_QUEUE_DEPTH);
@@ -135,34 +137,6 @@ unsigned int _modulo_inc(const unsigned int value, const unsigned int modulus) {
     return (my_value);
 }
 
-//////struct Queue_handler {
-//////
-//////    struct Queue_member {
-//////        unsigned char buf[SECOND_LEVEL_QUEUE_DEPTH];
-//////        int head;
-//////        int tail;
-//////        int count;
-//////    };
-//////
-//////    struct Queue_top {
-//////        struct Queue_member queue[TOP_LEVEL_QUEUE_DEPTH];
-//////        int head;
-//////        int tail;
-//////        int count;
-//////    };
-//////
-//////    struct Queue_top send_queue;
-//////    unsigned int queueFullErrorCounter;
-//////    unsigned char *dma_array;
-//////    volatile unsigned int *dmacon;
-//////    unsigned int con_busy_mask;
-//////    unsigned int con_en_mask;
-//////    volatile unsigned int *dmasize;
-//////    volatile unsigned int *dmaecon;
-//////    unsigned int econ_force_mask;
-//////    int module_ID;
-//////};
-
 
 bool _queue_send(void) {
     if (DMA_Buffer_One.send_queue.count > 0) { // if send queue is empty no need to send
@@ -170,6 +144,7 @@ bool _queue_send(void) {
             // if all the checks pass populate the dma buffer, set the size, enable and force a send
             int g;
             int h = DMA_Buffer_One.send_queue.queue[DMA_Buffer_One.send_queue.tail].count;
+
             for (g = 0; g < h; g++) {
                 DMA_Buffer_One.dma_array[g] = DMA_Buffer_One.send_queue.queue[DMA_Buffer_One.send_queue.tail].buf[g];
             }
@@ -186,10 +161,10 @@ bool _queue_send(void) {
                 DMA_Buffer_One.send_queue.tail = modulo_inc(DMA_Buffer_One.send_queue.tail, TOP_LEVEL_QUEUE_DEPTH);
                 return true;
 
-        } else {
+        }else {
             return false;
         }
-    } else {
+    }else {
         return false;
     }
 }

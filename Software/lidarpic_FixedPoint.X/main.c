@@ -47,11 +47,13 @@
 #pragma config CP = OFF                 // Code Protect (Protection Disabled)
 
 
+
 void delay(void){
     for(v=0; v<60000; v++);
 }
 
-//  LCD Stuff:
+
+//  LCD Stuff for future additions to project:
 //void DrawDistanceMap(void) {
 //	// UP TO 3500 i distance = 3.5m
 //    short deg;
@@ -82,10 +84,10 @@ void delay(void){
 //}
 
 
-int AllMeasurementsTaken(void){
+int AllMeasurementsTaken(void) {
     int j = 0;
     for(j=0;j<90;j++) {
-        LIDARdecode();
+        LIDARdecode(); //receive 90 packets of 4 distances from the lidar
     }
 
     //Verify that all 360 degrees have a distance measurement
@@ -110,22 +112,20 @@ void main(void){
     LATEbits.LATE3 = 1;
     initialize();
     printf("PIC_RST\r\n");
-    short j = 0;
+    
     short DistanceDifferences[360];
     short startOfDetectedObject = 0;
     short endOfDetectedObject = 0;
 
+    
     //Initialize all distances to '99' so I can see which ones are not getting written to
     for(i=0;i<360;i++) {
         Distance[i] = 99;
     }
-
-    // set everything in DMA output buffer to zeros
-    void _queue_init(void);
-
     
 
-    while (1){
+    while(1) {
+        
 ////////        if (AllMeasurementsTaken() == 1) {
         if(LIDARdecode()==1) {
             LATEbits.LATE4 ^= 0; //Toggle LED1 on,off,on,off
@@ -180,7 +180,8 @@ void main(void){
 ////////                    printf("\r\n--------------------------------\r\n");
 
 
-                    //kick the dma if the buffer exceeds the scond level count
+                    
+                    //kick the dma to UART 1 if the buffer exceeds the scond level count
                     _queue_send();
                     
                 }
@@ -220,7 +221,7 @@ void _general_exception_handler(void) {
     asm volatile("mfc0 %0,$13" : "=r" (_excep_code));
     asm volatile("mfc0 %0,$14" : "=r" (_excep_addr));
     _excep_code = (_excep_code & 0x0000007C) >> 2;
-    LATEbits.LATE3 = 0; //test 2
+    LATEbits.LATE3 = 0; //test 2 on
     while (1)
     {
         // Examine _excep_code to identify the type of exception
