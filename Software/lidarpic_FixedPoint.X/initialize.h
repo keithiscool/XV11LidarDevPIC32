@@ -6,12 +6,12 @@
 #ifndef INITIALIZE_H
 #define	INITIALIZE_H
 
-#define SIZE_OF_DMA_ARRAY 200
-#define RING_BUF_SIZE 200
-#define TOP_LEVEL_QUEUE_DEPTH 5
-#define SECOND_LEVEL_QUEUE_DEPTH 193
 
 #include "queue.h"
+
+
+#define RING_BUF_SIZE 200
+
 
 // prototype for input ring buffer
 struct ringBuff

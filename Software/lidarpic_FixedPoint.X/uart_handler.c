@@ -5,7 +5,7 @@
 
 
 ////Called when Printf() is used
-//void _mon_putc(char c){
+//void _mon_putc(char c) {
 //    if (U1STAbits.UTXBF == 1) { // uart transmit FIFO full
 //        int v;
 ////        for(v=0; v<500; v++); //delay for a few clock cycles
@@ -14,53 +14,39 @@
 //    U1TXREG = c;
 //}
 
+
+
 //Called when Printf() is used
-void _mon_putc(char c){
-    
-//    extern void _queue_put(unsigned char *what, unsigned char how_many);
-    _queue_put(c, 1);
-    
+void _mon_putc(char c) {
+
+    //    _queue_put(c, 1);
+
+    static char dmaOutputArr[SIZE_OF_DMA_ARRAY];
+
+    if(DMA_Counter > SIZE_OF_DMA_ARRAY) {
+        DMA_Counter = 0;
+        _queue_put(dmaOutputArr, sizeof(dmaOutputArr));
+    }
+
+    dmaOutputArr[DMA_Counter] = c; //copy the new char into the DMA temporary array
+    DMA_Counter++;
+
+
+
+
+
+//    array tht can hold data
+//    arr holds 4bytes per reading
+//    printf data
+//    output of monputc
+
+
+//    global counter
+//    zero counter then printf
+//    array[counter] = char new;
+//    _queue_put(array, size input from counter);
+
 }
-
-
-
-
-//Interrupt Driven Printf to UART 1 (debug output to PC) is not showing data 0-360 distance points
-//This is only showing Distances 272-360
-//void _mon_putc(char c){
-//    if (stalled == true){
-//        stalled = false;
-//        U1TXREG = c;
-//        //IEC0bits.U1TXIE = 1; // enable interrupt
-//    }
-//    else{
-//        ring_buff_put(&buffer_one, c);
-//    }
-//}
-////TX computer debugging
-//void __ISR(_UART_1_VECTOR, IPL1AUTO) Uart1Handler(void)
-//{
-//    static unsigned int count = 0;
-//    count ++;
-//
-//    LATEbits.LATE3 ^= 1; //test 2
-//    if(ring_buff_size(&buffer_one) > 0)
-//    {
-//        U1TXREG = ring_buff_get(&buffer_one);
-//    }
-//    else
-//    {
-//        IEC0bits.U1TXIE = 0; // disable interrupt
-//        stalled = true;
-//    }
-//    IFS0CLR = _IFS0_U1TXIF_MASK;
-//
-//    if(IFS0 & _IFS0_U1EIF_MASK)
-//    {
-//        U1STAbits.OERR = 0;
-//        IFS0CLR = _IFS0_U1EIF_MASK;
-//    }
-//}
 
 
 

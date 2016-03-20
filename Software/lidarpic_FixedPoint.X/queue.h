@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdbool.h>
 
+
 struct dmaSettings
 {
     unsigned char *dma_array;
@@ -22,9 +23,14 @@ struct dmaSettings
 };
 
 
+
 #define TOP_LEVEL_QUEUE_DEPTH 5
-#define SECOND_LEVEL_QUEUE_DEPTH 193
+//#define SECOND_LEVEL_QUEUE_DEPTH 193
+#define SECOND_LEVEL_QUEUE_DEPTH 360
+
 #define SIZE_OF_DMA_ARRAY 200
+
+
 
 
 struct Queue_handler {
@@ -66,7 +72,7 @@ unsigned int _modulo_inc(const unsigned int value, const unsigned int modulus);
 //void _queue_begin(dmaSettings *_settings, int module_number);
 void _queue_begin(struct dmaSettings *_settings, int module_number);
 //void _queue_put(unsigned char * what, unsigned char how_many, unsigned char where, unsigned char from_where);
-void _queue_put(unsigned char what, unsigned char how_many);
+void _queue_put(unsigned char *what, unsigned char how_many);
 bool _queue_send(void);
 unsigned int _fullError(void);
 

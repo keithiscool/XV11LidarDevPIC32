@@ -13,23 +13,6 @@ struct _dmaSettings {
 };
 
 
-//// function runs to initiate the queue system
-//// the function is handed all the tools it needs to work the dma for sending
-//void _queue_begin(struct dmaSettings *_settings, int module_number) {
-//    // move settings to internal variables
-//    DMA_Buffer_One.dma_array = _settings[module_number].dma_array;
-//    DMA_Buffer_One.dmacon = _settings[module_number].dmacon;
-//    DMA_Buffer_One.con_busy_mask = _settings[module_number].con_busy_mask;
-//    DMA_Buffer_One.con_en_mask = _settings[module_number].con_en_mask;
-//    DMA_Buffer_One.dmasize = _settings[module_number].dmasize;
-//    DMA_Buffer_One.dmaecon = _settings[module_number].dmaecon;
-//    DMA_Buffer_One.econ_force_mask = _settings[module_number].econ_force_mask;
-//    DMA_Buffer_One.module_ID = module_number;
-//
-//    _queue_init(); //flush the queue buffer
-//}
-
-
 // function runs to initiate the queue system
 // the function is handed all the tools it needs to work the dma for sending
 void _queue_begin(struct dmaSettings *_settings, int module_number) {
@@ -64,7 +47,7 @@ void _queue_init(void) {
 
 
 //void _queue_put(unsigned char *what, unsigned char how_many, unsigned char where, unsigned char from_where) {
-void _queue_put(unsigned char what, unsigned char how_many) {
+void _queue_put(unsigned char *what, unsigned char how_many) {
 
     if (DMA_Buffer_One.send_queue.count < TOP_LEVEL_QUEUE_DEPTH) {
 //        _queue_data_put(0x06);
@@ -75,22 +58,18 @@ void _queue_put(unsigned char what, unsigned char how_many) {
         int i;
 
         for (i = 0; i < (how_many + 1); i++) {
-//            _queue_data_put(what[i]);
-            _queue_data_put(what);
+            _queue_data_put(what[i]);
+//            _queue_data_put(what);
         }
         DMA_Buffer_One.send_queue.head = modulo_inc(DMA_Buffer_One.send_queue.head, TOP_LEVEL_QUEUE_DEPTH);
         DMA_Buffer_One.send_queue.count++;
     } else {
-//        _queue_data_put(0x06);
-//        _queue_data_put(0x85);
-//        _queue_data_put(where);
-//        _queue_data_put(from_where);
         _queue_data_put(how_many);
         int i;
 
         for (i = 0; i <= how_many; i++) {
-//            _queue_data_put(what[i]);
-            _queue_data_put(what);
+            _queue_data_put(what[i]);
+//            _queue_data_put(what);
         }
         DMA_Buffer_One.send_queue.head = modulo_inc(DMA_Buffer_One.send_queue.head, TOP_LEVEL_QUEUE_DEPTH);
         DMA_Buffer_One.send_queue.tail = modulo_inc(DMA_Buffer_One.send_queue.tail, TOP_LEVEL_QUEUE_DEPTH);
