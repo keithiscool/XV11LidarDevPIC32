@@ -1,5 +1,5 @@
 /* File:   initialize.h
- * Author: Igor
+ * Author: Igor & Keith
  * Created on July 3, 2015, 1:14 PM
  */
 

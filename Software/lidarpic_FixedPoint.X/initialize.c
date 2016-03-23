@@ -91,6 +91,7 @@ void DMA(void) {
     //dma 1 for U1TX debugging
     DCH1CONbits.CHPRI = 2; // channel priority 2
     DCH1ECONbits.CHSIRQ = 28; // uart 1 tx IRQ
+        
     DCH1ECONbits.SIRQEN = 1; // enable cell transfer when IRQ triggered
     DCH1INT = 0; // clear all existing flags, disable all interrupts
     DCH1SSA = (unsigned int) &dma_one_array & 0x1FFFFFFF; // physical address conversion for transmit buffer

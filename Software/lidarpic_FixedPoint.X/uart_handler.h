@@ -1,7 +1,5 @@
-/* 
- * File:   uart_handler.h
+/* File:   uart_handler.h
  * Author: Igor
- *
  * Created on July 5, 2015, 8:17 AM
  */
 
@@ -10,7 +8,11 @@
 
 
 #define RING_BUF_SIZE 500
-#define SIZE_OF_DMA_ARRAY 200
+//#define SIZE_OF_DMA_ARRAY 360
+//#define SIZE_OF_DMA_ARRAY 450
+#define SIZE_OF_DMA_ARRAY 3000
+//#define SIZE_OF_DMA_ARRAY 128 //4*16 characters in 16 bytes of data
+//#define SIZE_OF_DMA_ARRAY 32 //16*2 characters in 16 bytes of data
 
 
 struct ringBuff

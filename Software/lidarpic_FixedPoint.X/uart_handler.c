@@ -4,23 +4,19 @@
 #include "uart_handler.h"
 
 
-////Called when Printf() is used
+////Simple UART TX1 Called when Printf() is used (not using DMA)
 //void _mon_putc(char c) {
 //    if (U1STAbits.UTXBF == 1) { // uart transmit FIFO full
 //        int v;
-////        for(v=0; v<500; v++); //delay for a few clock cycles
-//        for(v=0; v<400; v++); //delay for a few clock cycles
+//        for(v=0; v<500; v++); //delay for a few clock cycles
 //    }
 //    U1TXREG = c;
 //}
 
 
 
-//Called when Printf() is used
+//Called when Printf() is used (working, but needs formatting for output)
 void _mon_putc(char c) {
-
-    //    _queue_put(c, 1);
-
     static char dmaOutputArr[SIZE_OF_DMA_ARRAY];
 
     if(DMA_Counter > SIZE_OF_DMA_ARRAY) {
@@ -30,22 +26,6 @@ void _mon_putc(char c) {
 
     dmaOutputArr[DMA_Counter] = c; //copy the new char into the DMA temporary array
     DMA_Counter++;
-
-
-
-
-
-//    array tht can hold data
-//    arr holds 4bytes per reading
-//    printf data
-//    output of monputc
-
-
-//    global counter
-//    zero counter then printf
-//    array[counter] = char new;
-//    _queue_put(array, size input from counter);
-
 }
 
 
