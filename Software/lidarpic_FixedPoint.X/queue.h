@@ -11,8 +11,7 @@
 #include <stdbool.h>
 
 
-struct dmaSettings
-{
+struct dmaSettings {
     unsigned char *dma_array;
     volatile unsigned int *dmacon;
     unsigned int con_busy_mask;
@@ -26,10 +25,10 @@ struct dmaSettings
 
 #define TOP_LEVEL_QUEUE_DEPTH 5
 //#define SECOND_LEVEL_QUEUE_DEPTH 193
-#define SECOND_LEVEL_QUEUE_DEPTH 360
+#define SECOND_LEVEL_QUEUE_DEPTH 3000
 
-#define SIZE_OF_DMA_ARRAY 200
-
+//#define SIZE_OF_DMA_ARRAY 1600
+#define SIZE_OF_DMA_ARRAY 1800
 
 
 

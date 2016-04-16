@@ -15,7 +15,10 @@ unsigned char buff_index = 0;
 unsigned char data_buffer[22];
 unsigned short *output_data;
 unsigned short CRC_calculator(unsigned char * _this);
+unsigned short objectDetection(unsigned short i);
+unsigned short AllMeasurementsTaken(void);
 unsigned short assemble(unsigned char lower, unsigned char upper);
+
 
 extern struct ringBuff buffer_five;
 
@@ -27,6 +30,7 @@ extern void ring_buff_put(struct ringBuff* _this, const unsigned char c);
 extern void ring_buff_flush(struct ringBuff* _this, const int clearBuffer);
 extern unsigned int modulo_inc(const unsigned int value, const unsigned int modulus);
 
+
 bool transmission_in_progress = false;
 
 float returned_speed = 0;
@@ -34,10 +38,20 @@ unsigned int SuccessfulMeasurements[360];
 unsigned char InvalidFlag[4];
 unsigned char WarningFlag[4];
 unsigned short Distance[360];
+unsigned short DistanceDifferences[360];
 short XCoordMeters[360];
 short YCoordMeters[360];
 unsigned short DegreeIndex;
 short AnglesCoveredTotal;
+
+
+struct detectedObject {
+    unsigned short Distance;
+    unsigned short Degree;
+    short xPos;
+    short yPos;
+    struct ObjectNode *next;
+};
 
 
 #endif	/* LIDAR_DECODER_H */

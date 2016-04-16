@@ -36,8 +36,7 @@ void _queue_init(void) {
     DMA_Buffer_One.send_queue.tail = 0;
     DMA_Buffer_One.send_queue.count = 0;
     int i;
-    for (i = 0; i < TOP_LEVEL_QUEUE_DEPTH; i++)
-    {
+    for (i = 0; i < TOP_LEVEL_QUEUE_DEPTH; i++) {
         DMA_Buffer_One.send_queue.queue[i].count = 0;
         DMA_Buffer_One.send_queue.queue[i].head = 0;
         DMA_Buffer_One.send_queue.queue[i].tail = 0;

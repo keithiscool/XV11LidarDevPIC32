@@ -104,6 +104,7 @@ bool LIDARdecode(void){
                         if((Distance[DegreeIndex+i] > 0) && (Distance[DegreeIndex+i] < 10000)) { // check if polar distance is useful data
                             YCoordMeters[DegreeIndex+i] = ((short)(((int)Distance[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
                             XCoordMeters[DegreeIndex+i] = ((short)(((int)Distance[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
+                            objectDetection();
                         }
                         SuccessfulMeasurements[DegreeIndex] = 1;
                         AnglesCoveredTotal++;
@@ -131,25 +132,68 @@ bool LIDARdecode(void){
     return false;
 }
 
+
+
 //Check whether the change in Distance between each degree is large -> indicates object or wall
-short objectDetection(unsigned short i, unsigned short *DistanceArr, unsigned short *DistanceDifferencesArr, unsigned short *DetectedObjects[360]) {
+unsigned short objectDetection(unsigned short i) {
 
-    short startOfDetectedObject = 0;
-    short endOfDetectedObject = 0;
-    short ObjectDetectionThreshold = 500;
-
+    const unsigned short ObjectDetectionThreshold = 500; //used to only only detect large objects
+    
+    unsigned short detectedObjectStart = 0;
+    unsigned short detectedObjectEnd = 0;
+    unsigned short detectedObjectSize = 0;
+    
+    
     if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
-        DistanceDifferencesArr[i] = abs((DistanceArr[360]-DistanceArr[0])); //use abs() function to get unsigned magnitude
+        DistanceDifferences[i] = abs((Distance[360]-Distance[0])); //use abs() function to get unsigned magnitude
         i = 0; //reset index to - degrees after 359 degrees
     } else{
-        DistanceDifferencesArr[i] = abs((DistanceArr[i]-DistanceArr[i+1]));
+        DistanceDifferences[i] = abs((Distance[i]-Distance[i-1]));
     }
-    if(startOfDetectedObject > 0) {
-        endOfDetectedObject = i; // found end of an object (object was detected)
-    }
-    if(DistanceDifferencesArr[i] > ObjectDetectionThreshold) // object protruded from surrounding measurements by 50cm (500mm)
-        startOfDetectedObject = i; // found start of an object (object's corner was detected)
 
+    if(DistanceDifferences[i] > ObjectDetectionThreshold) { // object protruded from surrounding measurements by 50cm (500mm)
+        if(detectedObjectStart == 0)
+            detectedObjectStart = i;
+
+        if(detectedObjectStart > 0) {
+            detectedObjectEnd = i; // found end of an object (object was detected)
+        }
+
+        if((detectedObjectStart > 0) && (detectedObjectEnd > 0)) { //if the start of the object was detected and the object ditance varied significantly
+            detectedObjectEnd = i;
+            detectedObjectSize = abs(Distance[i]-Distance[i-1]);
+            printf("DetObj: %d %d\r\n",detectedObjectSize, detectedObjectStart);
+        }
+
+
+    }
+
+
+
+    return detectedObjectSize;
+}
+
+
+
+unsigned short AllMeasurementsTaken(void) {
+    int j = 0;
+//    for(j=0;j<90;j++) {
+//        LIDARdecode(); //receive 90 packets of 4 distances from the lidar
+//    }
+
+    //Verify that all 360 degrees have a distance measurement
+    for(i=0;i<360;i++) {
+        AnglesCoveredTotal += SuccessfulMeasurements[i];
+    }
+
+    if(AnglesCoveredTotal >=359) {
+        return 1;
+    }else {
+        AnglesCoveredTotal = 0;
+        return 0;
+    }
+
+    return 0;
 }
 
 

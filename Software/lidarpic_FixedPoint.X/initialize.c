@@ -94,10 +94,11 @@ void DMA(void) {
         
     DCH1ECONbits.SIRQEN = 1; // enable cell transfer when IRQ triggered
     DCH1INT = 0; // clear all existing flags, disable all interrupts
+    //Use Block Transfer Operation:
     DCH1SSA = (unsigned int) &dma_one_array & 0x1FFFFFFF; // physical address conversion for transmit buffer
     DCH1DSA = (unsigned int) &U1TXREG & 0x1FFFFFFF; // physical address conversion for uart send buffer
-    DCH1DSIZ = 1;
-    DCH1CSIZ = 1;
+    DCH1DSIZ = 1; // source size is 1 byte
+    DCH1CSIZ = 1; // one byte per UART transfer request
 
     
     //DMA 1 settings

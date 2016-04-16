@@ -84,38 +84,19 @@ void delay(void){
 //}
 
 
-int AllMeasurementsTaken(void) {
-    int j = 0;
-    for(j=0;j<90;j++) {
-        LIDARdecode(); //receive 90 packets of 4 distances from the lidar
-    }
-
-    //Verify that all 360 degrees have a distance measurement
-    for(i=0;i<360;i++) {
-        AnglesCoveredTotal += SuccessfulMeasurements[i];
-    }
-    
-    if(AnglesCoveredTotal >=359) {
-        return 1;
-    }else {
-        AnglesCoveredTotal = 0;
-        return 0;
-    }
-    
-    return 0;
-}
-
-
 void main(void){
-    TRISEbits.TRISE4 = 0;
-    TRISEbits.TRISE3 = 0;
-    LATEbits.LATE3 = 1;
+//    TRISEbits.TRISE4 = 0;
+//    TRISEbits.TRISE3 = 0;
+//    LATEbits.LATE3 = 1;
+    TRISBbits.TRISB9 = TRISBbits.TRISB10 = TRISBbits.TRISB11 = TRISBbits.TRISB12 = TRISBbits.TRISB13 = 0; //Set Output debugging LEDs as Outputs
+    LATBbits.LATB9 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
+    LATBbits.LATB10 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
+    LATBbits.LATB11 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
+    LATBbits.LATB12 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
+    LATBbits.LATB13 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
+
     initialize();
     printf("PIC_RST\r\n");
-    
-    short DistanceDifferences[360];
-    short startOfDetectedObject = 0;
-    short endOfDetectedObject = 0;
 
     
     //Initialize all distances to '99' so I can see which ones are not getting written to
@@ -127,7 +108,7 @@ void main(void){
     while(1) {
         
 ////////        if (AllMeasurementsTaken() == 1) {
-        if(LIDARdecode()==1) {
+        if(LIDARdecode() == 1) {
             LATEbits.LATE4 ^= 0; //Toggle LED1 on,off,on,off
 
             if(AnglesCoveredTotal >= 180) {
@@ -136,31 +117,22 @@ void main(void){
 
                 if(operationMode==TESTMODE) {
                     U5STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
-                    U5MODEbits.ON = 0; // disable whole uart5 module
+                    U5MODEbits.ON = 0; // disable whole uart5 module (LIDAR receive)
                     printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen)
                     for(i=0;i<360;i++) {
-                        if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
-                            if ((i % 16) == 0) { //print 16 distances per line
-                                printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
+//                        if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
+                            if ((i % 10) == 0) { //print 16 distances per line (using modulus to check remainder after dividing by 16)
+//                                printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
+//                                printf("\r\n"); //print 16 distances per line '\r\n' causes prompt to carriage return
+                                printf("%d",10); //carriage return
                             }
                             printf("%4u ",Distance[i]); //Print out the data to 4, 16-bit unsigned integer digits
-                        } else {
-                            i--; //keep index at same value if the UART1 TX debug buffer is full
-                        }
+//                        }
+//                        else {
+//                            i--; //keep index at same value if the UART1 TX debug buffer is full
+//                        }
 //                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
 
-                        //Check whether the Distances between each degree are large -> indicates object or wall
-                        if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
-                            DistanceDifferences[i] = abs((Distance[360]-Distance[0])); //use abs() function to get unsigned magnitude
-                            i = 0; //reset index to - degrees after 359 degrees
-                        } else{
-                            DistanceDifferences[i] = abs((Distance[i]-Distance[i+1]));
-                        }
-                        if(startOfDetectedObject > 0) {
-                            endOfDetectedObject = i; // found end of an object (object was detected)
-                        }
-                        if(DistanceDifferences[i] > 500) // object protruded from surrounding measurements by 50cm (500mm)
-                            startOfDetectedObject = i; // found start of an object (object's corner was detected)
                     }
 
 ////////
@@ -179,8 +151,6 @@ void main(void){
 ////////                    }
 ////////                    printf("\r\n--------------------------------\r\n");
 
-
-                    
                     //kick the dma to UART 1 if the buffer exceeds the scond level count
                     _queue_send();
                     
