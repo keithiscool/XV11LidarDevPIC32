@@ -76,7 +76,9 @@ bool LIDARdecode(void){
 
             //Now check if the lidar data can pass the CRC error-checking
             if (received_CRC == calculated_CRC) { // Used to see if incoming data passed the CRC
-                LATEbits.LATE4 ^= 1; // Toggle LEDtest1 AFTER CHECKSUM IS PASSES
+//                LATEbits.LATE4 ^= 1; // Toggle LEDtest1 AFTER CHECKSUM IS PASSES
+                LATBbits.LATB10 ^= 0; // Toggle LEDtest2 AFTER CHECKSUM IS PASSES
+
                 //Packet Index
                 output_data[0] = (data_buffer[1] - 0xA0); //0xA0 is offset that lidar uses for index (not sure why...)
                 //Degree Index
@@ -97,22 +99,26 @@ bool LIDARdecode(void){
                 //Now pull the 4 distance measurements out of the current 22 byte packet
                 //Increments the Distance Index (Degree Index after it updates tje current distance value)
                 for (i = 0; i < 4; i++) {
-                    if (!InvalidFlag[i]) { // the data is valid within the present 22byte packet
+                    unsigned short degree = DegreeIndex+i;
+                    
+                    if (InvalidFlag[i] == 0) { // check if the data is valid within the present 22byte packet
+                        
                         //Pull 4 polar distances (in millimeters) from each 22 byte packet
-                        Distance[DegreeIndex+i] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
+                        Distance[degree] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
                         //Compute 4 Cartesian Coordinates for Output
-                        if((Distance[DegreeIndex+i] > 0) && (Distance[DegreeIndex+i] < 10000)) { // check if polar distance is useful data
-                            YCoordMeters[DegreeIndex+i] = ((short)(((int)Distance[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
-                            XCoordMeters[DegreeIndex+i] = ((short)(((int)Distance[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
-                            objectDetection();
+                        if((Distance[degree] > 0) && (Distance[degree] < 10000)) { // check if polar distance is useful data
+                            YCoordMeters[degree] = ((short)(((int)Distance[degree]*(int)GetMySinLookup16bit(degree))>>16)); //max 14 bit value for distance
+                            XCoordMeters[degree] = ((short)(((int)Distance[degree]*(int)GetMyCosLookup16bit(degree))>>16)); //max 14 bit value for distance
+                            
+                            objectDetection(degree);
                         }
-                        SuccessfulMeasurements[DegreeIndex] = 1;
+                        SuccessfulMeasurements[degree] = 1;
                         AnglesCoveredTotal++;
                     } else { //The data is not valid and has invalid flags within the present 22byte packet
-                        Distance[DegreeIndex+i] = 0;
-                        XCoordMeters[DegreeIndex+i] = 0;
-                        YCoordMeters[DegreeIndex+i] = 0;
-                        SuccessfulMeasurements[DegreeIndex+i] = 0;
+                        Distance[degree] = 0;
+                        XCoordMeters[degree] = 0;
+                        YCoordMeters[degree] = 0;
+                        SuccessfulMeasurements[degree] = 0;
                     }
                 }
                 transmission_in_progress = false;
@@ -139,9 +145,9 @@ unsigned short objectDetection(unsigned short i) {
 
     const unsigned short ObjectDetectionThreshold = 500; //used to only only detect large objects
     
-    unsigned short detectedObjectStart = 0;
-    unsigned short detectedObjectEnd = 0;
-    unsigned short detectedObjectSize = 0;
+    static unsigned short detectedObjectStart = 0;
+    static unsigned short detectedObjectEnd = 0;
+    static unsigned short detectedObjectSize = 0;
     
     
     if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
@@ -163,12 +169,12 @@ unsigned short objectDetection(unsigned short i) {
             detectedObjectEnd = i;
             detectedObjectSize = abs(Distance[i]-Distance[i-1]);
             printf("DetObj: %d %d\r\n",detectedObjectSize, detectedObjectStart);
+            
+            detectedObjectStart = 0, detectedObjectEnd = 0, detectedObjectSize = 0; //reset object location markers
+            
         }
 
-
     }
-
-
 
     return detectedObjectSize;
 }
@@ -176,7 +182,7 @@ unsigned short objectDetection(unsigned short i) {
 
 
 unsigned short AllMeasurementsTaken(void) {
-    int j = 0;
+    int i = 0;
 //    for(j=0;j<90;j++) {
 //        LIDARdecode(); //receive 90 packets of 4 distances from the lidar
 //    }
@@ -195,6 +201,8 @@ unsigned short AllMeasurementsTaken(void) {
 
     return 0;
 }
+
+
 
 
 unsigned short assemble(unsigned char lower, unsigned char upper) {

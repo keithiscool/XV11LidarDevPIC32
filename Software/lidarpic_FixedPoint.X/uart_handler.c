@@ -31,18 +31,19 @@ void _mon_putc(char c) {
 
 
 //RX lidar receive
-void __ISR(_UART_5_VECTOR, IPL1AUTO) Uart5Handler(void)
+void __ISR(_UART_4_VECTOR, IPL1AUTO) Uart4Handler(void)
 {
-   //while(U5STAbits.URXDA == 1)
+   //while(U4STAbits.URXDA == 1)
    // {
-        ring_buff_put(&buffer_five, U5RXREG);
+//        ring_buff_put(&buffer_five, U5RXREG);
+        ring_buff_put(&buffer_four, U4RXREG);
    // }
-    IFS2CLR = _IFS2_U5RXIF_MASK;
+    IFS2CLR = _IFS2_U4RXIF_MASK;
 
-    if(IFS2 & _IFS2_U5EIF_MASK)
+    if(IFS2 & _IFS2_U4EIF_MASK)
     {
-        U5STAbits.OERR = 0;
-        IFS2CLR = _IFS2_U5EIF_MASK;
+        U4STAbits.OERR = 0;
+        IFS2CLR = _IFS2_U4EIF_MASK;
     }
 }
 

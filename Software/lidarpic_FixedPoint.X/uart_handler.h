@@ -31,7 +31,7 @@ struct ringBuff {
     int count;
 };
 
-struct ringBuff buffer_five; //used for U5RX input UART (115200 baudrate from xv11 Lidar)
+struct ringBuff buffer_four; //used for U4RX input UART (230400 baudrate from xv11 Lidar)
 
 
 ////////struct ringBuff buffer_one; //used for U1TX output to PC for serial debugging (after pic32 parsed the Lidar data)

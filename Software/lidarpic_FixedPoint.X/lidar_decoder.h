@@ -45,13 +45,13 @@ unsigned short DegreeIndex;
 short AnglesCoveredTotal;
 
 
-struct detectedObject {
-    unsigned short Distance;
-    unsigned short Degree;
-    short xPos;
-    short yPos;
-    struct ObjectNode *next;
-};
+//struct detectedObject {
+//    unsigned short Distance;
+//    unsigned short Degree;
+//    short xPos;
+//    short yPos;
+//    struct ObjectNode *next;
+//};
 
 
 #endif	/* LIDAR_DECODER_H */

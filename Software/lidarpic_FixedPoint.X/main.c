@@ -29,7 +29,7 @@
 #pragma config FPLLODIV = DIV_1         // System PLL Output Clock Divider (PLL Divide by 1)
 
 // DEVCFG1
-#pragma config FNOSC = PRIPLL           // Oscillator Selection Bits (Primary Osc w/PLL (XT+,HS+,EC+PLL))
+#pragma config FNOSC = PRIPLL //FRC //PRIPLL           // Oscillator Selection Bits (Primary Osc w/PLL (XT+,HS+,EC+PLL))
 #pragma config FSOSCEN = OFF            // Secondary Oscillator Enable (Disabled)
 #pragma config IESO = OFF               // Internal/External Switch Over (Disabled)
 #pragma config POSCMOD = HS             // Primary Oscillator Configuration (HS osc mode)
@@ -85,16 +85,13 @@ void delay(void){
 
 
 void main(void){
-//    TRISEbits.TRISE4 = 0;
-//    TRISEbits.TRISE3 = 0;
-//    LATEbits.LATE3 = 1;
-    TRISBbits.TRISB9 = TRISBbits.TRISB10 = TRISBbits.TRISB11 = TRISBbits.TRISB12 = TRISBbits.TRISB13 = 0; //Set Output debugging LEDs as Outputs
-    LATBbits.LATB9 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
-    LATBbits.LATB10 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
-    LATBbits.LATB11 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
-    LATBbits.LATB12 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
-    LATBbits.LATB13 = 0; //Turn LED_B9 on by turning output to ground (Active Low LEDS)
+    TRISBbits.TRISB9 = 0;
+    TRISBbits.TRISB10 = 0;
+    TRISBbits.TRISB11 = 0;
+    TRISBbits.TRISB12 = 0;
+    TRISBbits.TRISB13 = 0;
 
+    
     initialize();
     printf("PIC_RST\r\n");
 
@@ -106,10 +103,36 @@ void main(void){
     
 
     while(1) {
-        
-////////        if (AllMeasurementsTaken() == 1) {
+
+        LATBbits.LATB9 ^= 1; //Toggle LED1 on,off,on,off
+        LATBbits.LATB10 ^= 1; //Toggle LED1 on,off,on,off
+        LATBbits.LATB11 ^= 1; //Toggle LED1 on,off,on,off
+        LATBbits.LATB12 ^= 1; //Toggle LED1 on,off,on,off
+        LATBbits.LATB13 ^= 1; //Toggle LED1 on,off,on,off
+
+
+//        ////Test Code for new board...
+//        TRISDbits.TRISD0 = 0;
+//        while (1) {
+//            LATBbits.LATB9 ^= 1; //Toggle LED1 on,off,on,off
+//            LATBbits.LATB10 ^= 1; //Toggle LED1 on,off,on,off
+//            LATBbits.LATB11 ^= 1; //Toggle LED1 on,off,on,off
+//            LATBbits.LATB12 ^= 1; //Toggle LED1 on,off,on,off
+//            LATBbits.LATB13 ^= 1; //Toggle LED1 on,off,on,off
+//
+//            LATDbits.LATD0 ^= 1; //Toggle LED1 on,off,on,off
+//            for(i = 0; i < 50000; i++);
+//            for(i = 0; i < 50000; i++);
+//            for(i = 0; i < 50000; i++);
+//            for(i = 0; i < 50000; i++);
+//            for(i = 0; i < 50000; i++);
+//            for(i = 0; i < 50000; i++);
+//        }
+
+
+        //parse the data coming in from the XV-11 Neato LIDAR
         if(LIDARdecode() == 1) {
-            LATEbits.LATE4 ^= 0; //Toggle LED1 on,off,on,off
+            LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
 
             if(AnglesCoveredTotal >= 180) {
                 //Show first index as zero
@@ -157,6 +180,7 @@ void main(void){
                 }
                 U5STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
                 U5MODEbits.ON = 1; // enable whole uart module
+                
             }
         }
     }

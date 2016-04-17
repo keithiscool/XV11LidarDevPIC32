@@ -16,7 +16,7 @@ void initialize(void){
      DMA();
      delay();
      INTEnableInterrupts(); // enable interrupts
-     beginLIDARdecoder(returned_data, &buffer_five);
+//     beginLIDARdecoder(returned_data, &buffer_five);
 }
 
 void timers(void){
@@ -40,48 +40,50 @@ void PWM(void){
     T2CONbits.TGATE = 0;
 //    PR2 = 4000;
     PR2 = 3800;
-    OC2CONbits.ON = 0;
-    OC2CONbits.OCM = 0b110;
-    OC2R = 2180; // near 200rpm
-    OC2RS = 2180; // near 200rpm
+    OC1CONbits.ON = 0;
+    OC1CONbits.OCM = 0b110; //fault pin disabled
+    OC1R = 2180; // near 200rpm
+    OC1RS = 2180; // near 200rpm
     T2CONbits.ON = 1;
-    OC2CONbits.ON = 1;
+    OC1CONbits.ON = 1;
 }
 
 void UART(void){
     // uart 5 receive lidar Data (only need RX wire)
     AD1PCFGbits.PCFG8 = 1; //disable analog on RX pin
     AD1PCFGbits.PCFG14 = 1; //disable analog on TX5 pin
-    U5MODEbits.BRGH = 0; // set to standard speed mode
-    U5BRG = 42; // 115200 baud  //85; // 57600 baud
-    U5MODEbits.PDSEL = 0b00; // 8-bit no parity
-    U5MODEbits.STSEL = 0; // 1 stop bit
-    IEC2bits.U5RXIE = 1; // enable uart recieve
-    IPC12bits.U5IP = 1; // priority 1
-    IPC12bits.U5IS = 2; // sub priority 2
-    U5STAbits.URXEN = 1; // enable uart recieve
-    U5STAbits.URXISEL = 0b00; // interrupt generated with every reception
-    U5STAbits.UTXEN = 1; // enable uart transmit
-    U5MODEbits.ON = 1; // enable whole uart module
+    U4MODEbits.BRGH = 0; // set to standard speed mode
+    U4BRG = 42; // 115200 baud  //85; // 57600 baud
+    U4MODEbits.PDSEL = 0b00; // 8-bit no parity
+    U4MODEbits.STSEL = 0; // 1 stop bit
+    IEC2bits.U4RXIE = 1; // enable uart recieve
+    IPC12bits.U4IP = 1; // priority 1
+    IPC12bits.U4IS = 2; // sub priority 2
+    U4STAbits.URXEN = 1; // enable uart recieve
+    U4STAbits.URXISEL = 0b00; // interrupt generated with every reception
+    U4STAbits.UTXEN = 1; // enable uart transmit
+    U4MODEbits.ON = 1; // enable whole uart module
     // uart 5 error
-    IEC2bits.U5EIE = 1; // error interrupt enabed
+    IEC2bits.U4EIE = 1; // error interrupt enabed
 
     // uart 1 debug TX to computer terminal window
-    U1MODEbits.BRGH = 0; // set to standard speed mode
-    U1BRG = 21; //21;230400 baud   //42;// 115200 baud  //85;// 57600 baud
-    U1MODEbits.PDSEL = 0b00; // 8-bit no parity
-    U1MODEbits.STSEL = 0; // 1 stop bit
-    IFS0bits.U1TXIF = 0;
-//    IEC0bits.U1TXIE = 1; // transmit interrupt enable
-    IPC6bits.U1IP = 1; // priority 1
-    IPC6bits.U1IS = 1; // sub priority 1
-//    U1STAbits.UTXISEL = 0b01; // interrupt when transmit complete
-//    U1STAbits.URXISEL = 0; // interrupt generated with every reception
-    U1STAbits.URXEN = 1; // enable uart recieve
-    U1STAbits.UTXEN = 1; // enable uart transmit
-    U1MODEbits.ON = 1; // enable whole uart module
+    U6MODEbits.BRGH = 0; // set to standard speed mode
+    U6BRG = 21; //21;230400 baud   //42;// 115200 baud  //85;// 57600 baud
+    U6MODEbits.PDSEL = 0b00; // 8-bit no parity
+    U6MODEbits.STSEL = 0; // 1 stop bit
+    IFS2bits.U6TXIF = 0;
+//    IEC0bits.U6TXIE = 1; // transmit interrupt enable
+    //IPC6bits.U6IP = 1; // priority 1
+    //IPC6bits.U6IS = 1; // sub priority 1
+    IPC12bits.U6IP = 1; // priority 1
+    IPC12bits.U6IS = 1; // sub priority 1
+//    U6STAbits.UTXISEL = 0b01; // interrupt when transmit complete
+//    U6STAbits.URXISEL = 0; // interrupt generated with every reception
+    U6STAbits.URXEN = 1; // enable uart recieve
+    U6STAbits.UTXEN = 1; // enable uart transmit
+    U6MODEbits.ON = 1; // enable whole uart module
     // uart 1 error
-//    IEC0bits.U1EIE = 1; // error interrupt enabed
+//    IEC2bits.U6EIE = 1; // error interrupt enabed
 }
 
 void DMA(void) {
