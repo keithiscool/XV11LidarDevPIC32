@@ -33,10 +33,9 @@ void _mon_putc(char c) {
 //RX lidar receive
 void __ISR(_UART_4_VECTOR, IPL1AUTO) Uart4Handler(void)
 {
-   //while(U4STAbits.URXDA == 1)
+   //while(U5STAbits.URXDA == 1)
    // {
-//        ring_buff_put(&buffer_five, U5RXREG);
-        ring_buff_put(&buffer_four, U4RXREG);
+        ring_buff_put(&buffer_five, U4RXREG);
    // }
     IFS2CLR = _IFS2_U4RXIF_MASK;
 

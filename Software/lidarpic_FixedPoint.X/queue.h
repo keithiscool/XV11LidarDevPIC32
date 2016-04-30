@@ -11,7 +11,8 @@
 #include <stdbool.h>
 
 
-struct dmaSettings {
+struct dmaSettings
+{
     unsigned char *dma_array;
     volatile unsigned int *dmacon;
     unsigned int con_busy_mask;
@@ -24,11 +25,11 @@ struct dmaSettings {
 
 
 #define TOP_LEVEL_QUEUE_DEPTH 5
-#define SECOND_LEVEL_QUEUE_DEPTH 193
-//#define SECOND_LEVEL_QUEUE_DEPTH 3000
+//#define SECOND_LEVEL_QUEUE_DEPTH 193
+#define SECOND_LEVEL_QUEUE_DEPTH 360
 
-#define SIZE_OF_DMA_ARRAY 1600
-//#define SIZE_OF_DMA_ARRAY 1800
+#define SIZE_OF_DMA_ARRAY 200
+
 
 
 
@@ -46,9 +47,9 @@ struct Queue_handler {
         int head;
         int tail;
         int count;
-    };
+    }send_queue;
 
-    struct Queue_top send_queue;
+//    struct Queue_top send_queue;
     unsigned int queueFullErrorCounter;
     unsigned char *dma_array;
     volatile unsigned int *dmacon;

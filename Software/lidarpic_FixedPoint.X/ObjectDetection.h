@@ -11,15 +11,13 @@
 #include <stdlib.h>     /* realloc, free, exit, NULL */
 
 
-
-//struct ObjectNode {
-//    unsigned short Distance;
-//    unsigned short Degree;
-//    short xPos;
-//    short yPos;
-//    struct ObjectNode *next;
-//};
-
+struct ObjectNode {
+    unsigned short Distance;
+    unsigned short Degree;
+    short xPos;
+    short yPos;
+    struct ObjectNode *next;
+};
 
 
 ////Object Detection "Objects" using C programming (cannot use classes in C)

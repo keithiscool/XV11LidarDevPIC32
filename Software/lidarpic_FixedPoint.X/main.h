@@ -12,6 +12,9 @@
 #define TESTMODE false
 bool operationMode = TESTMODE;
 
+#define LCD_SCALING 4 // scale lcd x,y distances by 16
+//#define LCD_SCALING 5 // scale lcd x,y distances by 32
+
 
 extern void initialize(void);
 extern bool timeFlag;

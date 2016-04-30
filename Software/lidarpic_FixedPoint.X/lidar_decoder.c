@@ -76,8 +76,6 @@ bool LIDARdecode(void){
 
             //Now check if the lidar data can pass the CRC error-checking
             if (received_CRC == calculated_CRC) { // Used to see if incoming data passed the CRC
-//                LATEbits.LATE4 ^= 1; // Toggle LEDtest1 AFTER CHECKSUM IS PASSES
-                LATBbits.LATB10 ^= 0; // Toggle LEDtest2 AFTER CHECKSUM IS PASSES
 
                 //Packet Index
                 output_data[0] = (data_buffer[1] - 0xA0); //0xA0 is offset that lidar uses for index (not sure why...)
@@ -99,26 +97,21 @@ bool LIDARdecode(void){
                 //Now pull the 4 distance measurements out of the current 22 byte packet
                 //Increments the Distance Index (Degree Index after it updates tje current distance value)
                 for (i = 0; i < 4; i++) {
-                    unsigned short degree = DegreeIndex+i;
-                    
-                    if (InvalidFlag[i] == 0) { // check if the data is valid within the present 22byte packet
-                        
+                    if (!InvalidFlag[i]) { // the data is valid within the present 22byte packet
                         //Pull 4 polar distances (in millimeters) from each 22 byte packet
-                        Distance[degree] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
+                        Distance[DegreeIndex+i] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
                         //Compute 4 Cartesian Coordinates for Output
-                        if((Distance[degree] > 0) && (Distance[degree] < 10000)) { // check if polar distance is useful data
-                            YCoordMeters[degree] = ((short)(((int)Distance[degree]*(int)GetMySinLookup16bit(degree))>>16)); //max 14 bit value for distance
-                            XCoordMeters[degree] = ((short)(((int)Distance[degree]*(int)GetMyCosLookup16bit(degree))>>16)); //max 14 bit value for distance
-                            
-                            objectDetection(degree);
+                        if((Distance[DegreeIndex+i] > 0) && (Distance[DegreeIndex+i] < 10000)) { // check if polar distance is useful data
+                            YCoordMeters[DegreeIndex+i] = ((short)(((int)Distance[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
+                            XCoordMeters[DegreeIndex+i] = ((short)(((int)Distance[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
                         }
-                        SuccessfulMeasurements[degree] = 1;
+                        SuccessfulMeasurements[DegreeIndex] = 1;
                         AnglesCoveredTotal++;
                     } else { //The data is not valid and has invalid flags within the present 22byte packet
-                        Distance[degree] = 0;
-                        XCoordMeters[degree] = 0;
-                        YCoordMeters[degree] = 0;
-                        SuccessfulMeasurements[degree] = 0;
+                        Distance[DegreeIndex+i] = 0;
+                        XCoordMeters[DegreeIndex+i] = 0;
+                        YCoordMeters[DegreeIndex+i] = 0;
+                        SuccessfulMeasurements[DegreeIndex+i] = 0;
                     }
                 }
                 transmission_in_progress = false;
@@ -138,71 +131,26 @@ bool LIDARdecode(void){
     return false;
 }
 
-
-
 //Check whether the change in Distance between each degree is large -> indicates object or wall
-unsigned short objectDetection(unsigned short i) {
+short objectDetection(unsigned short i, unsigned short *DistanceArr, unsigned short *DistanceDifferencesArr, unsigned short *DetectedObjects[360]) {
 
-    const unsigned short ObjectDetectionThreshold = 500; //used to only only detect large objects
-    
-    static unsigned short detectedObjectStart = 0;
-    static unsigned short detectedObjectEnd = 0;
-    static unsigned short detectedObjectSize = 0;
-    
-    
+    short startOfDetectedObject = 0;
+    short endOfDetectedObject = 0;
+    short ObjectDetectionThreshold = 500;
+
     if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
-        DistanceDifferences[i] = abs((Distance[360]-Distance[0])); //use abs() function to get unsigned magnitude
+        DistanceDifferencesArr[i] = abs((DistanceArr[360]-DistanceArr[0])); //use abs() function to get unsigned magnitude
         i = 0; //reset index to - degrees after 359 degrees
     } else{
-        DistanceDifferences[i] = abs((Distance[i]-Distance[i-1]));
+        DistanceDifferencesArr[i] = abs((DistanceArr[i]-DistanceArr[i+1]));
     }
-
-    if(DistanceDifferences[i] > ObjectDetectionThreshold) { // object protruded from surrounding measurements by 50cm (500mm)
-        if(detectedObjectStart == 0)
-            detectedObjectStart = i;
-
-        if(detectedObjectStart > 0) {
-            detectedObjectEnd = i; // found end of an object (object was detected)
-        }
-
-        if((detectedObjectStart > 0) && (detectedObjectEnd > 0)) { //if the start of the object was detected and the object ditance varied significantly
-            detectedObjectEnd = i;
-            detectedObjectSize = abs(Distance[i]-Distance[i-1]);
-            printf("DetObj: %d %d\r\n",detectedObjectSize, detectedObjectStart);
-            
-            detectedObjectStart = 0, detectedObjectEnd = 0, detectedObjectSize = 0; //reset object location markers
-            
-        }
-
+    if(startOfDetectedObject > 0) {
+        endOfDetectedObject = i; // found end of an object (object was detected)
     }
+    if(DistanceDifferencesArr[i] > ObjectDetectionThreshold) // object protruded from surrounding measurements by 50cm (500mm)
+        startOfDetectedObject = i; // found start of an object (object's corner was detected)
 
-    return detectedObjectSize;
 }
-
-
-
-unsigned short AllMeasurementsTaken(void) {
-    int i = 0;
-//    for(j=0;j<90;j++) {
-//        LIDARdecode(); //receive 90 packets of 4 distances from the lidar
-//    }
-
-    //Verify that all 360 degrees have a distance measurement
-    for(i=0;i<360;i++) {
-        AnglesCoveredTotal += SuccessfulMeasurements[i];
-    }
-
-    if(AnglesCoveredTotal >=359) {
-        return 1;
-    }else {
-        AnglesCoveredTotal = 0;
-        return 0;
-    }
-
-    return 0;
-}
-
-
 
 
 unsigned short assemble(unsigned char lower, unsigned char upper) {

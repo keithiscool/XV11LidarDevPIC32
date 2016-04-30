@@ -8,34 +8,23 @@
 
 
 #define RING_BUF_SIZE 500
-
-//1440 = 360 distance measurements * (4 bytes per 32-bit integer measurement)
-//36 carriage returns
-//17 chars to display "DisplayPolarData"
-//SUM = 1493
-//increase DMA_ARR size  to give some "cushion room"
-//////////#define SIZE_OF_DMA_ARRAY 1600
-#define SIZE_OF_DMA_ARRAY 1800
-
-
 //#define SIZE_OF_DMA_ARRAY 360
 //#define SIZE_OF_DMA_ARRAY 450
+#define SIZE_OF_DMA_ARRAY 3000
 //#define SIZE_OF_DMA_ARRAY 128 //4*16 characters in 16 bytes of data
 //#define SIZE_OF_DMA_ARRAY 32 //16*2 characters in 16 bytes of data
 
 
-struct ringBuff {
+struct ringBuff
+{
     unsigned char buf[RING_BUF_SIZE];
     int head;
     int tail;
     int count;
 };
 
-struct ringBuff buffer_four; //used for U4RX input UART (230400 baudrate from xv11 Lidar)
-
-
-////////struct ringBuff buffer_one; //used for U1TX output to PC for serial debugging (after pic32 parsed the Lidar data)
-
+struct ringBuff buffer_five; //used for U5RX input UART (115200 baudrate from xv11 Lidar)
+struct ringBuff buffer_one; //used for U1TX output to PC for serial debugging (after pic32 parsed the Lidar data)
 
 bool stalled = true; 
 
