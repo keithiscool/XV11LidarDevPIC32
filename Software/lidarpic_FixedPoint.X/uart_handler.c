@@ -21,7 +21,7 @@ void _mon_putc(char c) {
 
     if(DMA_Counter > SIZE_OF_DMA_ARRAY) {
         DMA_Counter = 0;
-        _queue_put(dmaOutputArr, sizeof(dmaOutputArr));
+        queue_put(dmaOutputArr, sizeof(dmaOutputArr));
     }
 
     dmaOutputArr[DMA_Counter] = c; //copy the new char into the DMA temporary array

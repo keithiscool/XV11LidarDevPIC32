@@ -6,11 +6,7 @@
 #ifndef INITIALIZE_H
 #define	INITIALIZE_H
 
-
-#include "queue.h"
-
-
-#define RING_BUF_SIZE 200
+#include "defs.h"
 
 
 // prototype for input ring buffer
@@ -32,41 +28,34 @@ void UART(void);
 void DMA(void);
 
 extern void beginLIDARdecoder(unsigned int * _output_data, struct ringBuff* _input_data);
-
 extern void delay(void);
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //DMA Variables and Definitions Below:
 
-//////// prototype for setting to pass to dma class
-//////struct dmaSettings
-//////{
-//////    unsigned char *dma_array;
-//////    volatile unsigned int *dmacon;
-//////    unsigned int con_busy_mask;
-//////    unsigned int con_en_mask;
-//////    volatile unsigned int *dmasize;
-//////    volatile unsigned int *dmaecon;
-//////    unsigned int econ_force_mask;
-//////};
 
+////dma arrays for transmit (make a separate array for each DMA channel)
+//extern unsigned char dma_one_array[SIZE_OF_DMA_ARRAY];
 
-//dma arrays for transmit (make a separate array for each DMA channel)
+//// filled with class pointers to the send class
+//extern struct *queue_One_Pointer; // use only 1 DMA channel (increase array size to use more DMA channels)
+
+//// object declaration for send struct
+//extern struct DMA_Buffer_One;
+
+//dma settings struct
+extern struct dmaSettings arrayOFdmaSetting[1];
+
+// declarations for dma arrays for transmit
 extern unsigned char dma_one_array[SIZE_OF_DMA_ARRAY];
 
-// filled with class pointers to the send class
-extern struct Queue_handler *queue_One_Pointer; // use only 1 DMA channel (increase array size to use more DMA channels)
-
-// object declaration for send struct
-extern struct Queue_handler DMA_Buffer_One;
-
-// declaration for dma settings
-extern struct dmaSettings dmaOneSettings; // use only 1 DMA channel (increase array size to use more DMA channels)
+//// declaration for dma settings
+//extern struct dmaSettings dmaOneSettings; // use only 1 DMA channel (increase array size to use more DMA channels)
 
 //Use the ring buffer for outputting to the DMA (DMA channel 1)
 extern struct ringBuff buffer_one;
 
+extern void queue_begin(struct dmaSettings *_settings, int module_number);
 
 #endif	/* INITIALIZE_H */
 

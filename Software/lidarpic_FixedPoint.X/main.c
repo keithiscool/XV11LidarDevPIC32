@@ -229,7 +229,7 @@ void main(void){
 
                     
                     //kick the dma to UART 1 if the buffer exceeds the scond level count
-                    _queue_send();
+                    queue_send();
                     
                 }
                 U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)

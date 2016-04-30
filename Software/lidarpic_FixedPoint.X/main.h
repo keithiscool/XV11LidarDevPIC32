@@ -6,14 +6,11 @@
 #ifndef MAIN_H
 #define	MAIN_H
 
-//#define PI 3.14159265358
+
 
 #define RUNMODE true
 #define TESTMODE false
 bool operationMode = TESTMODE;
-
-#define LCD_SCALING 4 // scale lcd x,y distances by 16
-//#define LCD_SCALING 5 // scale lcd x,y distances by 32
 
 
 extern void initialize(void);

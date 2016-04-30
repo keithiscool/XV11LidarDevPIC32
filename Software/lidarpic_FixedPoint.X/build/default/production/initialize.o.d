@@ -1,4 +1,5 @@
 build/default/production/initialize.o:  \
 initialize.c  \
-initialize.h  \
-queue.h 
+queue.h  \
+defs.h  \
+ initialize.h 

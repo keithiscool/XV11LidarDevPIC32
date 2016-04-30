@@ -1,7 +1,23 @@
 #include <xc.h>
 #define _SUPPRESS_PLIB_WARNING
 #include <plib.h>
+#include "queue.h"
 #include "initialize.h"
+
+
+
+//// prototype for setting to pass to dma class
+//struct dmaSettings
+//{
+//    unsigned char *dma_array;
+//    volatile unsigned int *dmacon;
+//    unsigned int con_busy_mask;
+//    unsigned int con_en_mask;
+//    volatile unsigned int *dmasize;
+//    volatile unsigned int *dmaecon;
+//    unsigned int econ_force_mask;
+//};
+
 
 void initialize(void){
      SYSTEMConfig(80000000, SYS_CFG_ALL); // sets up periferal and clock configuration
@@ -19,6 +35,7 @@ void initialize(void){
      beginLIDARdecoder(returned_data, &buffer_five);
 }
 
+
 void timers(void){
     T1CONbits.ON = 0;
     T1CONbits.TCS = 0; // perifial clock as source
@@ -30,23 +47,6 @@ void timers(void){
     IPC1SET = ((0x1 << _IPC1_T1IP_POSITION) | (0x1 << _IPC1_T1IS_POSITION));
     T1CONbits.ON = 1;
 }
-
-////Control the speed the lidar rotates (alter speed to achieve around 200rpm)
-////Fosc==80MHz
-//void PWM(void){
-//    T2CONbits.ON = 0;
-//    T2CONbits.T32 = 0; //16 bit mode
-//    T2CONbits.TCKPS = 0b001; //prescalar of 2
-//    T2CONbits.TGATE = 0;
-////    PR2 = 4000;
-//    PR2 = 3800;
-//    OC2CONbits.ON = 0;
-//    OC2CONbits.OCM = 0b110;
-//    OC2R = 2180; // near 200rpm
-//    OC2RS = 2180; // near 200rpm
-//    T2CONbits.ON = 1;
-//    OC2CONbits.ON = 1;
-//}
 
 
 //Control the speed the lidar rotates (alter speed to achieve around 200rpm)
@@ -104,6 +104,7 @@ void UART(void){
 //    IEC0bits.U1EIE = 1; // error interrupt enabed
 }
 
+
 void DMA(void) {
     DMACONbits.ON = 1; // dma module enabled
     DCRCCON = 0; // crc module disabled
@@ -120,16 +121,18 @@ void DMA(void) {
 
     
     //DMA 1 settings
-    dmaOneSettings.dma_array = (unsigned char*) &dma_one_array;
-    dmaOneSettings.dmacon = &DCH1CON;
-    dmaOneSettings.con_busy_mask = _DCH1CON_CHBUSY_MASK;
-    dmaOneSettings.con_en_mask = _DCH1CON_CHEN_MASK;
-    dmaOneSettings.dmasize = &DCH1SSIZ;
-    dmaOneSettings.dmaecon = &DCH1ECON;
-    dmaOneSettings.econ_force_mask = _DCH1ECON_CFORCE_MASK;
+    arrayOFdmaSetting[1].dma_array = (unsigned char*) &dma_one_array;
+    arrayOFdmaSetting[1].dmacon = &DCH1CON;
+    arrayOFdmaSetting[1].con_busy_mask = _DCH1CON_CHBUSY_MASK;
+    arrayOFdmaSetting[1].con_en_mask = _DCH1CON_CHEN_MASK;
+    arrayOFdmaSetting[1].dmasize = &DCH1SSIZ;
+    arrayOFdmaSetting[1].dmaecon = &DCH1ECON;
+    arrayOFdmaSetting[1].econ_force_mask = _DCH1ECON_CFORCE_MASK;
 
     
     //After loading the DMA settings, start using the DMA
-    _queue_begin(&dmaOneSettings, 1);
-    queue_One_Pointer = &DMA_Buffer_One;
+//    queue_pointer[1] = &DMA_one;
+    queue_begin(arrayOFdmaSetting, 1);
+//    queue_begin(arrayOFdmaSetting, 1);
+
 }
