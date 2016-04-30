@@ -11,9 +11,6 @@
 #include <stdbool.h>
 #include "defs.h"
 
-//#define TOP_LEVEL_QUEUE_DEPTH 5
-//#define SECOND_LEVEL_QUEUE_DEPTH 193
-//#define SIZE_OF_DMA_ARRAY 200
 
 
 // prototype for setting to pass to dma class

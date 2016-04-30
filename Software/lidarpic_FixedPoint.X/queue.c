@@ -1,13 +1,37 @@
 #include <xc.h>
 #include <string.h>
 #include "queue.h"
+#include <sys/attribs.h>
 
 
 // declaration for dma settings containing settings for all dmas
 struct dmaSettings arrayOFdmaSetting[1];
 
+
 // declarations for dma arrays for transmit
 unsigned char dma_one_array[SIZE_OF_DMA_ARRAY];
+
+
+
+//////////////void __ISR(_UART_4_VECTOR, IPL1AUTO) Uart4Handler(void)
+////////////void __ISR(_DMA_1_VECTOR, IPL2AUTO) __DMA1Interrupt(void)
+////////////{
+//////////////    int dmaFlags=DCH1INT&0xff; // read the interrupt flags
+////////////    /*
+////////////    perform application specific operations in response to any interrupt flag set
+////////////    */
+////////////
+////////////    LATBbits.LATB9 = 1; //off LED
+////////////    LATBbits.LATB10 = 1; //off LED
+////////////    LATBbits.LATB11 = 0; //on LED
+////////////    while(1);
+////////////
+//////////////    DCH1INTCLR=0x000000ff; // clear the DMA channel interrupt flags
+////////////    IFS1bits.DMA1IF = 0;
+////////////    IFS1CLR = _IFS1_DMA1IF_MASK; // Be sure to clear the DMA0 interrupt flags
+////////////    // before exiting the service routine.
+////////////}
+
 
 
 // function runs to iniciate the queue system
@@ -56,6 +80,7 @@ void queue_put(unsigned char * what, unsigned char how_many, unsigned char where
 //////////        queue_data_put(from_where);
 //////////        queue_data_put(how_many);
         int i;
+        //for (i = 0; i < (how_many + 1); i++)
         for (i = 0; i < (how_many + 1); i++)
         {
             queue_data_put(what[i]);
@@ -143,18 +168,19 @@ bool queue_send(void)
             {
                 dma_array[g] = send_queue.queue[send_queue.tail].buf[g];
             }
-                *dmasize = h;
-                *dmacon |= con_en_mask;
-                *dmaecon |= econ_force_mask;
-                // flush send queue
-                send_queue.queue[send_queue.tail].count = 0;
-                send_queue.queue[send_queue.tail].head = 0;
-                send_queue.queue[send_queue.tail].tail = 0;
-                memset(send_queue.queue[send_queue.tail].buf, 0, SECOND_LEVEL_QUEUE_DEPTH);
-                //tidy up tail and counter
-                send_queue.count--;
-                send_queue.tail = modulo_inc_dma(send_queue.tail, TOP_LEVEL_QUEUE_DEPTH);
-                return true;
+
+            *dmasize = h;
+            *dmacon |= con_en_mask;
+            *dmaecon |= econ_force_mask;
+            // flush send queue
+            send_queue.queue[send_queue.tail].count = 0;
+            send_queue.queue[send_queue.tail].head = 0;
+            send_queue.queue[send_queue.tail].tail = 0;
+            memset(send_queue.queue[send_queue.tail].buf, 0, SECOND_LEVEL_QUEUE_DEPTH);
+            //tidy up tail and counter
+            send_queue.count--;
+            send_queue.tail = modulo_inc_dma(send_queue.tail, TOP_LEVEL_QUEUE_DEPTH);
+            return true;
         } else
         {
             return false;

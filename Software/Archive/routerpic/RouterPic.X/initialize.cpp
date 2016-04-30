@@ -226,9 +226,6 @@ void Buffers(void)
 
 void Settings(void)
 {
-
-
-
     //DMA 1 settings
     arrayOFdmaSetting[1].dma_array = (unsigned char*) &dma_one_array;
     arrayOFdmaSetting[1].dmacon = &DCH1CON;

@@ -107,54 +107,6 @@ int AllMeasurementsTaken(void) {
 
 
 void main(void){
-    DDPCONbits.JTAGEN = 0; // This turns off the JTAG and allows PORTA pins to be used
-
-    TRISEbits.TRISE4 = 0; // set output debugging LEDs for PIC32 Dev Board
-    TRISEbits.TRISE3 = 0; // set output debugging LEDs for PIC32 Dev Board
-
-    TRISBbits.TRISB8 = 1; // U5RX TO LANTRONIX
-    TRISBbits.TRISB9 = 0; // set output debugging LEDs
-    TRISBbits.TRISB10 = 0; // set output debugging LEDs
-    TRISBbits.TRISB11 = 1; // set output debugging LEDs
-    TRISBbits.TRISB14 = 1; // U5TX TO LANTRONIX
-
-    TRISBbits.TRISB12 = 1; // SERVO 1 CONTROL PWM
-    TRISBbits.TRISB13 = 1; // SERVO 2 CONTROL PWM
-
-    TRISBbits.TRISB2 = 1; //ANALOG PINS
-    TRISBbits.TRISB3 = 1;
-    TRISBbits.TRISB4 = 1;
-    TRISBbits.TRISB5 = 1;
-    TRISBbits.TRISB6 = 1;
-    TRISBbits.TRISB7 = 1;
-
-    TRISE = 0xFFFFFF;
-    
-    TRISDbits.TRISD2 = 1; //I2C 2 Header (I2C SDA3)
-    TRISDbits.TRISD3 = 1; //I2C 2 Header (I2C SCL3)
-    TRISDbits.TRISD4 = 1; //Servo A
-    TRISDbits.TRISD5 = 1; //Servo B
-    TRISDbits.TRISD6 = 1; //Servo C
-    TRISDbits.TRISD7 = 1; //Servo D
-    TRISDbits.TRISD8 = 1;
-    TRISDbits.TRISD10 = 1;
-    TRISDbits.TRISD11 = 1;
-    TRISFbits.TRISF0 = 1;
-    TRISFbits.TRISF1 = 1;
-    TRISFbits.TRISF2 = 1;
-    TRISFbits.TRISF3 = 1;
-    TRISFbits.TRISF4 = 1; //I2C 1 Header (I2C SDA5)
-    TRISFbits.TRISF5 = 1; //I2C 1 Header (I2C SCL5)
-    
-    TRISG = 0xFFFFFF;  //LANTRONIX PINS (2 SETS OF UART - ONE FOR LANTRONIX AND 1 FOR DEBUG)
-    
-    LATEbits.LATE3 = 1; //off LED
-    LATEbits.LATE4 = 1; //off LED
-    LATBbits.LATB9 = 0; //on LED
-    LATBbits.LATB10 = 0; //on LED
-    LATBbits.LATB11 = 0; //on LED
-    LATBbits.LATB12 = 1; //SERVO 1 CONTROL PWM
-    LATBbits.LATB13 = 1; //SERVO 2 CONTROL PWM
 
     initialize();
     printf("PIC_RST\r\n");
@@ -173,6 +125,26 @@ void main(void){
     while(1) {
         
 ////////        if (AllMeasurementsTaken() == 1) {
+
+//        //Testing durability of DMA
+//        for(i=1;i<100000;i++) {
+//            if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+//                printf("%d",i);
+//            }else {
+//                i--;
+//            }
+//        }
+
+
+
+
+
+        
+
+
+
+
+        
         if(LIDARdecode()==1) {
             LATEbits.LATE4 ^= 0; //Toggle LED1 on,off,on,off
             LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
@@ -182,11 +154,11 @@ void main(void){
                 //printf("Degree:\r\n%4d: ",0);
 
                 if(operationMode==TESTMODE) {
-                    U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
-                    U4MODEbits.ON = 0; // disable whole uart5 module
+//                    U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
+//                    U4MODEbits.ON = 0; // disable whole uart5 module
                     printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen)
                     for(i=0;i<360;i++) {
-                        if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
+                        if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
                             if ((i % 16) == 0) { //print 16 distances per line
                                 printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
                             }
@@ -227,15 +199,18 @@ void main(void){
 ////////                    printf("\r\n--------------------------------\r\n");
 
 
-                    
+
                     //kick the dma to UART 1 if the buffer exceeds the scond level count
                     queue_send();
-                    
+
                 }
-                U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
-                U4MODEbits.ON = 1; // enable whole uart module
+//                U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
+//                U4MODEbits.ON = 1; // enable whole uart module
             }
         }
+
+
+
     }
 }
 

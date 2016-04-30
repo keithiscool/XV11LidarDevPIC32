@@ -22,7 +22,7 @@ unsigned short returned_data[10];
 extern bool Done_Printing_Debug(void);
 bool FirstTimePrinting = true;
 unsigned int DATA[4];
-int i = 0;
+unsigned int i = 0;
 
 void delay(void);
 unsigned int v = 0;

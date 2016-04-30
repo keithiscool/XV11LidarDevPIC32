@@ -22,6 +22,7 @@ extern struct ringBuff buffer_five;
 extern int returned_data[10];
 
 void initialize(void);
+void IOpins(void);
 void timers(void);
 void PWM(void);
 void UART(void);

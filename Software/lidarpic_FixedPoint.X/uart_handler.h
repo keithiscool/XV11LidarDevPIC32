@@ -42,9 +42,8 @@ unsigned int modulo_inc(const unsigned int value, const unsigned int modulus);
 extern unsigned char dma_one_array[SIZE_OF_DMA_ARRAY];
 extern void _queue_put(unsigned char *what, unsigned char how_many);
 
-//
+
 short DMA_Counter = 0;
 
 
 #endif	/* UART_HANDLER_H */
-

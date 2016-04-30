@@ -6,22 +6,11 @@
 
 
 
-//// prototype for setting to pass to dma class
-//struct dmaSettings
-//{
-//    unsigned char *dma_array;
-//    volatile unsigned int *dmacon;
-//    unsigned int con_busy_mask;
-//    unsigned int con_en_mask;
-//    volatile unsigned int *dmasize;
-//    volatile unsigned int *dmaecon;
-//    unsigned int econ_force_mask;
-//};
-
-
 void initialize(void){
      SYSTEMConfig(80000000, SYS_CFG_ALL); // sets up periferal and clock configuration
      INTEnableSystemMultiVectoredInt();
+     IOpins();
+     delay();
      delay();
      timers();
      delay();
@@ -33,6 +22,59 @@ void initialize(void){
      delay();
      INTEnableInterrupts(); // enable interrupts
      beginLIDARdecoder(returned_data, &buffer_five);
+}
+
+
+void IOpins(void) {
+    DDPCONbits.JTAGEN = 0; // This turns off the JTAG and allows PORTA pins to be used
+
+    TRISEbits.TRISE4 = 1; // set output debugging LEDs for PIC32 Dev Board
+    TRISEbits.TRISE3 = 1; // set output debugging LEDs for PIC32 Dev Board
+
+    TRISBbits.TRISB8 = 1; // U5RX TO LANTRONIX
+    TRISBbits.TRISB9 = 0; // set output debugging LEDs
+    TRISBbits.TRISB10 = 0; // set output debugging LEDs
+    TRISBbits.TRISB11 = 0; // set output debugging LEDs
+
+    TRISBbits.TRISB12 = 1; // SERVO 1 CONTROL PWM
+    TRISBbits.TRISB13 = 1; // SERVO 2 CONTROL PWM
+
+    TRISBbits.TRISB14 = 1; // U5TX TO LANTRONIX
+
+    TRISBbits.TRISB2 = 1; //ANALOG PINS
+    TRISBbits.TRISB3 = 1;
+    TRISBbits.TRISB4 = 1;
+    TRISBbits.TRISB5 = 1;
+    TRISBbits.TRISB6 = 1;
+    TRISBbits.TRISB7 = 1;
+
+    TRISE = 0xFFFFFF;
+
+    TRISDbits.TRISD2 = 1; //I2C 2 Header (I2C SDA3)
+    TRISDbits.TRISD3 = 1; //I2C 2 Header (I2C SCL3)
+    TRISDbits.TRISD4 = 1; //Servo A
+    TRISDbits.TRISD5 = 1; //Servo B
+    TRISDbits.TRISD6 = 1; //Servo C
+    TRISDbits.TRISD7 = 1; //Servo D
+    TRISDbits.TRISD8 = 1;
+    TRISDbits.TRISD10 = 1;
+    TRISDbits.TRISD11 = 1;
+    TRISFbits.TRISF0 = 1;
+    TRISFbits.TRISF1 = 1;
+    TRISFbits.TRISF2 = 1;
+    TRISFbits.TRISF3 = 1;
+    TRISFbits.TRISF4 = 1; //I2C 1 Header (I2C SDA5)
+    TRISFbits.TRISF5 = 1; //I2C 1 Header (I2C SCL5)
+
+    TRISG = 0xFFFFFF;  //LANTRONIX PINS (2 SETS OF UART - ONE FOR LANTRONIX AND 1 FOR DEBUG)
+
+    LATEbits.LATE3 = 1; //off LED
+    LATEbits.LATE4 = 1; //off LED
+    LATBbits.LATB9 = 0; //on LED
+    LATBbits.LATB10 = 0; //on LED
+    LATBbits.LATB11 = 0; //on LED
+    LATBbits.LATB12 = 1; //SERVO 1 CONTROL PWM
+    LATBbits.LATB13 = 1; //SERVO 2 CONTROL PWM
 }
 
 
@@ -116,9 +158,9 @@ void DMA(void) {
     DCH1INT = 0; // clear all existing flags, disable all interrupts
     DCH1SSA = (unsigned int) &dma_one_array & 0x1FFFFFFF; // physical address conversion for transmit buffer
     DCH1DSA = (unsigned int) &U6TXREG & 0x1FFFFFFF; // physical address conversion for uart send buffer
-    DCH1DSIZ = 1;
-    DCH1CSIZ = 1;
-
+//    DCH1SSIZ=3000; // source size at most 3000 bytes
+    DCH1DSIZ = 1; // dst size is 1 byte
+    DCH1CSIZ = 1; // one byte per UART transfer request
     
     //DMA 1 settings
     arrayOFdmaSetting[1].dma_array = (unsigned char*) &dma_one_array;
@@ -129,10 +171,13 @@ void DMA(void) {
     arrayOFdmaSetting[1].dmaecon = &DCH1ECON;
     arrayOFdmaSetting[1].econ_force_mask = _DCH1ECON_CFORCE_MASK;
 
+    //enable the interrupt for the dma 1 after each cell transfer
+    IFS1bits.DMA1IF = 0;
+    IPC9bits.DMA1IP = 2;
+    IPC9bits.DMA1IS = 2; 
+    IEC1bits.DMA1IE = 1;
     
     //After loading the DMA settings, start using the DMA
-//    queue_pointer[1] = &DMA_one;
     queue_begin(arrayOFdmaSetting, 1);
-//    queue_begin(arrayOFdmaSetting, 1);
 
 }
