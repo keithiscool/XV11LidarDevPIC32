@@ -44,7 +44,8 @@
 #pragma config ICESEL = ICS_PGx1        // ICE/ICD Comm Channel Select (ICE EMUC1/EMUD1 pins shared with PGC1/PGD1)
 #pragma config PWP = OFF                // Program Flash Write Protect (Disable)
 #pragma config BWP = OFF                // Boot Flash Write Protect bit (Protection Disabled)
-#pragma config CP = OFF                 // Code Protect (Protection Disabled)
+#pragma config CP = OFF
+// Code Protect (Protection Disabled)
 
 
 
@@ -84,26 +85,7 @@ void delay(void){
 //}
 
 
-int AllMeasurementsTaken(void) {
-    int j = 0;
-    for(j=0;j<90;j++) {
-        LIDARdecode(); //receive 90 packets of 4 distances from the lidar
-    }
 
-    //Verify that all 360 degrees have a distance measurement
-    for(i=0;i<360;i++) {
-        AnglesCoveredTotal += SuccessfulMeasurements[i];
-    }
-    
-    if(AnglesCoveredTotal >=359) {
-        return 1;
-    }else {
-        AnglesCoveredTotal = 0;
-        return 0;
-    }
-    
-    return 0;
-}
 
 
 void main(void){
@@ -123,8 +105,8 @@ void main(void){
     
 
     while(1) {
+
         
-////////        if (AllMeasurementsTaken() == 1) {
 
 //        //Testing durability of DMA
 //        for(i=1;i<100000;i++) {
@@ -135,18 +117,13 @@ void main(void){
 //            }
 //        }
 
-
-
-
-
         
 
+    LATBbits.LATB11 = 0;    //on LED
 
 
-
-        
+    
         if(LIDARdecode()==1) {
-            LATEbits.LATE4 ^= 0; //Toggle LED1 on,off,on,off
             LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
 
             if(AnglesCoveredTotal >= 180) {
@@ -154,12 +131,13 @@ void main(void){
                 //printf("Degree:\r\n%4d: ",0);
 
                 if(operationMode==TESTMODE) {
-//                    U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
-//                    U4MODEbits.ON = 0; // disable whole uart5 module
-                    printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen)
+                    U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
+                    U4MODEbits.ON = 0; // disable whole uart5 module
+////////////////////////                    printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
                     for(i=0;i<360;i++) {
                         if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-                            if ((i % 16) == 0) { //print 16 distances per line
+//                            if ((i % 24) == 0) { //print 16 distances per line
+                            if ((i % 24) == 0) { //print 16 distances per line
                                 printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
                             }
                             printf("%4u ",Distance[i]); //Print out the data to 4, 16-bit unsigned integer digits
@@ -200,12 +178,14 @@ void main(void){
 
 
 
-                    //kick the dma to UART 1 if the buffer exceeds the scond level count
-                    queue_send();
+                    //kick the dma to UART 6 if the buffer exceeds the scond level count
+                    if(queue_send() == true) {
+                        LATBbits.LATB10 ^= 0;    //toggle on LED 2
+                    }
 
                 }
-//                U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
-//                U4MODEbits.ON = 1; // enable whole uart module
+                U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
+                U4MODEbits.ON = 1; // enable whole uart module
             }
         }
 

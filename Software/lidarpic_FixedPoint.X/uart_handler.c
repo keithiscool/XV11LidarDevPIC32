@@ -19,7 +19,8 @@
 void _mon_putc(char c) {
     static char dmaOutputArr[SIZE_OF_DMA_ARRAY];
 
-    if(DMA_Counter > SIZE_OF_DMA_ARRAY) {
+//    if(DMA_Counter > SIZE_OF_DMA_ARRAY) {
+    if(SIZE_OF_DMA_ARRAY < DMA_Counter) {
         DMA_Counter = 0;
         queue_put(dmaOutputArr, sizeof(dmaOutputArr));
     }

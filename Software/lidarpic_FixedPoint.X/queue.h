@@ -64,7 +64,8 @@ extern struct dmaSettings arrayOFdmaSetting[1];
 extern unsigned char dma_one_array[SIZE_OF_DMA_ARRAY];
 
 void queue_begin(struct dmaSettings *_settings, int module_number);
-void queue_put(unsigned char * _where, unsigned char how_many, unsigned char where, unsigned char from_where);
+//void queue_put(unsigned char * _where, unsigned char how_many, unsigned char where, unsigned char from_where);
+void queue_put(unsigned char * what, unsigned int how_many);
 bool queue_send(void);
 unsigned int fullError(void);
 

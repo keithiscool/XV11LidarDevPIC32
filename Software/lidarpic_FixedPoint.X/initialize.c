@@ -26,22 +26,22 @@ void initialize(void){
 
 
 void IOpins(void) {
-    DDPCONbits.JTAGEN = 0; // This turns off the JTAG and allows PORTA pins to be used
+    DDPCONbits.JTAGEN = 0;  // This turns off the JTAG and allows PORTA pins to be used (Must disable the JTAG module in order to use LAT registers to set discrete outputs (LEDs)
 
-    TRISEbits.TRISE4 = 1; // set output debugging LEDs for PIC32 Dev Board
-    TRISEbits.TRISE3 = 1; // set output debugging LEDs for PIC32 Dev Board
+    TRISEbits.TRISE4 = 1;   // set output debugging LEDs for PIC32 Dev Board
+    TRISEbits.TRISE3 = 1;   // set output debugging LEDs for PIC32 Dev Board
 
-    TRISBbits.TRISB8 = 1; // U5RX TO LANTRONIX
-    TRISBbits.TRISB9 = 0; // set output debugging LEDs
-    TRISBbits.TRISB10 = 0; // set output debugging LEDs
-    TRISBbits.TRISB11 = 0; // set output debugging LEDs
+    TRISBbits.TRISB8 = 1;   // U5RX TO LANTRONIX
+    TRISBbits.TRISB9 = 0;   // set output debugging LEDs
+    TRISBbits.TRISB10 = 0;  // set output debugging LEDs
+    TRISBbits.TRISB11 = 0;  // set output debugging LEDs
 
-    TRISBbits.TRISB12 = 1; // SERVO 1 CONTROL PWM
-    TRISBbits.TRISB13 = 1; // SERVO 2 CONTROL PWM
+    TRISBbits.TRISB12 = 1;  // SERVO 1 CONTROL PWM
+    TRISBbits.TRISB13 = 1;  // SERVO 2 CONTROL PWM
 
-    TRISBbits.TRISB14 = 1; // U5TX TO LANTRONIX
+    TRISBbits.TRISB14 = 1;  // U5TX TO LANTRONIX
 
-    TRISBbits.TRISB2 = 1; //ANALOG PINS
+    TRISBbits.TRISB2 = 1;   //ANALOG PINS
     TRISBbits.TRISB3 = 1;
     TRISBbits.TRISB4 = 1;
     TRISBbits.TRISB5 = 1;
@@ -50,12 +50,12 @@ void IOpins(void) {
 
     TRISE = 0xFFFFFF;
 
-    TRISDbits.TRISD2 = 1; //I2C 2 Header (I2C SDA3)
-    TRISDbits.TRISD3 = 1; //I2C 2 Header (I2C SCL3)
-    TRISDbits.TRISD4 = 1; //Servo A
-    TRISDbits.TRISD5 = 1; //Servo B
-    TRISDbits.TRISD6 = 1; //Servo C
-    TRISDbits.TRISD7 = 1; //Servo D
+    TRISDbits.TRISD2 = 1;   //I2C 2 Header (I2C SDA3)
+    TRISDbits.TRISD3 = 1;   //I2C 2 Header (I2C SCL3)
+    TRISDbits.TRISD4 = 1;   //Servo A
+    TRISDbits.TRISD5 = 1;   //Servo B
+    TRISDbits.TRISD6 = 1;   //Servo C
+    TRISDbits.TRISD7 = 1;   //Servo D
     TRISDbits.TRISD8 = 1;
     TRISDbits.TRISD10 = 1;
     TRISDbits.TRISD11 = 1;
@@ -63,18 +63,14 @@ void IOpins(void) {
     TRISFbits.TRISF1 = 1;
     TRISFbits.TRISF2 = 1;
     TRISFbits.TRISF3 = 1;
-    TRISFbits.TRISF4 = 1; //I2C 1 Header (I2C SDA5)
-    TRISFbits.TRISF5 = 1; //I2C 1 Header (I2C SCL5)
+    TRISFbits.TRISF4 = 1;   //I2C 1 Header (I2C SDA5)
+    TRISFbits.TRISF5 = 1;   //I2C 1 Header (I2C SCL5)
 
-    TRISG = 0xFFFFFF;  //LANTRONIX PINS (2 SETS OF UART - ONE FOR LANTRONIX AND 1 FOR DEBUG)
-
-    LATEbits.LATE3 = 1; //off LED
-    LATEbits.LATE4 = 1; //off LED
-    LATBbits.LATB9 = 0; //on LED
-    LATBbits.LATB10 = 0; //on LED
-    LATBbits.LATB11 = 0; //on LED
-    LATBbits.LATB12 = 1; //SERVO 1 CONTROL PWM
-    LATBbits.LATB13 = 1; //SERVO 2 CONTROL PWM
+    TRISG = 0xFFFFFF;       //LANTRONIX PINS (2 SETS OF UART - ONE FOR LANTRONIX AND 1 FOR DEBUG)
+    LATEbits.LATE3 = 1;     //off LED (PIC32 Dev-Board)
+    LATEbits.LATE4 = 1;     //off LED (PIC32 Dev-Board)
+    LATBbits.LATB12 = 1;    //SERVO 1 CONTROL PWM
+    LATBbits.LATB13 = 1;    //SERVO 2 CONTROL PWM
 }
 
 
@@ -158,6 +154,7 @@ void DMA(void) {
     DCH1INT = 0; // clear all existing flags, disable all interrupts
     DCH1SSA = (unsigned int) &dma_one_array & 0x1FFFFFFF; // physical address conversion for transmit buffer
     DCH1DSA = (unsigned int) &U6TXREG & 0x1FFFFFFF; // physical address conversion for uart send buffer
+////////////////    DCH1DSA = (unsigned int) &U6TXREG & 0xFFFFFFFF; // physical address conversion for uart send buffer
 //    DCH1SSIZ=3000; // source size at most 3000 bytes
     DCH1DSIZ = 1; // dst size is 1 byte
     DCH1CSIZ = 1; // one byte per UART transfer request

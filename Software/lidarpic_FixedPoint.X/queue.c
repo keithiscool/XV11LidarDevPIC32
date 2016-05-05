@@ -70,18 +70,13 @@ void queue_init(void)
 }
 
 
-void queue_put(unsigned char * what, unsigned char how_many, unsigned char where, unsigned char from_where)
+//void queue_put(unsigned char * what, unsigned char how_many, unsigned char where, unsigned char from_where)
+void queue_put(unsigned char * what, unsigned int how_many)
 {
     if (send_queue.count < TOP_LEVEL_QUEUE_DEPTH)
     {
-//////////        queue_data_put(0x06);
-//////////        queue_data_put(0x85);
-//////////        queue_data_put(where);
-//////////        queue_data_put(from_where);
-//////////        queue_data_put(how_many);
-        int i;
-        //for (i = 0; i < (how_many + 1); i++)
-        for (i = 0; i < (how_many + 1); i++)
+        unsigned int i;
+        for (i = 1; i < how_many; i++)
         {
             queue_data_put(what[i]);
         }
@@ -89,13 +84,9 @@ void queue_put(unsigned char * what, unsigned char how_many, unsigned char where
         send_queue.count++;
     } else
     {
-//////////        queue_data_put(0x06);
-//////////        queue_data_put(0x85);
-//////////        queue_data_put(where);
-//////////        queue_data_put(from_where);
-//////////        queue_data_put(how_many);
         int i;
-        for (i = 0; i <= how_many; i++)
+        
+        for (i = 1; i < how_many; i++)
         {
             queue_data_put(what[i]);
         }
@@ -155,6 +146,7 @@ unsigned int modulo_inc_dma(const unsigned int value, const unsigned int modulus
 }
 
 
+//place this function at end of main after the printf() functions are called (after dma ring buffer is filled)
 bool queue_send(void)
 {
     if (send_queue.count > 0) // if send queue is empty no need to send
@@ -169,14 +161,17 @@ bool queue_send(void)
                 dma_array[g] = send_queue.queue[send_queue.tail].buf[g];
             }
 
+            //kick the DMA
             *dmasize = h;
             *dmacon |= con_en_mask;
             *dmaecon |= econ_force_mask;
+
             // flush send queue
             send_queue.queue[send_queue.tail].count = 0;
             send_queue.queue[send_queue.tail].head = 0;
             send_queue.queue[send_queue.tail].tail = 0;
             memset(send_queue.queue[send_queue.tail].buf, 0, SECOND_LEVEL_QUEUE_DEPTH);
+            
             //tidy up tail and counter
             send_queue.count--;
             send_queue.tail = modulo_inc_dma(send_queue.tail, TOP_LEVEL_QUEUE_DEPTH);
