@@ -135,6 +135,7 @@ unsigned char queue_data_get(void)
 }
 
 
+
 unsigned int modulo_inc_dma(const unsigned int value, const unsigned int modulus)
 {
     unsigned int my_value = value + 1;
@@ -144,6 +145,7 @@ unsigned int modulo_inc_dma(const unsigned int value, const unsigned int modulus
     }
     return (my_value);
 }
+
 
 
 //place this function at end of main after the printf() functions are called (after dma ring buffer is filled)

@@ -136,8 +136,8 @@ void main(void){
 ////////////////////////                    printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
                     for(i=0;i<360;i++) {
                         if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-//                            if ((i % 24) == 0) { //print 16 distances per line
-                            if ((i % 24) == 0) { //print 16 distances per line
+//                            if ((i % 16) == 0) { //print 16 distances per line
+                            if ((i % 24) == 0) { //print 24 distances per line
                                 printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
                             }
                             printf("%4u ",Distance[i]); //Print out the data to 4, 16-bit unsigned integer digits

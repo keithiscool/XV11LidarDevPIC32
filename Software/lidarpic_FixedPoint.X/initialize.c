@@ -77,9 +77,15 @@ void IOpins(void) {
 void timers(void){
     T1CONbits.ON = 0;
     T1CONbits.TCS = 0; // perifial clock as source
-    T1CONbits.TCKPS = 0b10; //64 prescalar
+//    T1CONbits.TCKPS = 0b10; //64 prescalar
+    T1CONbits.TCKPS = 0b111; //256 prescalar
     T1CONbits.TGATE = 0;
-    PR1 = 1250;
+//    T1CONbits.TCKPS = 0b10; //64 prescalar
+
+//    create a 100ms timer with 80MHz clock
+//    PR1 = (desired_time_in_seconds)/Prescaler/Fp
+//    PR1 = 0.100/256/80000000 = 31250
+    PR1 = 31250;
     IFS0CLR = _IFS0_T1IF_MASK;
     IEC0SET = _IEC0_T1IE_MASK;
     IPC1SET = ((0x1 << _IPC1_T1IP_POSITION) | (0x1 << _IPC1_T1IS_POSITION));
@@ -147,7 +153,7 @@ void DMA(void) {
     DMACONbits.ON = 1; // dma module enabled
     DCRCCON = 0; // crc module disabled
 
-    //dma 1 for U1TX debugging
+    //dma 1 for U6TX debugging
     DCH1CONbits.CHPRI = 2; // channel priority 2
     DCH1ECONbits.CHSIRQ = 72; // uart 6 tx Interrupt "IRQ" Vector Number (p.134)
     DCH1ECONbits.SIRQEN = 1; // enable cell transfer when IRQ triggered
