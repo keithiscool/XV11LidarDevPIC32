@@ -19,14 +19,19 @@
 //A full revolution will yield 90 packets, containing 4 consecutive readings each.
 //The length of a packet is 22 bytes.
 //This amounts to a total of 360 readings (1 per degree) on 90*22 = 1980 bytes.
-//[Data 0] to [Data 3] are the 4 readings. Each one is 4 bytes long, and organized as follows :
+
+//"data_buffer[22]" IS ORGANIZED AS FOLLOWS (INPUT DATA FROM LIDAR TO PIC32)
+//ARRAY IS ZERO BASED!!!! (FIRST ELEMENT IS data_buffer[0])
+//[Data 0] to [Data 3] are the 4 readings. Each distance ("Data #") is 4 bytes long, and organized as follows :
 //<start> <index> <speed_L> <speed_H> [Data 0] [Data 1] [Data 2] [Data 3] <checksum_L> <checksum_H>
+//  B0      B1       B2         B3      B4-7     B8-11    B12-15   B16-19     B20          B21
 
 
 void beginLIDARdecoder(unsigned short * _output_data, struct ringBuff* _input_data) {
     data = _input_data;
     output_data = _output_data;
 }
+
 
 unsigned short CRC_calculator(unsigned char * _this) {
     unsigned short dataList[10];
@@ -85,11 +90,17 @@ bool LIDARdecode(void){
                 returned_speed = ((data_buffer[3] << 8) | data_buffer[2]) / 64;
 
                 //Keep Track of the Status Bits for Each Distance Measurement
-                InvalidFlag[0] = (data_buffer[5] & 0x80) >> 7;
+                //Quality Flags are bytes 2&3 of each 4 bytes from "Data #" in each 22 byte packet
+                QualityFlag[0] = (data_buffer[6] + (data_buffer[7] << 8));
+                QualityFlag[1] = (data_buffer[10] + (data_buffer[11] << 8));
+                QualityFlag[2] = (data_buffer[14] + (data_buffer[15] << 8));
+                QualityFlag[3] = (data_buffer[18] + (data_buffer[19] << 8));
+
+                InvalidFlag[0] = (data_buffer[5] & 0x80) >> 7; //check bit 7 of distance byte 1 for invalid flag
                 InvalidFlag[1] = (data_buffer[9] & 0x80) >> 7;
                 InvalidFlag[2] = (data_buffer[13] & 0x80) >> 7;
                 InvalidFlag[3] = (data_buffer[17] & 0x80) >> 7;
-                WarningFlag[0] = (data_buffer[5] & 0x40) >> 6;
+                WarningFlag[0] = (data_buffer[5] & 0x40) >> 6; //check bit 6 of distance byte 1 for warning flag (bad signal strength / low reflectance)
                 WarningFlag[1] = (data_buffer[9] & 0x40) >> 6;
                 WarningFlag[2] = (data_buffer[13] & 0x40) >> 6;
                 WarningFlag[3] = (data_buffer[17] & 0x40) >> 6;
@@ -98,17 +109,21 @@ bool LIDARdecode(void){
                 //Increments the Distance Index (Degree Index after it updates tje current distance value)
                 for (i = 0; i < 4; i++) {
                     if (!InvalidFlag[i]) { // the data is valid within the present 22byte packet
+//                    if (1) { //look at raw distances
                         //Pull 4 polar distances (in millimeters) from each 22 byte packet
-                        Distance[DegreeIndex+i] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
+                        DistanceArr[DegreeIndex+i] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
+                        //Copy Quality Info to Quality Array to be Analyzed
+                        QualityArr[DegreeIndex+i] = QualityFlag[i];
                         //Compute 4 Cartesian Coordinates for Output
-                        if((Distance[DegreeIndex+i] > 0) && (Distance[DegreeIndex+i] < 10000)) { // check if polar distance is useful data
-                            YCoordMeters[DegreeIndex+i] = ((short)(((int)Distance[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
-                            XCoordMeters[DegreeIndex+i] = ((short)(((int)Distance[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
+                        if((DistanceArr[DegreeIndex+i] > 0) && (DistanceArr[DegreeIndex+i] < 10000)) { // check if polar distance is useful data
+                            YCoordMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
+                            XCoordMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
                         }
                         SuccessfulMeasurements[DegreeIndex] = 1;
                         AnglesCoveredTotal++;
                     } else { //The data is not valid and has invalid flags within the present 22byte packet
-                        Distance[DegreeIndex+i] = 7777;
+                        //data is invalid and should not be used
+                        DistanceArr[DegreeIndex+i] = 0;
                         XCoordMeters[DegreeIndex+i] = 0;
                         YCoordMeters[DegreeIndex+i] = 0;
                         SuccessfulMeasurements[DegreeIndex+i] = 0;

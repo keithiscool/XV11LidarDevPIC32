@@ -1,6 +1,6 @@
 global fid;
 
-fid = serial('COM74','BaudRate',115200);
+fid = serial('COM6','BaudRate',115200);
 set(fid,'InputBufferSize',400000);  %  Set serial buffer size >(6+360x4)*2=2892 byte
 set(fid,'Timeout',1);             %  Set read Timeout in 1 sec
 fopen(fid);

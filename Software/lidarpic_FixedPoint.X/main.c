@@ -100,30 +100,18 @@ void main(void){
     
     //Initialize all distances to '99' so I can see which ones are not getting written to
     for(i=0;i<360;i++) {
-        Distance[i] = 99;
+        DistanceArr[i] = 1;
     }
     
 
     while(1) {
 
-        
 
-//        //Testing durability of DMA
-//        for(i=1;i<100000;i++) {
-//            if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-//                printf("%d",i);
-//            }else {
-//                i--;
-//            }
-//        }
-
-        
 
     LATBbits.LATB11 = 0;    //on LED
 
-
     
-        if(LIDARdecode()==1) {
+        if(LIDARdecode() == 1) {
             LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
 
             if(AnglesCoveredTotal >= 180) {
@@ -134,33 +122,54 @@ void main(void){
                     U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
                     U4MODEbits.ON = 0; // disable whole uart5 module
 ////////////////////////                    printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
+                    printf("\r\n");//new line (carriage return)
+                    printf("DisplayPolarData\r\n");
                     for(i=0;i<360;i++) {
                         if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-//                            if ((i % 16) == 0) { //print 16 distances per line
                             if ((i % 24) == 0) { //print 24 distances per line
                                 printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
                             }
-                            printf("%4u ",Distance[i]); //Print out the data to 4, 16-bit unsigned integer digits
+                            printf("%4u ",DistanceArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
                         } else {
                             i--; //keep index at same value if the UART1 TX debug buffer is full
                         }
-//                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
-
-                        //Check whether the Distances between each degree are large -> indicates object or wall
-                        if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
-                            DistanceDifferences[i] = abs((Distance[360]-Distance[0])); //use abs() function to get unsigned magnitude
-                            i = 0; //reset index to - degrees after 359 degrees
-                        } else{
-                            DistanceDifferences[i] = abs((Distance[i]-Distance[i+1]));
-                        }
-                        if(startOfDetectedObject > 0) {
-                            endOfDetectedObject = i; // found end of an object (object was detected)
-                        }
-                        if(DistanceDifferences[i] > 500) // object protruded from surrounding measurements by 50cm (500mm)
-                            startOfDetectedObject = i; // found start of an object (object's corner was detected)
                     }
 
-////////
+//                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
+
+//                        //Check whether the Distances between each degree are large -> indicates object or wall
+//                        if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
+//                            DistanceDifferences[i] = abs((Distance[360]-Distance[0])); //use abs() function to get unsigned magnitude
+//                            i = 0; //reset index to - degrees after 359 degrees
+//                        } else{
+//                            DistanceDifferences[i] = abs((Distance[i]-Distance[i+1]));
+//                        }
+//                        if(startOfDetectedObject > 0) {
+//                            endOfDetectedObject = i; // found end of an object (object was detected)
+//                        }
+//                        if(DistanceDifferences[i] > 500) // object protruded from surrounding measurements by 50cm (500mm)
+//                            startOfDetectedObject = i; // found start of an object (object's corner was detected)
+                    printf("\r\n");//new line (carriage return)
+                    printf("DisplayQualityData\r\n");
+                    for(i=0;i<360;i++) {
+                        if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+                            if ((i % 24) == 0) { //print 24 quality elements per line
+                                printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
+                            }
+                        printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
+                        } else {
+                            i--; //keep index at same value if the UART1 TX debug buffer is full
+                        }
+                    }
+                    
+
+                    if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+                        printf("RPM: %f\r\n", returned_speed);
+                        printf("===========\r\n");
+                    }
+
+
+
 ////////                    printf("DisplayCartesianData\r\n");
 ////////                    printf("XCoordMeters , YCoordMeters:\r\n");
 ////////                    for(i=0;i<360;i++) {

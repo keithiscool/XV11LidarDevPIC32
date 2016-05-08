@@ -11,7 +11,6 @@ void initialize(void){
      INTEnableSystemMultiVectoredInt();
      IOpins();
      delay();
-     delay();
      timers();
      delay();
      PWM();
@@ -20,7 +19,7 @@ void initialize(void){
      delay();
      DMA();
      delay();
-     INTEnableInterrupts(); // enable interrupts
+     INTEnableInterrupts(); //enable interrupts
      beginLIDARdecoder(returned_data, &buffer_five);
 }
 
@@ -50,8 +49,9 @@ void IOpins(void) {
 
     TRISE = 0xFFFFFF;
 
-    TRISDbits.TRISD2 = 1;   //I2C 2 Header (I2C SDA3)
-    TRISDbits.TRISD3 = 1;   //I2C 2 Header (I2C SCL3)
+//    TRISDbits.TRISD2 = 1;   //I2C 2 Header (I2C SDA3)
+//    TRISDbits.TRISD3 = 1;   //I2C 2 Header (I2C SCL3)
+//        TRISDbits.TRISD3 = 0;   //(TIMER3 output for motor) I2C 2 Header (I2C SCL3)
     TRISDbits.TRISD4 = 1;   //Servo A
     TRISDbits.TRISD5 = 1;   //Servo B
     TRISDbits.TRISD6 = 1;   //Servo C
@@ -75,40 +75,65 @@ void IOpins(void) {
 
 
 void timers(void){
-    T1CONbits.ON = 0;
-    T1CONbits.TCS = 0; // perifial clock as source
-//    T1CONbits.TCKPS = 0b10; //64 prescalar
-    T1CONbits.TCKPS = 0b111; //256 prescalar
-    T1CONbits.TGATE = 0;
-//    T1CONbits.TCKPS = 0b10; //64 prescalar
-
-//    create a 100ms timer with 80MHz clock
-//    PR1 = (desired_time_in_seconds)/Prescaler/Fp
-//    PR1 = 0.100/256/80000000 = 31250
-    PR1 = 31250;
-    IFS0CLR = _IFS0_T1IF_MASK;
-    IEC0SET = _IEC0_T1IE_MASK;
-    IPC1SET = ((0x1 << _IPC1_T1IP_POSITION) | (0x1 << _IPC1_T1IS_POSITION));
-    T1CONbits.ON = 1;
+//    T2CONbits.ON = 0;
+////    T2CONbits.TCS = 0; // peripheral clock as source
+//    T2CONbits.TCKPS = 0b10; //64 prescalar
+//    T2CONbits.TGATE = 0;
+//    PR2 = 1250;
+//    IFS0CLR = _IFS0_T2IF_MASK;
+//    IEC0SET = _IEC0_T2IE_MASK;
+//    IPC2SET = ((0x1 << _IPC2_T2IP_POSITION) | (0x1 << _IPC2_T2IS_POSITION));
+//    T2CONbits.ON = 1;
 }
 
 
+
+////PWM Period = [(PR + 1) ? TPB ? (TMR Prescale Value)]
+////Control the speed the lidar rotates (alter speed to achieve around 200rpm)
+////Fosc==80MHz
+//void PWM(void){
+//    T2CONbits.ON = 0;
+//    T2CONbits.T32 = 0; //16 bit mode
+//    T2CONbits.TCKPS = 0b001; //prescalar of 2
+//    T2CONbits.TGATE = 0;
+////    PR2 = 4000;
+//    PR2 = 3800; //around 10.5kHz frequency
+//    OC1CONbits.ON = 0;
+//    OC1CONbits.OCM = 0b110;
+//    OC1CONbits.OCTSEL = 0; //select Timer 2 as source for OC1 (PWM)
+//    OC1R = 2000; // near 200rpm
+//    OC1RS = 2000; // near 200rpm
+//
+//    OC1CONbits.ON = 1;
+//    T2CONbits.ON = 1;
+//}
+
+//PWM Period = [(PR + 1) ? TPB ? (TMR Prescale Value)]
 //Control the speed the lidar rotates (alter speed to achieve around 200rpm)
-//Output Compare Module (OC4) for U1TX controls the PWM for the Lidar motor
 //Fosc==80MHz
 void PWM(void){
-    T4CONbits.ON = 0;
-    T4CONbits.T32 = 0; //16 bit mode
-    T4CONbits.TCKPS = 0b001; //prescalar of 2
-    T4CONbits.TGATE = 0;
-    PR4 = 3800;
-    OC4CONbits.ON = 0;
-    OC4CONbits.OCM = 0b110; //fault pin disabled
-    OC4R = 2180; // near 200rpm
-    OC4RS = 2180; // near 200rpm
-    T4CONbits.ON = 1;
-    OC4CONbits.ON = 1;
+    T2CONbits.ON = 0;
+    T2CONbits.T32 = 0; //16 bit mode
+    T2CONbits.TCKPS = 0b001; //prescalar of 2
+    T2CONbits.TGATE = 0;
+//    PR2 = 4000;
+    PR2 = 3800; //around 10.5kHz frequency
+    OC1CONbits.ON = 0;
+    OC1CONbits.OCM = 0b110;
+    OC1CONbits.OCTSEL = 0; //select Timer 2 as source for OC1 (PWM)
+//    OC1R = 2120; // near 200rpm
+//    OC1RS = 2120; // near 200rpm
+    OC1R = 2300; // near 230rpm
+    OC1RS = 2300; // near 230rpm
+//    OC1R = 2450; // near 260rpm
+//    OC1RS = 2450; // near 260rpm
+//    OC1R = 2600; // near 290rpm (too fast?)
+//    OC1RS = 2600; // near 290rpm
+
+    OC1CONbits.ON = 1;
+    T2CONbits.ON = 1;
 }
+
 
 
 void UART(void){
@@ -128,7 +153,8 @@ void UART(void){
     U4STAbits.UTXEN = 1; // enable uart transmit
     U4MODEbits.ON = 1; // enable whole uart module
     // uart 4 error
-    IEC2bits.U4EIE = 1; // error interrupt enabed
+    IEC2bits.U4EIE = 1; // error interrupt enabled
+
 
     // uart 6 debug TX to computer terminal window (only need TX wire)
     U6MODEbits.BRGH = 0; // set to standard speed mode
@@ -160,7 +186,6 @@ void DMA(void) {
     DCH1INT = 0; // clear all existing flags, disable all interrupts
     DCH1SSA = (unsigned int) &dma_one_array & 0x1FFFFFFF; // physical address conversion for transmit buffer
     DCH1DSA = (unsigned int) &U6TXREG & 0x1FFFFFFF; // physical address conversion for uart send buffer
-////////////////    DCH1DSA = (unsigned int) &U6TXREG & 0xFFFFFFFF; // physical address conversion for uart send buffer
 //    DCH1SSIZ=3000; // source size at most 3000 bytes
     DCH1DSIZ = 1; // dst size is 1 byte
     DCH1CSIZ = 1; // one byte per UART transfer request

@@ -34,9 +34,11 @@ extern short AnglesCoveredTotal;
 extern unsigned int SuccessfulMeasurements[360];
 
 extern float returned_speed;
+extern unsigned char QualityFlag[4];
 extern unsigned char InvalidFlag[4];
 extern unsigned char WarningFlag[4];
-extern unsigned short Distance[360];
+extern unsigned short QualityArr[360];
+extern unsigned short DistanceArr[360];
 
 extern short XCoordMeters[360];
 extern short YCoordMeters[360];

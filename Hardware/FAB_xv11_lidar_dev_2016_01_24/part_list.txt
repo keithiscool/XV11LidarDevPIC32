@@ -1,0 +1,97 @@
+Partlist
+
+Exported from xv11_lidar_controller.brd at 4/28/2016 9:19:55 PM
+
+EAGLE Version 6.5.0 Copyright (c) 1988-2013 CadSoft
+
+Assembly variant: 
+
+Part               Value                          Package                           Library                        Position (mil)        Orientation
+
+3.3V_REG           BA33DD0WHFP-TR                 HRP5                              NASA_LIB                       (1240 2170)           MR0
+ANALOG             M05LOCK                        1X05_LOCK                         SparkFun-Connectors            (1832.5 1012.5)       R90
+C3                 1000pF Ceramic 50V             0805                              SparkFun-Capacitors            (1367.5 395)          MR90
+C4                 0.1uF ceramic 16V              C0805K                            adafruit                       (755 1865)            MR270
+C5                 100uf Tantalum 16v             EIA3216                           SparkFun-Capacitors            (555 1860)            MR90
+C7                 10uF ceramic 16V               C0805K                            adafruit                       (672.5 1865)          MR270
+C9                 10uf Ceramic 16v               0805                              SparkFun-Capacitors            (397.5 2200)          MR90
+C12                0.1uF Ceramic                  0805                              SparkFun-Capacitors            (770 1410)            MR0
+C13                0.1uF Ceramic                  0805                              SparkFun-Capacitors            (662.5 1305)          MR90
+C14                0.1uF Ceramic                  0805                              SparkFun-Capacitors            (862.5 1307.5)        MR90
+C15                0.1uF Ceramic                  0805                              SparkFun-Capacitors            (862.5 1190)          MR270
+C16                0.1uF Ceramic                  0805                              SparkFun-Capacitors            (935 1600)            R0
+C17                0.1uF Ceramic                  0805                              SparkFun-Capacitors            (447.5 1392.5)        R90
+C18                0.1uF Ceramic                  0805                              SparkFun-Capacitors            (337.5 1147.5)        R90
+C19                .1uF ceramic 50v               0805                              SparkFun-Capacitors            (1610 877.5)          MR0
+C20                10uF Ceramic                   0805                              SparkFun-Capacitors            (712.5 1185)          MR270
+C21                0.1uF Ceramic                  0805                              SparkFun-Capacitors            (795 1185)            MR270
+C28                10uF ceramic 16V               0805                              SparkFun-Capacitors            (980 2130)            MR90
+D1                 ES2AA-13-F                     SMA-DIODE                         SparkFun-DiscreteSemi          (405 1845)            MR90
+D2                 ES2AA-13-F                     SMA-DIODE                         SparkFun-DiscreteSemi          (1270 272.5)          MR0
+ECS-240-20-33-TR1  ECS-240-20-33-TR_24mHz_Digikey ECX-32                            Crystal ECS                    (320 1302.5)          R180
+F1                 1AmpFuse_C1S 2                 R1206                             adafruit                       (1085 330)            MR90
+F4                 4AmpFuse_C1S 2                 R1206                             adafruit                       (280 2570)            MR90
+I2C1               M03LOCK                        1X03_LOCK                         SparkFun-Connectors            (947.5 2710)          R0
+I2C2               M03LOCK                        1X03_LOCK                         SparkFun-Connectors            (595 2702.5)          R0
+JP1                                               1X05_LOCK                         SparkFun-Connectors            (110 695)             R270
+JP2                                               1X05_LOCK                         SparkFun-Connectors            (665 95)              R0
+JP3                                               1X05_LOCK                         SparkFun-Connectors            (115 90)              R0
+LED0               Blue                           CHIP-LED0805                      adafruit                       (1797.5 1972.5)       R90
+LED1               Blue                           CHIP-LED0805                      adafruit                       (1797.5 2045)         R90
+LED3               Blue                           CHIP-LED0805                      adafruit                       (1797.5 2112.5)       R90
+LED4               Blue                           CHIP-LED0805                      adafruit                       (1795 2180)           R90
+LED5               Blue                           CHIP-LED0805                      adafruit                       (1795 2247.5)         R90
+LED6               Blue                           CHIP-LED0805                      adafruit                       (1787.5 1735)         R90
+LED7               Blue                           CHIP-LED0805                      adafruit                       (1787.5 1840)         R90
+LIDAR                                             1X04_LOCK                         SparkFun-Connectors            (1497.5 97.5)         R0
+LIDAR_MOTOR_OUTPUT M02LOCK                        1X02_LOCK                         SparkFun-Connectors            (1220 97.5)           R0
+MOTORA             Yellow                         CHIP-LED0805                      adafruit                       (810 455)             R180
+PIC32              PIC32MX575F512H-80I/PT         QFP50P1200X1200X120-64N           Microchip_By_element14_Batch_1 (765 1285)            R180
+PIC_PROG1          Prog                           1X05_LOCK_LONGPADS                SparkFun-Connectors            (1712.5 705)          R180
+POWER              Green                          CHIP-LED0805                      adafruit                       (440 2720)            R270
+Q1                 MOSFET-NCHANNELBSS138          SOT23                             SparkFun-DiscreteSemi          (990 1878)            MR0
+Q2                 MOSFET-NCHANNELBSS138          SOT23                             SparkFun-DiscreteSemi          (1453 1817)           MR0
+R1                 10 5%                          R0805                             adafruit                       (1085 1605)           R0
+R2                 2.2k                           R0805                             adafruit                       (1285 1940)           R270
+R3                 10k 5%                         R0805                             adafruit                       (1499 2358)           MR270
+R4                 100 5%                         M0805                             adafruit                       (772.5 327.5)         R0
+R5                 100 5%                         R0805                             adafruit                       (951 1734)            MR0
+R6                 2.2k                           R0805                             adafruit                       (1787.5 1617.5)       MR0
+R7                 100 5%                         R0805                             adafruit                       (1170 1000)           R90
+R8                 2.2k                           M0805                             adafruit                       (640 495)             R180
+R9                 10k 5%                         R0805                             adafruit                       (1460 955)            R270
+R10                2.2k                           R0805                             adafruit                       (1365 1940)           R270
+R11                2.2k                           R0805                             adafruit                       (1205 1940)           R270
+R12                2.2k                           R0805                             adafruit                       (1125 1940)           R270
+R13                2.2k                           R0805                             adafruit                       (1045 1940)           R270
+R14                2.2k                           R0805                             adafruit                       (1787.5 1732.5)       MR0
+R15                2.2k                           R0805                             adafruit                       (1787.5 1837.5)       MR0
+R16                2.2k 5%                        R0805                             adafruit                       (869 1866)            MR270
+R17                2.2k 5%                        R0805                             adafruit                       (1343 1713)           MR270
+R18                2.2k 5%                        M0805                             adafruit                       (1810 262.5)          R0
+R19                2.2k 5%                        M0805                             adafruit                       (1455 267.5)          R180
+R20                100 5%                         R0805                             adafruit                       (1700 1285)           MR180
+R21                100 5%                         R0805                             adafruit                       (1468 1669)           MR0
+R22                10k 5%                         R0805                             adafruit                       (1712 2366)           MR270
+R23                100 5%                         R0805                             adafruit                       (1700 1205)           MR180
+R24                100 5%                         R0805                             adafruit                       (1700 1125)           MR180
+R25                100 5%                         R0805                             adafruit                       (1700 1045)           MR180
+R26                100 5%                         R0805                             adafruit                       (1700 1365)           MR180
+R39                2.2k                           R0805                             adafruit                       (397.5 2360)          MR90
+S1                                                TACTILE-SWITCH-SMD                SparkFun-Electromechanical     (815 705)             R180
+SERVO1                                            1X03                              SparkFun-Connectors            (1492.5 2712.5)       R180
+SERVO2                                            1X03                              SparkFun-Connectors            (1840 2715)           R180
+TOUCHSCREEN                                       2X3-NS                            SparkFun-Connectors            (1610 432.5)          R0
+U$1                ULN2003                        SOIC16_3.9WIDE                    NASA_LIB                       (810 485)             MR180
+U$2                ULN2003                        SOIC16_3.9WIDE                    NASA_LIB                       (355 540)             MR270
+U$3                JUMPER-PAD-2-NC_BY_TRACE       PAD-JUMPER-2-NC_BY_TRACE_YES_SILK SparkFun-Passives              (287.5 1562.5)        R0
+U$4                JUMPER-PAD-2-NC_BY_TRACE       PAD-JUMPER-2-NC_BY_TRACE_YES_SILK SparkFun-Passives              (287.5 1504)          R0
+U$5                JUMPER-PAD-2-NC_BY_TRACE       PAD-JUMPER-2-NC_BY_TRACE_YES_SILK SparkFun-Passives              (360.5 1854.5)        R90
+U$6                JUMPER-PAD-2-NC_BY_TRACE       PAD-JUMPER-2-NC_BY_TRACE_YES_SILK SparkFun-Passives              (301.5 1855)          R90
+U1                 BA50DD0WHFP-TR                 HRP5                              NASA_LIB                       (690 2170)            MR0
+U2                 LANTRONIX_A/B                  LANA/BTH                          NASA_LIB                       (885 1745)            R0
+U3                 MIC4427YM                      SO-08                             transistor-power               (1167.5 355)          R0
+UARTRX4            Green                          CHIP-LED0805                      adafruit                       (1695 232.5)          R180
+UARTTX4            Red                            CHIP-LED0805                      adafruit                       (1592.5 232.5)        R180
+VIN                M02LOCK                        1X02_LOCK                         SparkFun-Connectors            (165 2750)            R0
+WLAN               Blue                           CHIP-LED0805                      adafruit                       (1787.5 1617.5)       R90

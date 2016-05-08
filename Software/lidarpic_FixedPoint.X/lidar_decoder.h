@@ -31,9 +31,11 @@ bool transmission_in_progress = false;
 
 float returned_speed = 0;
 unsigned int SuccessfulMeasurements[360];
+unsigned char QualityFlag[4];
 unsigned char InvalidFlag[4];
 unsigned char WarningFlag[4];
-unsigned short Distance[360];
+unsigned short QualityArr[360];
+unsigned short DistanceArr[360];
 short XCoordMeters[360];
 short YCoordMeters[360];
 unsigned short DegreeIndex;
