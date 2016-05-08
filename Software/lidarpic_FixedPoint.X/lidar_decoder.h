@@ -26,6 +26,9 @@ extern unsigned char ring_buff_peek(struct ringBuff* _this);
 extern void ring_buff_put(struct ringBuff* _this, const unsigned char c);
 extern void ring_buff_flush(struct ringBuff* _this, const int clearBuffer);
 extern unsigned int modulo_inc(const unsigned int value, const unsigned int modulus);
+extern bool debugLidarPolarData(void);
+extern bool debugLidarCartesianData(void);
+extern int AllMeasurementsTaken(void);
 
 bool transmission_in_progress = false;
 

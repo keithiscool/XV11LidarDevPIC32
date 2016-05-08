@@ -7,7 +7,7 @@
 
 #include "ObjectDetection.h"
 
-//// object decloration for send class
+//// object declaration for send class
 //Queue_handler DMA_one;
 //
 ////From the "C-Programming Reference", linked lists are similar to a conductor moving between train cars

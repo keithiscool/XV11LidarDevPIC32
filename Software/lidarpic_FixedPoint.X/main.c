@@ -91,11 +91,7 @@ void delay(void){
 void main(void){
 
     initialize();
-    printf("PIC_RST\r\n");
-    
-    short DistanceDifferences[360];
-    short startOfDetectedObject = 0;
-    short endOfDetectedObject = 0;
+    printf("PIC_RESET\r\n");
 
     
     //Initialize all distances to '99' so I can see which ones are not getting written to
@@ -106,100 +102,28 @@ void main(void){
 
     while(1) {
 
+        LATBbits.LATB11 ^= 0;    //on LED
 
+//RUN ONE OF THE FOLLOWING FUNCTIONS TO PARSE AND PRINT DATA TO UART 6
+        if(debugLidarPolarData() == true) {
 
-    LATBbits.LATB11 = 0;    //on LED
-
-    
-        if(LIDARdecode() == 1) {
-            LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
-
-            if(AnglesCoveredTotal >= 180) {
-                //Show first index as zero
-                //printf("Degree:\r\n%4d: ",0);
-
-                if(operationMode==TESTMODE) {
-                    U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
-                    U4MODEbits.ON = 0; // disable whole uart5 module
-////////////////////////                    printf("\x1b[HDisplayPolarData\r\n"); // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
-                    printf("\r\n");//new line (carriage return)
-                    printf("DisplayPolarData\r\n");
-                    for(i=0;i<360;i++) {
-                        if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-                            if ((i % 24) == 0) { //print 24 distances per line
-                                printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
-                            }
-                            printf("%4u ",DistanceArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
-                        } else {
-                            i--; //keep index at same value if the UART1 TX debug buffer is full
-                        }
-                    }
-
-//                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
-
-//                        //Check whether the Distances between each degree are large -> indicates object or wall
-//                        if(i>359) { // check rollover condition where 360 degrees is compared w/ 0degrees
-//                            DistanceDifferences[i] = abs((Distance[360]-Distance[0])); //use abs() function to get unsigned magnitude
-//                            i = 0; //reset index to - degrees after 359 degrees
-//                        } else{
-//                            DistanceDifferences[i] = abs((Distance[i]-Distance[i+1]));
-//                        }
-//                        if(startOfDetectedObject > 0) {
-//                            endOfDetectedObject = i; // found end of an object (object was detected)
-//                        }
-//                        if(DistanceDifferences[i] > 500) // object protruded from surrounding measurements by 50cm (500mm)
-//                            startOfDetectedObject = i; // found start of an object (object's corner was detected)
-                    printf("\r\n");//new line (carriage return)
-                    printf("DisplayQualityData\r\n");
-                    for(i=0;i<360;i++) {
-                        if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-                            if ((i % 24) == 0) { //print 24 quality elements per line
-                                printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
-                            }
-                        printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
-                        } else {
-                            i--; //keep index at same value if the UART1 TX debug buffer is full
-                        }
-                    }
-                    
-
-                    if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-                        printf("RPM: %f\r\n", returned_speed);
-                        printf("===========\r\n");
-                    }
-
-
-
-////////                    printf("DisplayCartesianData\r\n");
-////////                    printf("XCoordMeters , YCoordMeters:\r\n");
-////////                    for(i=0;i<360;i++) {
-//////////                        while(U1STAbits.TRMT == 1) { //check to see if the UART buffer is empty - if it is, send debug data out UART1
-////////                        if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
-////////                            if ((i % 4) == 0)  //print 4 x,y distances per line
-////////                                printf("\r\n%4d: ",i); //print 4 distances per line '\r\n' causes prompt to carraige return
-////////
-////////                            printf(" %d,%d//", XCoordMeters[i], YCoordMeters[i]);
-////////                        }
-////////                        else
-////////                            i--; //keep index at same value if the UART1 TX debug buffer is full
-////////                    }
-////////                    printf("\r\n--------------------------------\r\n");
-
-
-
-                    //kick the dma to UART 6 if the buffer exceeds the scond level count
-                    if(queue_send() == true) {
-                        LATBbits.LATB10 ^= 0;    //toggle on LED 2
-                    }
-
-                }
-                U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
-                U4MODEbits.ON = 1; // enable whole uart module
-            }
         }
+//        if(debugLidarCartesianData() == true) {
+//
+//        }
+
+//RUN THE FOLLOWING FUNCTION TO PARSE THE DATA (WILL NOT PRINT THE DEBUG DATA)
+//        LIDARdecode(); //simply call to parse the Lidar data (4 distance measurements at a time)
 
 
 
+
+
+
+        //kick the dma to UART 6 if the buffer exceeds the scond level count
+        if(queue_send() == true) {
+            LATBbits.LATB10 ^= 0;    //toggle on LED 2
+        }
     }
 }
 

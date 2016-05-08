@@ -30,6 +30,9 @@ unsigned int v = 0;
 //////////////////////////////////////////////////////////////////////////////
 //LIDAR DATA STUFF
 
+extern bool debugLidarPolarData(void);
+extern bool debugLidarCartesianData(void);
+
 extern short AnglesCoveredTotal;
 extern unsigned int SuccessfulMeasurements[360];
 

@@ -147,11 +147,128 @@ bool LIDARdecode(void){
 }
 
 
+//used to print out the parsed Polar data from xv11 lidar to a serial monitor
+bool debugLidarPolarData(void) {
+    unsigned int i = 0;
 
+    if(LIDARdecode() == 1) {
+        LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
+
+        if(AnglesCoveredTotal >= 180) {
+            //Show first index as zero
+            //printf("Degree:\r\n%4d: ",0);
+
+                U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
+                U4MODEbits.ON = 0; // disable whole uart5 module
+//            printf("\r\n");//new line (carriage return)
+//            printf("\x1b[H"); //clear screen // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
+                printf("\r\n");//new line (carriage return)
+                printf("DisplayPolarData\r\n");
+                for(i=0;i<360;i++) {
+                    if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+                        if ((i % 24) == 0) { //print 24 distances per line
+                            printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
+                        }
+                        printf("%4u ",DistanceArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
+                    } else {
+                        i--; //keep index at same value if the UART1 TX debug buffer is full
+                    }
+                }
+
+//                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
+                printf("\r\n");//new line (carriage return)
+                printf("DisplayQualityData\r\n");
+                for(i=0;i<360;i++) {
+                    if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+                        if ((i % 24) == 0) { //print 24 quality elements per line
+                            printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
+                        }
+                    printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
+                    } else {
+                        i--; //keep index at same value if the UART1 TX debug buffer is full
+                    }
+                }
+
+
+                if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+                    printf("RPM: %f\r\n", returned_speed);
+                    printf("===========\r\n");
+                }
+            }
+        U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
+        U4MODEbits.ON = 1; // enable whole uart module
+    }
+    return true;
+}
+
+
+//used to print out the parsed X,Y (cartesian) data from xv11 lidar to a serial monitor
+bool debugLidarCartesianData(void) {
+    unsigned int i = 0;
+
+    if(LIDARdecode() == 1) {
+        LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
+
+        if(AnglesCoveredTotal >= 180) {
+            //Show first index as zero
+            //printf("Degree:\r\n%4d: ",0);
+
+            U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
+            U4MODEbits.ON = 0; // disable whole uart5 module
+//            printf("\r\n");//new line (carriage return)
+//            printf("\x1b[H"); //clear screen // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
+            printf("\r\n");//new line (carriage return)
+            printf("DisplayCartesianData\r\n");
+            printf("XCoordMeters , YCoordMeters:\r\n");
+            for(i=0;i<360;i++) {
+//                        while(U1STAbits.TRMT == 1) { //check to see if the UART buffer is empty - if it is, send debug data out UART1
+                if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
+                    if ((i % 10) == 0)  //print 4 x,y distances per line
+                        printf("\r\n%4d: ",i); //print 4 distances per line '\r\n' causes prompt to carraige return
+
+                    printf(" %d,%d//", XCoordMeters[i], YCoordMeters[i]);
+                }
+                else
+                    i--; //keep index at same value if the UART1 TX debug buffer is full
+            }
+            printf("\r\n--------------------------------\r\n");
+
+//                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
+            printf("\r\n");//new line (carriage return)
+            printf("DisplayQualityData\r\n");
+            for(i=0;i<360;i++) {
+                if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+                    if ((i % 4) == 0) { //print 24 quality elements per line
+                        printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
+                    }
+                printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
+                } else {
+                    i--; //keep index at same value if the UART1 TX debug buffer is full
+                }
+            }
+
+
+            if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+                printf("RPM: %f\r\n", returned_speed);
+                printf("===========\r\n");
+            }
+
+        }
+        U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
+        U4MODEbits.ON = 1; // enable whole uart module
+    }
+    return true;
+}
+
+
+
+
+
+//check to see if  all distances have measurement values
 int AllMeasurementsTaken(void) {
     unsigned int j = 0;
     for(j=0;j<90;j++) {
-        LIDARdecode(); //receive 90 packets of 4 distances from the lidar
+        LIDARdecode(); //receive 90 packets of 4 distances each from the lidar
     }
 
     //Verify that all 360 degrees have a distance measurement
