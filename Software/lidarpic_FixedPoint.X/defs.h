@@ -14,10 +14,10 @@
     //#define SECOND_LEVEL_QUEUE_DEPTH 193
     //#define SIZE_OF_DMA_ARRAY 200
 //NEW VALUES FOR USING LIDAR BOARD:
-//#define TOP_LEVEL_QUEUE_DEPTH 5
-//#define SECOND_LEVEL_QUEUE_DEPTH 3950
-//#define SIZE_OF_DMA_ARRAY 4000
-//#define CELL_SIZE_MAXIMUM 3000
+    //#define TOP_LEVEL_QUEUE_DEPTH 5
+    //#define SECOND_LEVEL_QUEUE_DEPTH 3950
+    //#define SIZE_OF_DMA_ARRAY 4000
+    //#define CELL_SIZE_MAXIMUM 3000
 
 #define TOP_LEVEL_QUEUE_DEPTH 5
 #define SECOND_LEVEL_QUEUE_DEPTH 7950
@@ -29,7 +29,10 @@
 //#define SIZE_OF_DMA_ARRAY 450
 
 
-
+//distance between adjacent lidar degree measurements (if the measurement is large, an object is detected)
+#define ObjectDetectionThreshold 400
+//50 possible object struct array elements in "arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE]" can be detected of type "ObjectNode"
+#define OBJECT_ARRAY_STRUCT_SIZE 50
 
 //Ring Buffer parameters for input UART (UART 4: U4RX)
 #define RING_BUF_SIZE 500

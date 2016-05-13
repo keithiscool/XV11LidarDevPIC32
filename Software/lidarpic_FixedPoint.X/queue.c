@@ -13,27 +13,6 @@ unsigned char dma_one_array[SIZE_OF_DMA_ARRAY];
 
 
 
-//////////////void __ISR(_UART_4_VECTOR, IPL1AUTO) Uart4Handler(void)
-////////////void __ISR(_DMA_1_VECTOR, IPL2AUTO) __DMA1Interrupt(void)
-////////////{
-//////////////    int dmaFlags=DCH1INT&0xff; // read the interrupt flags
-////////////    /*
-////////////    perform application specific operations in response to any interrupt flag set
-////////////    */
-////////////
-////////////    LATBbits.LATB9 = 1; //off LED
-////////////    LATBbits.LATB10 = 1; //off LED
-////////////    LATBbits.LATB11 = 0; //on LED
-////////////    while(1);
-////////////
-//////////////    DCH1INTCLR=0x000000ff; // clear the DMA channel interrupt flags
-////////////    IFS1bits.DMA1IF = 0;
-////////////    IFS1CLR = _IFS1_DMA1IF_MASK; // Be sure to clear the DMA0 interrupt flags
-////////////    // before exiting the service routine.
-////////////}
-
-
-
 // function runs to iniciate the queue system
 // the function is handed all the tools it needs to work the dma for sending
 void queue_begin(struct dmaSettings *_settings, int module_number)

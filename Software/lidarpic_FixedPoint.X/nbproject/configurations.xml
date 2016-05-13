@@ -12,6 +12,7 @@
       <itemPath>ObjectDetection.h</itemPath>
       <itemPath>queue.h</itemPath>
       <itemPath>defs.h</itemPath>
+      <itemPath>interrupt_handler.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"

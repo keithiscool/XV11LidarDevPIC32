@@ -35,8 +35,8 @@ void IOpins(void) {
     TRISBbits.TRISB10 = 0;  // set output debugging LEDs
     TRISBbits.TRISB11 = 0;  // set output debugging LEDs
 
-    TRISBbits.TRISB12 = 1;  // SERVO 1 CONTROL PWM
-    TRISBbits.TRISB13 = 1;  // SERVO 2 CONTROL PWM
+    TRISBbits.TRISB12 = 0;  // SERVO 1 CONTROL PWM
+    TRISBbits.TRISB13 = 0;  // SERVO 2 CONTROL PWM
 
     TRISBbits.TRISB14 = 1;  // U5TX TO LANTRONIX
 
@@ -51,7 +51,7 @@ void IOpins(void) {
 
 //    TRISDbits.TRISD2 = 1;   //I2C 2 Header (I2C SDA3)
 //    TRISDbits.TRISD3 = 1;   //I2C 2 Header (I2C SCL3)
-//        TRISDbits.TRISD3 = 0;   //(TIMER3 output for motor) I2C 2 Header (I2C SCL3)
+//    TRISDbits.TRISD3 = 0;   //(TIMER3 output for motor) I2C 2 Header (I2C SCL3)
     TRISDbits.TRISD4 = 1;   //Servo A
     TRISDbits.TRISD5 = 1;   //Servo B
     TRISDbits.TRISD6 = 1;   //Servo C
@@ -74,48 +74,37 @@ void IOpins(void) {
 }
 
 
+
+//100ms timer (PR = 31250, prescaler = 256)
 void timers(void){
-//    T2CONbits.ON = 0;
-////    T2CONbits.TCS = 0; // peripheral clock as source
-//    T2CONbits.TCKPS = 0b10; //64 prescalar
-//    T2CONbits.TGATE = 0;
-//    PR2 = 1250;
-//    IFS0CLR = _IFS0_T2IF_MASK;
-//    IEC0SET = _IEC0_T2IE_MASK;
-//    IPC2SET = ((0x1 << _IPC2_T2IP_POSITION) | (0x1 << _IPC2_T2IS_POSITION));
-//    T2CONbits.ON = 1;
+    T3CONbits.ON = 0;
+//    T3CONbits.TCS = 0; // peripheral clock as source
+//    T3CONbits.TCKPS = 0b10; //64 prescalar
+    T3CONbits.TCKPS = 0b11; //256 prescalar
+    T3CONbits.TGATE = 0;
+    //TPB_clock is the clock resource for peripherals on pic32MX (p.201)
+    //Example:
+    //Desired_Period == 100ms
+    //PR# = Desired_Period / [(1/Fosc)*Prescaler]
+    //PR# = 0.100seconds / [(1/80MHz)*256] = 31250
+    PR3 = 31250;
+    IFS0CLR = _IFS0_T3IF_MASK;
+    IEC0SET = _IEC0_T3IE_MASK;
+    IPC2SET = ((0x1 << _IPC3_T3IP_POSITION) | (0x1 << _IPC3_T3IS_POSITION));
+    T3CONbits.ON = 1;
 }
 
 
 
-////PWM Period = [(PR + 1) ? TPB ? (TMR Prescale Value)]
-////Control the speed the lidar rotates (alter speed to achieve around 200rpm)
-////Fosc==80MHz
-//void PWM(void){
-//    T2CONbits.ON = 0;
-//    T2CONbits.T32 = 0; //16 bit mode
-//    T2CONbits.TCKPS = 0b001; //prescalar of 2
-//    T2CONbits.TGATE = 0;
-////    PR2 = 4000;
-//    PR2 = 3800; //around 10.5kHz frequency
-//    OC1CONbits.ON = 0;
-//    OC1CONbits.OCM = 0b110;
-//    OC1CONbits.OCTSEL = 0; //select Timer 2 as source for OC1 (PWM)
-//    OC1R = 2000; // near 200rpm
-//    OC1RS = 2000; // near 200rpm
-//
-//    OC1CONbits.ON = 1;
-//    T2CONbits.ON = 1;
-//}
-
-//PWM Period = [(PR + 1) ? TPB ? (TMR Prescale Value)]
 //Control the speed the lidar rotates (alter speed to achieve around 200rpm)
+//The PWM uses Output Compare 1 (pin 46) using timer 2 (timer 1 is different than other timers)
 //Fosc==80MHz
 void PWM(void){
     T2CONbits.ON = 0;
     T2CONbits.T32 = 0; //16 bit mode
     T2CONbits.TCKPS = 0b001; //prescalar of 2
     T2CONbits.TGATE = 0;
+    //Timer&PWM Period = [(PR# + 1) / TPB / (TMR Prescale Value)]
 //    PR2 = 4000;
     PR2 = 3800; //around 10.5kHz frequency
     OC1CONbits.ON = 0;

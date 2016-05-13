@@ -1,3 +1,5 @@
 build/default/production/ObjectDetection.o:  \
 ObjectDetection.c  \
- ObjectDetection.h 
+ ObjectDetection.h  \
+defs.h  \
+interrupt_handler.h 

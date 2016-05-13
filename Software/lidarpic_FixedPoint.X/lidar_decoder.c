@@ -55,7 +55,8 @@ unsigned short CRC_calculator(unsigned char * _this) {
 }
 
 
-bool LIDARdecode(void){
+//parses data from the lidar and turns the stream into usable data (fetches measurements, flags, warnings and sotres them into arrays)
+bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
     unsigned short i;
 
     if (transmission_in_progress == false) {
@@ -82,10 +83,28 @@ bool LIDARdecode(void){
             //Now check if the lidar data can pass the CRC error-checking
             if (received_CRC == calculated_CRC) { // Used to see if incoming data passed the CRC
 
+                //offset degrees in order to allow the lidar to be used in the arena beacon mount (hook part opposite of motor is degree 0)
+                DegreeIndex = (data_buffer[1] - 0xA0) * 4; //pull degree base (1 degree index per packet) out of parsed lidar data
+                DegreeIndex = DegreeIndex + offsetDegrees; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
+                if(DegreeIndex < 0) {
+//                    NOTE: The lidar output is now shifted... (normally, we feed in +90 as "offsetDegrees", which makes 0 deg @ 90 degrees right of notch on XV11 lidar
+                    DegreeIndex = 360 + DegreeIndex; //add the negative value (subtract) from 360 to get [270,359] degree elements
+                }
+
+                //check if degree elements are behind the arena walls (throw out the unnecessary 180 degrees that will not be used)
+                if( (DegreeIndex < 0) || (DegreeIndex < 180) ) { //data is "out of bounds" and is not useful data
+                    for(i=0;i<4;i++) {
+                        DistanceArr[DegreeIndex+i] = 0;
+                        YCoordMeters[DegreeIndex+i] = 0;
+                        XCoordMeters[DegreeIndex+i] = 0;
+                        PreviousDistanceArr[DegreeIndex+i] = 0;
+                    }
+                    return false;
+                }
+
                 //Packet Index
                 output_data[0] = (data_buffer[1] - 0xA0); //0xA0 is offset that lidar uses for index (not sure why...)
-                //Degree Index
-                DegreeIndex = (data_buffer[1] - 0xA0) * 4;
+
                 //Speed - in 6 floating point precision format in 64th of an rpm
                 returned_speed = ((data_buffer[3] << 8) | data_buffer[2]) / 64;
 
@@ -109,7 +128,11 @@ bool LIDARdecode(void){
                 //Increments the Distance Index (Degree Index after it updates tje current distance value)
                 for (i = 0; i < 4; i++) {
                     if (!InvalidFlag[i]) { // the data is valid within the present 22byte packet
-//                    if (1) { //look at raw distances
+
+                        if(PreviousDistanceArr[DegreeIndex+i] != DistanceArr[DegreeIndex+i]) {
+                            
+                        }
+
                         //Pull 4 polar distances (in millimeters) from each 22 byte packet
                         DistanceArr[DegreeIndex+i] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
                         //Copy Quality Info to Quality Array to be Analyzed
@@ -119,7 +142,8 @@ bool LIDARdecode(void){
                             YCoordMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
                             XCoordMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
                         }
-                        SuccessfulMeasurements[DegreeIndex] = 1;
+                        SuccessfulMeasurements[DegreeIndex+i] = 1;
+                        PreviousDistanceArr[DegreeIndex+i] = DistanceArr[DegreeIndex+i]; //"old" copy of data is kept to compare with the next iteration of "newer" data
                         AnglesCoveredTotal++;
                     } else { //The data is not valid and has invalid flags within the present 22byte packet
                         //data is invalid and should not be used
@@ -127,8 +151,16 @@ bool LIDARdecode(void){
                         XCoordMeters[DegreeIndex+i] = 0;
                         YCoordMeters[DegreeIndex+i] = 0;
                         SuccessfulMeasurements[DegreeIndex+i] = 0;
+                        PreviousDistanceArr[DegreeIndex+i] = 0;
                     }
                 }
+                
+                //record which degree measurements were determined from the parsed input (used in object detection)
+                getDegrees[0] = DegreeIndex;
+                getDegrees[1] = DegreeIndex + 1;
+                getDegrees[2] = DegreeIndex + 2;
+                getDegrees[3] = DegreeIndex + 3;
+                
                 transmission_in_progress = false;
                 buff_index = 0;
                 return true;
@@ -150,18 +182,22 @@ bool LIDARdecode(void){
 //used to print out the parsed Polar data from xv11 lidar to a serial monitor
 bool debugLidarPolarData(void) {
     unsigned int i = 0;
+    unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
-    if(LIDARdecode() == 1) {
+    //read all 360 degrees, disable uart 4 input from lidar, then print data out
+    if(LIDARdecode(0,blah) == 1) {
         LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
 
-        if(AnglesCoveredTotal >= 180) {
+        if(AnglesCoveredTotal > 180) {
             //Show first index as zero
             //printf("Degree:\r\n%4d: ",0);
 
                 U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
                 U4MODEbits.ON = 0; // disable whole uart5 module
+                
 //            printf("\r\n");//new line (carriage return)
 //            printf("\x1b[H"); //clear screen // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
+                
                 printf("\r\n");//new line (carriage return)
                 printf("DisplayPolarData\r\n");
                 for(i=0;i<360;i++) {
@@ -205,18 +241,22 @@ bool debugLidarPolarData(void) {
 //used to print out the parsed X,Y (cartesian) data from xv11 lidar to a serial monitor
 bool debugLidarCartesianData(void) {
     unsigned int i = 0;
+    unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
-    if(LIDARdecode() == 1) {
+    //read all 360 degrees, disable uart 4 input from lidar, then print data out
+    if(LIDARdecode(0,blah) == 1) {
         LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
 
-        if(AnglesCoveredTotal >= 180) {
+        if(AnglesCoveredTotal > 180) {
             //Show first index as zero
             //printf("Degree:\r\n%4d: ",0);
 
             U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
             U4MODEbits.ON = 0; // disable whole uart5 module
+            
 //            printf("\r\n");//new line (carriage return)
 //            printf("\x1b[H"); //clear screen // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
+
             printf("\r\n");//new line (carriage return)
             printf("DisplayCartesianData\r\n");
             printf("XCoordMeters , YCoordMeters:\r\n");
@@ -265,11 +305,9 @@ bool debugLidarCartesianData(void) {
 
 
 //check to see if  all distances have measurement values
+//NOTE: THIS WILL NEVER PASS BECAUSE SOME DATA POINTS WILL ALWAYS BE "INVALID DATA", THUS LESS THAN 360 DEGREES HAVE "GOOD DATA"
 int AllMeasurementsTaken(void) {
     unsigned int j = 0;
-    for(j=0;j<90;j++) {
-        LIDARdecode(); //receive 90 packets of 4 distances each from the lidar
-    }
 
     //Verify that all 360 degrees have a distance measurement
     for(j=0;j<360;j++) {
@@ -285,6 +323,7 @@ int AllMeasurementsTaken(void) {
 
     return 0;
 }
+
 
 
 

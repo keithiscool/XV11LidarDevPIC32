@@ -29,6 +29,7 @@ extern unsigned int modulo_inc(const unsigned int value, const unsigned int modu
 extern bool debugLidarPolarData(void);
 extern bool debugLidarCartesianData(void);
 extern int AllMeasurementsTaken(void);
+extern bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]);
 
 bool transmission_in_progress = false;
 
@@ -39,10 +40,12 @@ unsigned char InvalidFlag[4];
 unsigned char WarningFlag[4];
 unsigned short QualityArr[360];
 unsigned short DistanceArr[360];
+unsigned short PreviousDistanceArr[360];
 short XCoordMeters[360];
 short YCoordMeters[360];
-unsigned short DegreeIndex;
+short DegreeIndex;
 short AnglesCoveredTotal;
+
 
 
 #endif	/* LIDAR_DECODER_H */

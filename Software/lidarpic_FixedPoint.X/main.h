@@ -32,6 +32,8 @@ unsigned int v = 0;
 
 extern bool debugLidarPolarData(void);
 extern bool debugLidarCartesianData(void);
+extern bool initObjectDetection(void);
+extern short objectDetection(void);
 
 extern short AnglesCoveredTotal;
 extern unsigned int SuccessfulMeasurements[360];

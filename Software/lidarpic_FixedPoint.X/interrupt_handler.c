@@ -1,12 +1,13 @@
 #include <xc.h>
 #include <sys/attribs.h>
 #include <stdbool.h>
+#include "interrupt_handler.h"
 
 bool timeFlag = false;
 
 
 //100ms timer (PR = 31250, prescaler = 256)
-void __ISR(_TIMER_1_VECTOR, IPL1AUTO) Timer1Handler(void)
+void __ISR(_TIMER_3_VECTOR, IPL1AUTO) Timer3Handler(void)
 {
     static unsigned int count = 0;
 
