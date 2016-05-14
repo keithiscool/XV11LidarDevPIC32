@@ -44,6 +44,7 @@ void IOpins(void) {
     TRISBbits.TRISB3 = 1;
     TRISBbits.TRISB4 = 1;
     TRISBbits.TRISB5 = 1;
+//    AD1PCFG = 0xEFFF; //disable Analog Select for B pins
     TRISBbits.TRISB6 = 1;
     TRISBbits.TRISB7 = 1;
 
@@ -52,7 +53,7 @@ void IOpins(void) {
 //    TRISDbits.TRISD2 = 1;   //I2C 2 Header (I2C SDA3)
 //    TRISDbits.TRISD3 = 1;   //I2C 2 Header (I2C SCL3)
 //    TRISDbits.TRISD3 = 0;   //(TIMER3 output for motor) I2C 2 Header (I2C SCL3)
-    TRISDbits.TRISD4 = 1;   //Servo A
+    TRISDbits.TRISD4 = 0;   //Servo A
     TRISDbits.TRISD5 = 1;   //Servo B
     TRISDbits.TRISD6 = 1;   //Servo C
     TRISDbits.TRISD7 = 1;   //Servo D
@@ -77,15 +78,16 @@ void IOpins(void) {
 void timers(void){
     T3CONbits.ON = 0;
 //    T3CONbits.TCS = 0; // peripheral clock as source
-//    T3CONbits.TCKPS = 0b10; //64 prescalar
-    T3CONbits.TCKPS = 0b11; //256 prescalar
+    T3CONbits.TCKPS = 0b111; //256 prescalar
+//    T3CONbits.TCKPS = 0b110; //64 prescalar
     T3CONbits.TGATE = 0;
-    //TPB_clock is the clock resource for peripherals on pic32MX (p.201)
+    //TPB_clock is the clock resource for peripherals on pic32MX (p.201) (look at system clock / "FPBDIV") - located in configuration bits
     //Example:
     //Desired_Period == 100ms
     //PR# = Desired_Period / [(1/Fosc)*Prescaler]
     //PR# = 0.100seconds / [(1/80MHz)*256] = 31250
     PR3 = 31250;
+//    PR3 = 65535;
     IFS0CLR = _IFS0_T3IF_MASK;
     IEC0SET = _IEC0_T3IE_MASK;
     IPC3SET = ((0x1 << _IPC3_T3IP_POSITION) | (0x1 << _IPC3_T3IS_POSITION));
@@ -102,8 +104,8 @@ void PWM(void){
     T2CONbits.T32 = 0; //16 bit mode
     T2CONbits.TCKPS = 0b001; //prescalar of 2
     T2CONbits.TGATE = 0;
-    //Timer&PWM Period = [(PR# + 1) / TPB / (TMR Prescale Value)]
-//    PR2 = 4000;
+    //PR# = Desired_Period / [(1/Fosc)*Prescaler]
+    //PR# = (1/10.5kHz) / [(1/80MHz)*2] = 3800
     PR2 = 3800; //around 10.5kHz frequency
     OC1CONbits.ON = 0;
     OC1CONbits.OCM = 0b110;

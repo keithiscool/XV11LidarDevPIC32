@@ -106,9 +106,9 @@ void main(void){
     while(1) {
 
 //RUN ONE OF THE FOLLOWING FUNCTIONS TO PARSE AND PRINT DATA TO UART 6
-        if(debugLidarPolarData() == true) {
-
-        }
+//        if(debugLidarPolarData() == true) {
+//
+//        }
 //        if(debugLidarCartesianData() == true) {
 //
 //        }
@@ -116,12 +116,13 @@ void main(void){
 
 ////RUN THE FOLLOWING FUNCTION TO PARSE THE DATA (WILL NOT PRINT THE DEBUG DATA AND WILL NOT LOOK FOR OBJECTS)
 //        unsigned short test[4];
-//        LIDARdecode(test); //simply call to parse the Lidar data (4 distance measurements at a time)
+//        short offsetLidarDegrees = 90;
+//        LIDARdecode(offsetLidarDegrees,test); //simply call to parse the Lidar data (4 distance measurements at a time)
 
 
 
 //        parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
-//        objectDetection();
+        objectDetection();
 
 
 
@@ -129,7 +130,7 @@ void main(void){
 
         //kick the dma to UART 6 if the buffer exceeds the scond level count
         if(queue_send() == true) {
-            LATBbits.LATB10 ^= 0;    //toggle on LED 2
+//            LATBbits.LATB10 ^= 0;    //toggle on LED 2
         }
     }
 }

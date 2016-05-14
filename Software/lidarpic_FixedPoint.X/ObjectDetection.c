@@ -98,21 +98,21 @@ short objectDetection(void) {
                         }
                     }
 
-
                 }
             }
         }
     }
     
-//    if((timeFlag == true)){// && (index_object > 0)) {
-//        //blinkLED(1000); //debug led to show object detected
+    if((timeFlag == true)){// && (index_object > 0)) {
+        //blinkLED(1000); //debug led to show object detected
+        hundredMillis++;
 //        LATBbits.LATB9 ^= 0; //toggle on LED
 //        LATBbits.LATB10 ^= 0; //toggle on LED
 //        LATBbits.LATB11 ^= 0; //toggle on LED
 //        LATBbits.LATB12 ^= 0; //toggle on LED
 //        LATBbits.LATB13 ^= 0; //toggle on LED
-//        timeFlag = false;
-//    }
+        timeFlag = false;
+    }
     
     return 1;
 }

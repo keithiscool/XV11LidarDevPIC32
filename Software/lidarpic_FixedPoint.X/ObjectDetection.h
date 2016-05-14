@@ -55,6 +55,8 @@ struct ObjectNode arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE];
 //keeps track of number of objects detected
 unsigned short index_object = 0;
 
+unsigned int hundredMillis = 0;
+
 
 //Using Linked List
 //struct ObjectNode *root; //This won't change, or we would lose the list in memory (this is the first

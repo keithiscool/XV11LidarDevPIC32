@@ -100,16 +100,9 @@ bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
                 }
 
 //                //check if degree elements are behind the arena walls (throw out the unnecessary 180 degrees that will not be used)
-//                if( (DegreeIndex < 0) || (DegreeIndex > 180) ) { //data is "out of bounds" and is not useful data
-//                    for(i=0;i<4;i++) {
-//                        DistanceArr[DegreeIndex+i] = 0;
-//                        YCoordMeters[DegreeIndex+i] = 0;
-//                        XCoordMeters[DegreeIndex+i] = 0;
-//                        PreviousDistanceArr[DegreeIndex+i] = 0;
-//                    }
+//                if(DegreeIndex > 180) { //data is "out of bounds" and is not useful data
 //                    return false;
 //                }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 //Packet Index

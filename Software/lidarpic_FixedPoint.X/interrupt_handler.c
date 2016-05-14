@@ -22,11 +22,15 @@ bool timeFlag = false;
 //    IFS0CLR = _IFS0_T3IF_MASK;
 //}
 
+
 //100ms timer (PR = 31250, prescaler = 256)
 void __ISR(_TIMER_3_VECTOR, IPL1AUTO) Timer3Handler(void)
 {
     static unsigned int count = 0;
     count++;
+
+    if(count > 100)
+        count--;
 
 //    if(count > 1) //100ms has passed
     if( (timeFlag == false) && (count > 5) ) //100ms has passed
@@ -34,6 +38,13 @@ void __ISR(_TIMER_3_VECTOR, IPL1AUTO) Timer3Handler(void)
         count = 0; //reset timer finished counter
         timeFlag = true; //set global variable for use with rest of code outside this interrupt (timer done)
     }
+        LATBbits.LATB9 ^= 0; //toggle on LED
+        LATBbits.LATB10 ^= 0; //toggle on LED
+        LATBbits.LATB11 ^= 0; //toggle on LED
+        LATBbits.LATB12 ^= 0; //toggle on LED
+        LATBbits.LATB13 ^= 0; //toggle on LED
+
+        LATDbits.LATD4 ^= 0;
 
     IFS0CLR = _IFS0_T3IF_MASK;
 }
