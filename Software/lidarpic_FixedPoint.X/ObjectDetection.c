@@ -94,7 +94,7 @@ short objectDetection(void) {
                         //CHECK IF THE LAST DETECTED OBJECT IS NOT IN THE SAME DEGREE PATH AND THE OBJECT IS NOT IMMEDIATELY NEXT TO ANOTHER OBJECT
                         if( (arrayofDetectedObjects[index_object-1].Degree - arrayofDetectedObjects[index_object-1].Degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
                             index_object++; //one object has been found, move to next struct array "arrayofDetectedObjects[30] element to populate next set of data when next object is found
-                            LATBbits.LATB10 = 0; //turn on LED
+                            LATBbits.LATB11 ^= 0; //turn on LED
                         }
                     }
 

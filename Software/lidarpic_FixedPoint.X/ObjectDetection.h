@@ -16,11 +16,16 @@
 extern bool timeFlag;
 
 //variables and parsing function from lidar_decoder.c
-extern unsigned short QualityArr[360];
-extern unsigned short DistanceArr[360];
-extern unsigned short PreviousDistanceArr[360];
-extern short XCoordMeters[360];
-extern short YCoordMeters[360];
+//extern unsigned short QualityArr[360];
+//extern unsigned short DistanceArr[360];
+//extern unsigned short PreviousDistanceArr[360];
+//extern short XCoordMeters[360];
+//extern short YCoordMeters[360];
+extern unsigned short QualityArr[180];
+extern unsigned short DistanceArr[180];
+extern unsigned short PreviousDistanceArr[180];
+extern short XCoordMeters[180];
+extern short YCoordMeters[180];
 extern bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]);
 
 //functions in ObjectDetection.c

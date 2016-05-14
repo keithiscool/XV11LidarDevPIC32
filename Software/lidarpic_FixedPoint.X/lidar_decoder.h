@@ -34,15 +34,21 @@ extern bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]);
 bool transmission_in_progress = false;
 
 float returned_speed = 0;
-unsigned int SuccessfulMeasurements[360];
 unsigned char QualityFlag[4];
 unsigned char InvalidFlag[4];
 unsigned char WarningFlag[4];
-unsigned short QualityArr[360];
-unsigned short DistanceArr[360];
-unsigned short PreviousDistanceArr[360];
-short XCoordMeters[360];
-short YCoordMeters[360];
+//unsigned int SuccessfulMeasurements[360];
+//unsigned short QualityArr[360];
+//unsigned short DistanceArr[360];
+//unsigned short PreviousDistanceArr[360];
+//short XCoordMeters[360];
+//short YCoordMeters[360];
+unsigned short SuccessfulMeasurements[180];
+unsigned short QualityArr[180];
+unsigned short DistanceArr[180];
+unsigned short PreviousDistanceArr[180];
+short XCoordMeters[180];
+short YCoordMeters[180];
 short DegreeIndex;
 short AnglesCoveredTotal;
 

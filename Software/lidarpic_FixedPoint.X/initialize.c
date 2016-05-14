@@ -69,8 +69,6 @@ void IOpins(void) {
 
     TRISG = 0xFFFFFF;       //LANTRONIX PINS (2 SETS OF UART - ONE FOR LANTRONIX AND 1 FOR DEBUG)
     
-    LATEbits.LATE3 = 1;     //off LED (PIC32 Dev-Board)
-    LATEbits.LATE4 = 1;     //off LED (PIC32 Dev-Board)
 }
 
 

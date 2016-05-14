@@ -85,22 +85,32 @@ bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
 
                 //offset degrees in order to allow the lidar to be used in the arena beacon mount (hook part opposite of motor is degree 0)
                 DegreeIndex = (data_buffer[1] - 0xA0) * 4; //pull degree base (1 degree index per packet) out of parsed lidar data
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //Shift the Data from notch being 0 degrees to notch being 90 degrees. (shift 0 degrees clockwise by 90 degrees)
+
                 DegreeIndex = DegreeIndex + offsetDegrees; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
-                if(DegreeIndex < 0) {
+
+                if(offsetDegrees < 0) {
 //                    NOTE: The lidar output is now shifted... (normally, we feed in +90 as "offsetDegrees", which makes 0 deg @ 90 degrees right of notch on XV11 lidar
                     DegreeIndex = 360 + DegreeIndex; //add the negative value (subtract) from 360 to get [270,359] degree elements
                 }
-
-                //check if degree elements are behind the arena walls (throw out the unnecessary 180 degrees that will not be used)
-                if( (DegreeIndex < 0) || (DegreeIndex < 180) ) { //data is "out of bounds" and is not useful data
-                    for(i=0;i<4;i++) {
-                        DistanceArr[DegreeIndex+i] = 0;
-                        YCoordMeters[DegreeIndex+i] = 0;
-                        XCoordMeters[DegreeIndex+i] = 0;
-                        PreviousDistanceArr[DegreeIndex+i] = 0;
-                    }
-                    return false;
+                if(DegreeIndex > 359) {
+                    DegreeIndex = DegreeIndex - 360; //add the negative value (subtract) from 360 to get [270,359] degree elements
                 }
+
+//                //check if degree elements are behind the arena walls (throw out the unnecessary 180 degrees that will not be used)
+//                if( (DegreeIndex < 0) || (DegreeIndex > 180) ) { //data is "out of bounds" and is not useful data
+//                    for(i=0;i<4;i++) {
+//                        DistanceArr[DegreeIndex+i] = 0;
+//                        YCoordMeters[DegreeIndex+i] = 0;
+//                        XCoordMeters[DegreeIndex+i] = 0;
+//                        PreviousDistanceArr[DegreeIndex+i] = 0;
+//                    }
+//                    return false;
+//                }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 //Packet Index
                 output_data[0] = (data_buffer[1] - 0xA0); //0xA0 is offset that lidar uses for index (not sure why...)
@@ -119,6 +129,7 @@ bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
                 InvalidFlag[1] = (data_buffer[9] & 0x80) >> 7;
                 InvalidFlag[2] = (data_buffer[13] & 0x80) >> 7;
                 InvalidFlag[3] = (data_buffer[17] & 0x80) >> 7;
+                
                 WarningFlag[0] = (data_buffer[5] & 0x40) >> 6; //check bit 6 of distance byte 1 for warning flag (bad signal strength / low reflectance)
                 WarningFlag[1] = (data_buffer[9] & 0x40) >> 6;
                 WarningFlag[2] = (data_buffer[13] & 0x40) >> 6;
@@ -181,13 +192,13 @@ bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
 
 //used to print out the parsed Polar data from xv11 lidar to a serial monitor
 bool debugLidarPolarData(void) {
-    unsigned int i = 0;
+    unsigned short i = 0;
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
-    if(LIDARdecode(0,blah) == 1) {
+    if(LIDARdecode(90,blah) == 1) {
 
-        if(AnglesCoveredTotal > 180) {
+//        if(AnglesCoveredTotal > 180) {
             //Show first index as zero
             //printf("Degree:\r\n%4d: ",0);
 
@@ -199,7 +210,7 @@ bool debugLidarPolarData(void) {
                 
                 printf("\r\n");//new line (carriage return)
                 printf("DisplayPolarData\r\n");
-                for(i=0;i<360;i++) {
+                for(i=0;i<180;i++) {
                     if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
                         if ((i % 24) == 0) { //print 24 distances per line
                             printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
@@ -210,26 +221,26 @@ bool debugLidarPolarData(void) {
                     }
                 }
 
-//                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
-                printf("\r\n");//new line (carriage return)
-                printf("DisplayQualityData\r\n");
-                for(i=0;i<360;i++) {
-                    if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-                        if ((i % 24) == 0) { //print 24 quality elements per line
-                            printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
-                        }
-                    printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
-                    } else {
-                        i--; //keep index at same value if the UART1 TX debug buffer is full
-                    }
-                }
+////                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
+//                printf("\r\n");//new line (carriage return)
+//                printf("DisplayQualityData\r\n");
+//                for(i=0;i<180;i++) {
+//                    if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+//                        if ((i % 24) == 0) { //print 24 quality elements per line
+//                            printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
+//                        }
+//                    printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
+//                    } else {
+//                        i--; //keep index at same value if the UART1 TX debug buffer is full
+//                    }
+//                }
 
 
                 if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
                     printf("RPM: %f\r\n", returned_speed);
                     printf("===========\r\n");
                 }
-            }
+//            }
         U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
         U4MODEbits.ON = 1; // enable whole uart module
     }
@@ -239,11 +250,11 @@ bool debugLidarPolarData(void) {
 
 //used to print out the parsed X,Y (cartesian) data from xv11 lidar to a serial monitor
 bool debugLidarCartesianData(void) {
-    unsigned int i = 0;
+    unsigned short i = 0;
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
-    if(LIDARdecode(0,blah) == 1) {
+    if(LIDARdecode(90,blah) == 1) {
 
         if(AnglesCoveredTotal > 180) {
             //Show first index as zero
@@ -258,7 +269,7 @@ bool debugLidarCartesianData(void) {
             printf("\r\n");//new line (carriage return)
             printf("DisplayCartesianData\r\n");
             printf("XCoordMeters , YCoordMeters:\r\n");
-            for(i=0;i<360;i++) {
+            for(i=0;i<180;i++) {
 //                        while(U1STAbits.TRMT == 1) { //check to see if the UART buffer is empty - if it is, send debug data out UART1
                 if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
                     if ((i % 10) == 0)  //print 4 x,y distances per line
@@ -269,21 +280,21 @@ bool debugLidarCartesianData(void) {
                 else
                     i--; //keep index at same value if the UART1 TX debug buffer is full
             }
-            printf("\r\n--------------------------------\r\n");
-
-//                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
-            printf("\r\n");//new line (carriage return)
-            printf("DisplayQualityData\r\n");
-            for(i=0;i<360;i++) {
-                if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-                    if ((i % 4) == 0) { //print 24 quality elements per line
-                        printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
-                    }
-                printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
-                } else {
-                    i--; //keep index at same value if the UART1 TX debug buffer is full
-                }
-            }
+//            printf("\r\n--------------------------------\r\n");
+//
+////                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
+//            printf("\r\n");//new line (carriage return)
+//            printf("DisplayQualityData\r\n");
+//            for(i=0;i<180;i++) {
+//                if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
+//                    if ((i % 4) == 0) { //print 24 quality elements per line
+//                        printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
+//                    }
+//                printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
+//                } else {
+//                    i--; //keep index at same value if the UART1 TX debug buffer is full
+//                }
+//            }
 
 
             if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART

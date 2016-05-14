@@ -102,7 +102,6 @@ void main(void){
     //initialize arrays for object detection
     initObjectDetection();
 
-    
 
     while(1) {
 
@@ -130,7 +129,7 @@ void main(void){
 
         //kick the dma to UART 6 if the buffer exceeds the scond level count
         if(queue_send() == true) {
-            LATBbits.LATB12 ^= 0;    //toggle on LED 2
+            LATBbits.LATB10 ^= 0;    //toggle on LED 2
         }
     }
 }
