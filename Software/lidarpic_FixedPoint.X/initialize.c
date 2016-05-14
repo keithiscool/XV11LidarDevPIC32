@@ -59,6 +59,7 @@ void IOpins(void) {
     TRISDbits.TRISD8 = 1;
     TRISDbits.TRISD10 = 1;
     TRISDbits.TRISD11 = 1;
+    
     TRISFbits.TRISF0 = 1;
     TRISFbits.TRISF1 = 1;
     TRISFbits.TRISF2 = 1;
@@ -67,10 +68,9 @@ void IOpins(void) {
     TRISFbits.TRISF5 = 1;   //I2C 1 Header (I2C SCL5)
 
     TRISG = 0xFFFFFF;       //LANTRONIX PINS (2 SETS OF UART - ONE FOR LANTRONIX AND 1 FOR DEBUG)
+    
     LATEbits.LATE3 = 1;     //off LED (PIC32 Dev-Board)
     LATEbits.LATE4 = 1;     //off LED (PIC32 Dev-Board)
-    LATBbits.LATB12 = 1;    //SERVO 1 CONTROL PWM
-    LATBbits.LATB13 = 1;    //SERVO 2 CONTROL PWM
 }
 
 
@@ -90,7 +90,7 @@ void timers(void){
     PR3 = 31250;
     IFS0CLR = _IFS0_T3IF_MASK;
     IEC0SET = _IEC0_T3IE_MASK;
-    IPC2SET = ((0x1 << _IPC3_T3IP_POSITION) | (0x1 << _IPC3_T3IS_POSITION));
+    IPC3SET = ((0x1 << _IPC3_T3IP_POSITION) | (0x1 << _IPC3_T3IS_POSITION));
     T3CONbits.ON = 1;
 }
 
@@ -116,8 +116,6 @@ void PWM(void){
     OC1RS = 2300; // near 230rpm
 //    OC1R = 2450; // near 260rpm
 //    OC1RS = 2450; // near 260rpm
-//    OC1R = 2600; // near 290rpm (too fast?)
-//    OC1RS = 2600; // near 290rpm
 
     OC1CONbits.ON = 1;
     T2CONbits.ON = 1;

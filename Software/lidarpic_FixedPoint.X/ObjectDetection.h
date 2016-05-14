@@ -12,7 +12,7 @@
 #include "defs.h"
 #include "interrupt_handler.h"
 
-//100ms timer using
+//100ms timer usage flag
 extern bool timeFlag;
 
 //variables and parsing function from lidar_decoder.c
@@ -23,7 +23,7 @@ extern short XCoordMeters[360];
 extern short YCoordMeters[360];
 extern bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]);
 
-
+//functions in ObjectDetection.c
 extern short objectDetection(void);
 extern bool initObjectDetection(void);
 

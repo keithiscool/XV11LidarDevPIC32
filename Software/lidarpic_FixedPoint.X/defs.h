@@ -33,6 +33,7 @@
 #define ObjectDetectionThreshold 400
 //50 possible object struct array elements in "arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE]" can be detected of type "ObjectNode"
 #define OBJECT_ARRAY_STRUCT_SIZE 50
+#define DEGREES_BETWEEN_EACH_OBJECT 10
 
 //Ring Buffer parameters for input UART (UART 4: U4RX)
 #define RING_BUF_SIZE 500

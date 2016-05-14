@@ -65,51 +65,54 @@ short objectDetection(void) {
     DegreeCPY = myDegrees;
     unsigned short i = 0;
     unsigned short offset = 90; //offset lidar rotation by 90 degrees to get it to used forward facing data from 0 to 180 degrees
+    static bool ObjectStartDetected = 0;
     
 
     if(LIDARdecode(offset, DegreeCPY) == true) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
 
-        for(i=0;i<4;i++) {
+        //check that the object detection array of structs is not exceeding the limit
+        if(index_object < OBJECT_ARRAY_STRUCT_SIZE) {
+            //run through each distance measurement in each 22 byte parsed packet from "LIDARdecode"
+            for(i=0;i<4;i++) {
+                //take magnitude difference from present distance measurement and the one previous (this distance will be used to detect objects if the gap between adjacent distances is large
+                DistanceDifferencesArr[myDegrees[i]] = abs(( (DistanceArr[myDegrees[i]]) - (DistanceArr[myDegrees[i-1]])));
 
-    //        //check previous degree magnitude with the present magnitude
-    //        if(myDegrees[0] > 355) { //check rollover condition where 360 degrees is compared w/ 0 degrees
-    //            DistanceDifferencesArr[0] = abs((DistanceArr[0] - DistanceArr[359])); //use abs() function to get unsigned magnitude of polar distance
-    //        } else{
-            DistanceDifferencesArr[myDegrees[i]] = abs(( (DistanceArr[myDegrees[i]]) - (DistanceArr[myDegrees[i-1]])));
-    //        }
+                //check both of the adjacent measurements are valid (data is not zero)
+                if( DistanceDifferencesArr[myDegrees[i]] && DistanceDifferencesArr[myDegrees[i-1]] ) {
 
-            //check both of the adjacent measurements are valid (data is not zero)
-            if( (DistanceDifferencesArr[myDegrees[i]]) && (DistanceDifferencesArr[myDegrees[i-1]]) ) {
-                //is start of object not found?
-    //            if(arrayofDetectedObjects[index_object].startOfDetectedObject < 1) {
-    //                arrayofDetectedObjects[index_object].startOfDetectedObject = myDegrees[i];
-    //            }
-    //            //is start of object found?
-    //            if(arrayofDetectedObjects[index_object].startOfDetectedObject > 0) {
-    //                arrayofDetectedObjects[index_object].endOfDetectedObject = myDegrees[i]; //found end of an object (object was detected)
-    //            }
-
-                //are the magnitudes different between degree measurements
-                if((DistanceDifferencesArr[myDegrees[i]]) > ObjectDetectionThreshold) { // object protruded from surrounding measurements by threshold
-                    arrayofDetectedObjects[index_object].startOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
-                    if(index_object < OBJECT_ARRAY_STRUCT_SIZE) {
-                        index_object++; //one object has been found, move to next struct array "arrayofDetectedObjects[30] element to populate next set of data when next object is found
-                        if(timeFlag == true) {
-                            //blinkLED(1000); //debug led to show object detected
-                            LATBbits.LATB9 ^= 0; //toggle on LED
-                            LATBbits.LATB10 ^= 0; //toggle on LED
-                            LATBbits.LATB11 ^= 0; //toggle on LED
-                            LATBbits.LATB12 ^= 0; //toggle on LED
-                            LATBbits.LATB13 ^= 0; //toggle on LED
-                            timeFlag = false;
-                        }
-                    }else {
-                        index_object = 0; //reset because object array is only 30 elements large
+                    //are the magnitudes different between degree measurements
+                    if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (ObjectStartDetected == false) ) { // object protruded from surrounding measurements by threshold
+                        arrayofDetectedObjects[index_object].startOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
+                        ObjectStartDetected = true; //first edge of object detected
                     }
+
+                    //if a difference in magnitude is detected and there is already an object detected (last edge of object detected)
+                    if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (ObjectStartDetected == true) ) { // object protruded from surrounding measurements by threshold
+                        arrayofDetectedObjects[index_object].endOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
+                        ObjectStartDetected = false; //last edge of object detected (reset flag)
+
+                        //CHECK IF THE LAST DETECTED OBJECT IS NOT IN THE SAME DEGREE PATH AND THE OBJECT IS NOT IMMEDIATELY NEXT TO ANOTHER OBJECT
+                        if( (arrayofDetectedObjects[index_object-1].Degree - arrayofDetectedObjects[index_object-1].Degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
+                            index_object++; //one object has been found, move to next struct array "arrayofDetectedObjects[30] element to populate next set of data when next object is found
+                            LATBbits.LATB10 = 0; //turn on LED
+                        }
+                    }
+
 
                 }
             }
         }
     }
+    
+//    if((timeFlag == true)){// && (index_object > 0)) {
+//        //blinkLED(1000); //debug led to show object detected
+//        LATBbits.LATB9 ^= 0; //toggle on LED
+//        LATBbits.LATB10 ^= 0; //toggle on LED
+//        LATBbits.LATB11 ^= 0; //toggle on LED
+//        LATBbits.LATB12 ^= 0; //toggle on LED
+//        LATBbits.LATB13 ^= 0; //toggle on LED
+//        timeFlag = false;
+//    }
+    
     return 1;
 }

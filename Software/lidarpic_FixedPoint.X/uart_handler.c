@@ -32,7 +32,7 @@ void _mon_putc(char c) {
 
 
 //RX lidar receive
-void __ISR(_UART_4_VECTOR, IPL1AUTO) Uart4Handler(void)
+void __ISR(_UART_4_VECTOR, IPL2AUTO) Uart4Handler(void)
 {
     ring_buff_put(&buffer_five, U4RXREG);
     

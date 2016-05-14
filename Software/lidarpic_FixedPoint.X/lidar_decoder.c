@@ -186,7 +186,6 @@ bool debugLidarPolarData(void) {
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
     if(LIDARdecode(0,blah) == 1) {
-        LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
 
         if(AnglesCoveredTotal > 180) {
             //Show first index as zero
@@ -245,7 +244,6 @@ bool debugLidarCartesianData(void) {
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
     if(LIDARdecode(0,blah) == 1) {
-        LATBbits.LATB9 ^= 0; //Toggle LED1 on,off,on,off
 
         if(AnglesCoveredTotal > 180) {
             //Show first index as zero
