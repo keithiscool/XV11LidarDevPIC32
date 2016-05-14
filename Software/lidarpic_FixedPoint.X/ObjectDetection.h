@@ -39,15 +39,18 @@ unsigned short DistanceDifferencesArr[360];
 struct ObjectNode {
     unsigned short startOfDetectedObject;
     unsigned short endOfDetectedObject;
-    unsigned short Degree;
-    unsigned short PolarDistance;
+    unsigned short degree;
+    unsigned short polarDistance;
+    unsigned short qualityOfObject; //if the object is shiny or reflective, number is higher (above 100)
     short xPos;
     short yPos;
 //    struct ObjectNode *next; //used for linked list to point to the adjacent struct
 };
 
-//Empty struct used to "reset to zero" the arrayofDetectedObjects[] struct array elements
-static struct ObjectNode emptyObjectStruct = {0,0,0,0,0,0};
+
+//Empty Object struct used to "reset to zero" the arrayofDetectedObjects[] struct array elements
+static struct ObjectNode emptyObjectStruct = {0,0,0,0,0,0,0};
+
 
 
 //Declaration of discovered objects "array of structs"

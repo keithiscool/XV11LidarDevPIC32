@@ -29,14 +29,22 @@
 //#define SIZE_OF_DMA_ARRAY 450
 
 
+//Ring Buffer parameters for input UART (UART 4: U4RX)
+#define RING_BUF_SIZE 500
+
+
+
+
 //distance between adjacent lidar degree measurements (if the measurement is large, an object is detected)
 #define ObjectDetectionThreshold 400
 //50 possible object struct array elements in "arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE]" can be detected of type "ObjectNode"
 #define OBJECT_ARRAY_STRUCT_SIZE 50
-#define DEGREES_BETWEEN_EACH_OBJECT 10
+#define DEGREES_BETWEEN_EACH_OBJECT 5
+//offset the x position (in millimeters) of the lidar cartesian data (beacon is not in the center of the arena, but to the right of the collection bin facing the digging area)
+#define X_POSITION_OFFSET_LIDAR_PLACEMENT 787 //offset in millimeters to right of collection bin center of back wall
 
-//Ring Buffer parameters for input UART (UART 4: U4RX)
-#define RING_BUF_SIZE 500
+
+
 
 
 

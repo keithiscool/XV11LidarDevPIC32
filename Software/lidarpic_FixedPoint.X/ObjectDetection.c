@@ -51,7 +51,7 @@
 
 bool initObjectDetection(void) {
     
-    arrayofDetectedObjects[index_object] = emptyObjectStruct; //initialize all struct array elements to zero
+    arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE] = emptyObjectStruct; //initialize all struct array elements to zero
 }
 
 
@@ -72,15 +72,16 @@ short objectDetection(void) {
 
         //check that the object detection array of structs is not exceeding the limit
         if(index_object < OBJECT_ARRAY_STRUCT_SIZE) {
+            
             //run through each distance measurement in each 22 byte parsed packet from "LIDARdecode"
             for(i=0;i<4;i++) {
                 //take magnitude difference from present distance measurement and the one previous (this distance will be used to detect objects if the gap between adjacent distances is large
-                DistanceDifferencesArr[myDegrees[i]] = abs(( (DistanceArr[myDegrees[i]]) - (DistanceArr[myDegrees[i-1]])));
+                DistanceDifferencesArr[myDegrees[i]] = abs( DistanceArr[myDegrees[i]] - DistanceArr[myDegrees[i-1]] );
 
                 //check both of the adjacent measurements are valid (data is not zero)
                 if( DistanceDifferencesArr[myDegrees[i]] && DistanceDifferencesArr[myDegrees[i-1]] ) {
 
-                    //are the magnitudes different between degree measurements
+                    //are the magnitudes different between degree measurements (first edge of object detected)
                     if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (ObjectStartDetected == false) ) { // object protruded from surrounding measurements by threshold
                         arrayofDetectedObjects[index_object].startOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
                         ObjectStartDetected = true; //first edge of object detected
@@ -89,10 +90,21 @@ short objectDetection(void) {
                     //if a difference in magnitude is detected and there is already an object detected (last edge of object detected)
                     if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (ObjectStartDetected == true) ) { // object protruded from surrounding measurements by threshold
                         arrayofDetectedObjects[index_object].endOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
+
+                        //check if object is wide enough (are there enough degrees between the start and the start of the object?)
+                        if( ((arrayofDetectedObjects[index_object].startOfDetectedObject - arrayofDetectedObjects[index_object].endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
+                            //average and populate the data for the object into the object struct array
+                            arrayofDetectedObjects[index_object].qualityOfObject = (( QualityArr[arrayofDetectedObjects[index_object].startOfDetectedObject] + QualityArr[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
+                            arrayofDetectedObjects[index_object].xPos = (( XCoordMeters[arrayofDetectedObjects[index_object].startOfDetectedObject] + XCoordMeters[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
+                            arrayofDetectedObjects[index_object].yPos = (( YCoordMeters[arrayofDetectedObjects[index_object].startOfDetectedObject] + YCoordMeters[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
+                            arrayofDetectedObjects[index_object].polarDistance = (( DistanceArr[arrayofDetectedObjects[index_object].startOfDetectedObject] + DistanceArr[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
+                            arrayofDetectedObjects[index_object].degree = (( arrayofDetectedObjects[index_object].startOfDetectedObject + arrayofDetectedObjects[index_object].endOfDetectedObject ) / 2 );
+                        }
+
                         ObjectStartDetected = false; //last edge of object detected (reset flag)
 
-                        //CHECK IF THE LAST DETECTED OBJECT IS NOT IN THE SAME DEGREE PATH AND THE OBJECT IS NOT IMMEDIATELY NEXT TO ANOTHER OBJECT
-                        if( (arrayofDetectedObjects[index_object-1].Degree - arrayofDetectedObjects[index_object-1].Degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
+                        //CHECK IF THE LAST DETECTED OBJECT IS NOT IN THE SAME DEGREE PATH AS THE NEW DETECTED OBJECT AND THE OBJECT IS NOT IMMEDIATELY NEXT TO THE LAST OBJECT (avoid counting an object twice)
+                        if( (arrayofDetectedObjects[index_object-1].degree - arrayofDetectedObjects[index_object-1].degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
                             index_object++; //one object has been found, move to next struct array "arrayofDetectedObjects[30] element to populate next set of data when next object is found
                             LATBbits.LATB11 ^= 0; //turn on LED
                         }
