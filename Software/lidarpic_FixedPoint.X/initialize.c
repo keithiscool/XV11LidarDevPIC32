@@ -15,8 +15,8 @@ void initialize(void){
      delay();
      PWM();
      delay();
-     UART();
-     delay();
+//     UART();
+//     delay();
      DMA();
      delay();
      INTEnableInterrupts(); //enable interrupts
@@ -35,8 +35,8 @@ void IOpins(void) {
     TRISBbits.TRISB10 = 0;  // set output debugging LEDs
     TRISBbits.TRISB11 = 0;  // set output debugging LEDs
 
-    TRISBbits.TRISB12 = 0;  // SERVO 1 CONTROL PWM
-    TRISBbits.TRISB13 = 0;  // SERVO 2 CONTROL PWM
+    TRISBbits.TRISB12 = 0;  // SERVO 1 CONTROL PWM and debug LED
+    TRISBbits.TRISB13 = 0;  // SERVO 2 CONTROL PWM and debug LED
 
     TRISBbits.TRISB14 = 1;  // U5TX TO LANTRONIX
 
@@ -50,14 +50,16 @@ void IOpins(void) {
 
     TRISE = 0xFFFFFF;
 
-//    TRISDbits.TRISD2 = 1;   //I2C 2 Header (I2C SDA3)
+    TRISDbits.TRISD1 = 0;   //UART 4 TX
+    TRISDbits.TRISD2 = 0;   //I2C 2 Header (I2C SDA3)
 //    TRISDbits.TRISD3 = 1;   //I2C 2 Header (I2C SCL3)
 //    TRISDbits.TRISD3 = 0;   //(TIMER3 output for motor) I2C 2 Header (I2C SCL3)
-    TRISDbits.TRISD4 = 0;   //Servo A
+    TRISDbits.TRISD4 = 1;   //Servo A
     TRISDbits.TRISD5 = 1;   //Servo B
     TRISDbits.TRISD6 = 1;   //Servo C
     TRISDbits.TRISD7 = 1;   //Servo D
     TRISDbits.TRISD8 = 1;
+    TRISDbits.TRISD9 = 1;   //UART 4 RX (LIDAR Input)
     TRISDbits.TRISD10 = 1;
     TRISDbits.TRISD11 = 1;
     
@@ -65,7 +67,7 @@ void IOpins(void) {
     TRISFbits.TRISF1 = 1;
     TRISFbits.TRISF2 = 1;
     TRISFbits.TRISF3 = 1;
-    TRISFbits.TRISF4 = 1;   //I2C 1 Header (I2C SDA5)
+    TRISFbits.TRISF4 = 0;   //I2C 1 Header (I2C SDA5)
     TRISFbits.TRISF5 = 1;   //I2C 1 Header (I2C SCL5)
 
     TRISG = 0xFFFFFF;       //LANTRONIX PINS (2 SETS OF UART - ONE FOR LANTRONIX AND 1 FOR DEBUG)
@@ -80,6 +82,7 @@ void timers(void){
 //    T3CONbits.TCS = 0; // peripheral clock as source
     T3CONbits.TCKPS = 0b111; //256 prescalar
 //    T3CONbits.TCKPS = 0b110; //64 prescalar
+//    T3CONbits.TCKPS = 0b001; //2 prescalar
     T3CONbits.TGATE = 0;
     //TPB_clock is the clock resource for peripherals on pic32MX (p.201) (look at system clock / "FPBDIV") - located in configuration bits
     //Example:
@@ -87,7 +90,6 @@ void timers(void){
     //PR# = Desired_Period / [(1/Fosc)*Prescaler]
     //PR# = 0.100seconds / [(1/80MHz)*256] = 31250
     PR3 = 31250;
-//    PR3 = 65535;
     IFS0CLR = _IFS0_T3IF_MASK;
     IEC0SET = _IEC0_T3IE_MASK;
     IPC3SET = ((0x1 << _IPC3_T3IP_POSITION) | (0x1 << _IPC3_T3IS_POSITION));
@@ -137,7 +139,7 @@ void UART(void){
     IPC12bits.U4IS = 2; // sub priority 2
     U4STAbits.URXEN = 1; // enable uart recieve
     U4STAbits.URXISEL = 0b00; // interrupt generated with every reception
-    U4STAbits.UTXEN = 1; // enable uart transmit
+    U4STAbits.UTXEN = 0; // enable uart transmit
     U4MODEbits.ON = 1; // enable whole uart module
     // uart 4 error
     IEC2bits.U4EIE = 1; // error interrupt enabled

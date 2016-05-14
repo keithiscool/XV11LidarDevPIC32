@@ -103,6 +103,12 @@ void main(void){
     initObjectDetection();
 
 
+//    while (1){
+//        delay();
+//        LATDbits.LATD1 ^= 1;
+//        delay();
+//    }
+
     while(1) {
 
 //RUN ONE OF THE FOLLOWING FUNCTIONS TO PARSE AND PRINT DATA TO UART 6

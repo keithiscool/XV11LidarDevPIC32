@@ -38,13 +38,18 @@ void __ISR(_TIMER_3_VECTOR, IPL1AUTO) Timer3Handler(void)
         count = 0; //reset timer finished counter
         timeFlag = true; //set global variable for use with rest of code outside this interrupt (timer done)
     }
-        LATBbits.LATB9 ^= 0; //toggle on LED
-        LATBbits.LATB10 ^= 0; //toggle on LED
-        LATBbits.LATB11 ^= 0; //toggle on LED
-        LATBbits.LATB12 ^= 0; //toggle on LED
-        LATBbits.LATB13 ^= 0; //toggle on LED
+    
+//        LATBbits.LATB9 ^= 1; //toggle on LED
+//        LATBbits.LATB10 ^= 1; //toggle on LED
+//        LATBbits.LATB11 ^= 1; //toggle on LED
+//        LATBbits.LATB12 ^= 1; //toggle on LED
+//        LATBbits.LATB13 ^= 1; //toggle on LED
+//
+//        LATBbits.LATB4 ^= 1;
+//        LATFbits.LATF4 ^= 1;
+//        LATDbits.LATD2 ^= 1;
+//        LATDbits.LATD1 ^= 1;
 
-        LATDbits.LATD4 ^= 0;
 
     IFS0CLR = _IFS0_T3IF_MASK;
 }
