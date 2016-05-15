@@ -3,6 +3,7 @@
 #include "lidar_decoder.h"
 #include <math.h>
 #include "SinLookupTable.h"
+#include "defs.h"
 //////////////////////////////////////////////////////////////////////////////
 // To note for dsPIC32:
 //8bits=char   16bits=short    32bits=integer
@@ -95,6 +96,7 @@ bool LIDARdecode(short offsetDegrees, short getDegrees[4]) {
 //                    NOTE: The lidar output is now shifted... (normally, we feed in +90 as "offsetDegrees", which makes 0 deg @ 90 degrees right of notch on XV11 lidar
                     DegreeIndex = 360 + DegreeIndex; //add the negative value (subtract) from 360 to get [270,359] degree elements
                 }
+
                 if(DegreeIndex > 359) {
                     DegreeIndex = DegreeIndex - 360; //add the negative value (subtract) from 360 to get [270,359] degree elements
                 }
@@ -196,7 +198,7 @@ bool debugLidarPolarData(void) {
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
-    if(LIDARdecode(90,blah) == 1) {
+    if(LIDARdecode(88,blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
 
 //        if(AnglesCoveredTotal > 180) {
             //Show first index as zero
@@ -212,7 +214,7 @@ bool debugLidarPolarData(void) {
                 printf("DisplayPolarData\r\n");
                 for(i=0;i<180;i++) {
                     if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-                        if ((i % 24) == 0) { //print 24 distances per line
+                        if ((i % PRINT_NUM_PER_LINE) == 0) { //print 24 distances per line
                             printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
                         }
                         printf("%4u ",DistanceArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
@@ -226,7 +228,7 @@ bool debugLidarPolarData(void) {
 //                printf("DisplayQualityData\r\n");
 //                for(i=0;i<180;i++) {
 //                    if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-//                        if ((i % 24) == 0) { //print 24 quality elements per line
+//                        if ((i % PRINT_NUM_PER_LINE) == 0) { //print 24 quality elements per line
 //                            printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
 //                        }
 //                    printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits
@@ -254,7 +256,7 @@ bool debugLidarCartesianData(void) {
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
-    if(LIDARdecode(90,blah) == 1) {
+    if(LIDARdecode(88,blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
 
         if(AnglesCoveredTotal > 180) {
             //Show first index as zero
@@ -272,7 +274,7 @@ bool debugLidarCartesianData(void) {
             for(i=0;i<180;i++) {
 //                        while(U1STAbits.TRMT == 1) { //check to see if the UART buffer is empty - if it is, send debug data out UART1
                 if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
-                    if ((i % 10) == 0)  //print 4 x,y distances per line
+                    if ((i % PRINT_NUM_PER_LINE) == 0)  //print 4 x,y distances per line
                         printf("\r\n%4d: ",i); //print 4 distances per line '\r\n' causes prompt to carraige return
 
                     printf(" %d,%d//", XCoordMeters[i], YCoordMeters[i]);
@@ -287,7 +289,7 @@ bool debugLidarCartesianData(void) {
 //            printf("DisplayQualityData\r\n");
 //            for(i=0;i<180;i++) {
 //                if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
-//                    if ((i % 4) == 0) { //print 24 quality elements per line
+//                    if ((i % PRINT_NUM_PER_LINE) == 0) { //print 24 quality elements per line
 //                        printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
 //                    }
 //                printf("%4u ",QualityArr[i]); //Print out the data to 4, 16-bit unsigned integer digits

@@ -61,7 +61,7 @@ unsigned short index_object = 0;
 unsigned int hundredMillis = 0;
 
 //flag used to designate a corner of an object has been detected (object is closer than surroundings)
-static bool ObjectStartDetected = 0;
+static bool ObjectStartEdgeDetected = 0;
 
 
 //Using Linked List

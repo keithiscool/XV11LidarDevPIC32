@@ -19,17 +19,23 @@
 //NEW DMA VALUES FOR USING LIDAR BOARD:
 
 
-//DMA SETTING USED FOR WHEN "debugLidarPolarData()" IS CALLED
+////DMA SETTING USED FOR WHEN "debugLidarPolarData()" IS CALLED
 //#define TOP_LEVEL_QUEUE_DEPTH 5
 //#define SECOND_LEVEL_QUEUE_DEPTH 7950
 //#define SIZE_OF_DMA_ARRAY 8000
 //#define CELL_SIZE_MAXIMUM 8000
 
-
-////DMA SETTING USED FOR WHEN "objectDetection()" IS CALLED
+//DMA SETTING USED FOR WHEN "debugLidarPolarData()" IS CALLED
 #define TOP_LEVEL_QUEUE_DEPTH 5
-#define SECOND_LEVEL_QUEUE_DEPTH 400
-#define SIZE_OF_DMA_ARRAY 450
+#define SECOND_LEVEL_QUEUE_DEPTH 1500
+#define SIZE_OF_DMA_ARRAY 2000
+#define CELL_SIZE_MAXIMUM 2000
+
+
+//////DMA SETTING USED FOR WHEN "objectDetection()" IS CALLED
+//#define TOP_LEVEL_QUEUE_DEPTH 5
+//#define SECOND_LEVEL_QUEUE_DEPTH 400
+//#define SIZE_OF_DMA_ARRAY 450
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +43,8 @@
 //Ring Buffer parameters for input UART (UART 4: U4RX)
 #define RING_BUF_SIZE 500
 
-
+//tells how many lines should be printed in debug mode
+#define PRINT_NUM_PER_LINE 24
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Lidar definitions for object detection with Lidar
