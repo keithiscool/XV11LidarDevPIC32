@@ -9,31 +9,38 @@
 
 
 //DMA parameters for tuning the size of the output DMA (UART 6: U6TX)
-//ORIGINAL VALUES FOR RouterPic:
+//ORIGINAL DMA VALUES FOR RouterPic (old pic32 dev board):
     //#define TOP_LEVEL_QUEUE_DEPTH 5
     //#define SECOND_LEVEL_QUEUE_DEPTH 193
     //#define SIZE_OF_DMA_ARRAY 200
-//NEW VALUES FOR USING LIDAR BOARD:
-    //#define TOP_LEVEL_QUEUE_DEPTH 5
-    //#define SECOND_LEVEL_QUEUE_DEPTH 3950
-    //#define SIZE_OF_DMA_ARRAY 4000
-    //#define CELL_SIZE_MAXIMUM 3000
 
-#define TOP_LEVEL_QUEUE_DEPTH 5
-#define SECOND_LEVEL_QUEUE_DEPTH 7950
-#define SIZE_OF_DMA_ARRAY 8000
-#define CELL_SIZE_MAXIMUM 8000
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//NEW DMA VALUES FOR USING LIDAR BOARD:
+
+
+//DMA SETTING USED FOR WHEN "debugLidarPolarData()" IS CALLED
 //#define TOP_LEVEL_QUEUE_DEPTH 5
-//#define SECOND_LEVEL_QUEUE_DEPTH 400
-//#define SIZE_OF_DMA_ARRAY 450
+//#define SECOND_LEVEL_QUEUE_DEPTH 7950
+//#define SIZE_OF_DMA_ARRAY 8000
+//#define CELL_SIZE_MAXIMUM 8000
 
+
+////DMA SETTING USED FOR WHEN "objectDetection()" IS CALLED
+#define TOP_LEVEL_QUEUE_DEPTH 5
+#define SECOND_LEVEL_QUEUE_DEPTH 400
+#define SIZE_OF_DMA_ARRAY 450
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //Ring Buffer parameters for input UART (UART 4: U4RX)
 #define RING_BUF_SIZE 500
 
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Lidar definitions for object detection with Lidar
 
 //distance between adjacent lidar degree measurements (if the measurement is large, an object is detected)
 #define ObjectDetectionThreshold 400

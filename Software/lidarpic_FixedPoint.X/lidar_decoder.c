@@ -56,7 +56,7 @@ unsigned short CRC_calculator(unsigned char * _this) {
 
 
 //parses data from the lidar and turns the stream into usable data (fetches measurements, flags, warnings and sotres them into arrays)
-bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
+bool LIDARdecode(short offsetDegrees, short getDegrees[4]) {
     unsigned short i;
 
     if (transmission_in_progress == false) {
@@ -100,9 +100,16 @@ bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
                 }
 
 //                //check if degree elements are behind the arena walls (throw out the unnecessary 180 degrees that will not be used)
-//                if(DegreeIndex > 180) { //data is "out of bounds" and is not useful data
+//                if( (DegreeIndex < 0) || (DegreeIndex > 180) ) { //data is "out of bounds" and is not useful data
+//                    for(i=0;i<4;i++) {
+//                        DistanceArr[DegreeIndex+i] = 0;
+//                        YCoordMeters[DegreeIndex+i] = 0;
+//                        XCoordMeters[DegreeIndex+i] = 0;
+//                        PreviousDistanceArr[DegreeIndex+i] = 0;
+//                    }
 //                    return false;
 //                }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 //Packet Index
@@ -122,7 +129,7 @@ bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
                 InvalidFlag[1] = (data_buffer[9] & 0x80) >> 7;
                 InvalidFlag[2] = (data_buffer[13] & 0x80) >> 7;
                 InvalidFlag[3] = (data_buffer[17] & 0x80) >> 7;
-                
+
                 WarningFlag[0] = (data_buffer[5] & 0x40) >> 6; //check bit 6 of distance byte 1 for warning flag (bad signal strength / low reflectance)
                 WarningFlag[1] = (data_buffer[9] & 0x40) >> 6;
                 WarningFlag[2] = (data_buffer[13] & 0x40) >> 6;
@@ -134,7 +141,7 @@ bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
                     if (!InvalidFlag[i]) { // the data is valid within the present 22byte packet
 
                         if(PreviousDistanceArr[DegreeIndex+i] != DistanceArr[DegreeIndex+i]) {
-                            
+
                         }
 
                         //Pull 4 polar distances (in millimeters) from each 22 byte packet
@@ -158,13 +165,13 @@ bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]) {
                         PreviousDistanceArr[DegreeIndex+i] = 0;
                     }
                 }
-                
+
                 //record which degree measurements were determined from the parsed input (used in object detection)
                 getDegrees[0] = DegreeIndex;
                 getDegrees[1] = DegreeIndex + 1;
                 getDegrees[2] = DegreeIndex + 2;
                 getDegrees[3] = DegreeIndex + 3;
-                
+
                 transmission_in_progress = false;
                 buff_index = 0;
                 return true;
@@ -197,10 +204,10 @@ bool debugLidarPolarData(void) {
 
                 U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
                 U4MODEbits.ON = 0; // disable whole uart5 module
-                
+
 //            printf("\r\n");//new line (carriage return)
 //            printf("\x1b[H"); //clear screen // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
-                
+
                 printf("\r\n");//new line (carriage return)
                 printf("DisplayPolarData\r\n");
                 for(i=0;i<180;i++) {
@@ -255,7 +262,7 @@ bool debugLidarCartesianData(void) {
 
             U4STAbits.URXEN = 0; // disable uart receive (Do not allow Receive Data from Lidar UART5)
             U4MODEbits.ON = 0; // disable whole uart5 module
-            
+
 //            printf("\r\n");//new line (carriage return)
 //            printf("\x1b[H"); //clear screen // ANSI Terminal code: (ESC[H == home) & (ESC[2J == clear screen) // THIS IS FORMATTING FOR ANSI (DOES NOT WORK WITH DMA!)
 

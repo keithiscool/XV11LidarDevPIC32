@@ -29,7 +29,7 @@ extern unsigned int modulo_inc(const unsigned int value, const unsigned int modu
 extern bool debugLidarPolarData(void);
 extern bool debugLidarCartesianData(void);
 extern int AllMeasurementsTaken(void);
-extern bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]);
+extern bool LIDARdecode(short offsetDegrees, short getDegrees[4]);
 
 bool transmission_in_progress = false;
 

@@ -54,39 +54,6 @@ void delay(void){
 }
 
 
-//  LCD Stuff for future additions to project:
-//void DrawDistanceMap(void) {
-//	// UP TO 3500 i distance = 3.5m
-//    short deg;
-//    static short LCDDisplayX[360], LCDDisplayY[360];
-//    for (deg = 0; deg < 360; deg++) {
-//        LCD_SetTextColor(LCD_COLOR_BLACK);
-//        LCD_DrawLine(x[deg], y[deg], 1, LCD_DIR_HORIZONTAL); // PutPixel(x, y);
-//        LCD_DrawLine(x[deg]+1, y[deg], 1, LCD_DIR_HORIZONTAL); // PutPixel(x, y);
-//        LCD_DrawLine(x[deg], y[deg]+1, 1, LCD_DIR_HORIZONTAL); // PutPixel(x, y);
-//        LCD_DrawLine(x[deg]+1, y[deg]+1, 1, LCD_DIR_HORIZONTAL); // PutPixel(x, y);
-//
-//        if((Distance[deg] < 3000) && (Distance[deg] > 0)) {
-////            displayDistance = Distance[deg] / 25.0f;
-////            x[deg] = (cos(M_PI_2-radians) * displayDistance) + 120;
-////            y[deg] = (sin(M_PI_2-radians) * displayDistance) + 120;
-//            LCD_SetTextColor(LCD_COLOR_WHITE);
-//            LCDDisplayX = (XCoordMeters[deg] >> LCD_SCALING) + 120;
-//            LCDDisplayY = (YCoordMeters[deg] >> LCD_SCALING) + 120;
-//
-//            LCD_DrawLine(x[deg], y[deg], 1, LCD_DIR_HORIZONTAL); // PutPixel(x, y);
-//            LCD_DrawLine(x[deg]+1, y[deg], 1, LCD_DIR_HORIZONTAL); // PutPixel(x, y);
-//            LCD_DrawLine(x[deg], y[deg]+1, 1, LCD_DIR_HORIZONTAL); // PutPixel(x, y);
-//            LCD_DrawLine(x[deg]+1, y[deg]+1, 1, LCD_DIR_HORIZONTAL); // PutPixel(x, y);
-//        }
-//    }
-//    LCD_SetTextColor(LCD_COLOR_BLUE2);
-//    LCD_DrawFullCircle(120, 120, 6);
-//}
-
-
-
-
 
 void main(void){
 
@@ -103,11 +70,7 @@ void main(void){
     initObjectDetection();
 
 
-//    while (1){
-//        delay();
-//        LATDbits.LATD1 ^= 1;
-//        delay();
-//    }
+
 
     while(1) {
 
@@ -127,7 +90,7 @@ void main(void){
 
 
 
-//        parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
+////        parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
         objectDetection();
 
 

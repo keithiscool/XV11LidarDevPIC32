@@ -26,7 +26,7 @@ extern unsigned short DistanceArr[180];
 extern unsigned short PreviousDistanceArr[180];
 extern short XCoordMeters[180];
 extern short YCoordMeters[180];
-extern bool LIDARdecode(short offsetDegrees, unsigned short getDegrees[4]);
+extern bool LIDARdecode(short offsetDegrees, short getDegrees[4]);
 
 //functions in ObjectDetection.c
 extern short objectDetection(void);
@@ -59,6 +59,9 @@ struct ObjectNode arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE];
 unsigned short index_object = 0;
 
 unsigned int hundredMillis = 0;
+
+//flag used to designate a corner of an object has been detected (object is closer than surroundings)
+static bool ObjectStartDetected = 0;
 
 
 //Using Linked List
