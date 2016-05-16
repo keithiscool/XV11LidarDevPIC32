@@ -60,8 +60,16 @@ void __ISR(_TIMER_3_VECTOR, IPL1AUTO) Timer3Handler(void)
     static unsigned int count = 0;
     count++;
 
-//    if(count > 1) //100ms has passed
-    if( (timeFlag == false) && (count > 5) ) //100ms has passed
+
+    //500ms has passed
+    if( (timeFlag == false) && (count > 5) ) //500ms has passed
+    {
+        count = 0; //reset timer finished counter
+        timeFlag = true; //set global variable for use with rest of code outside this interrupt (timer done)
+    }
+    
+    //1000ms has passed
+    if( (timeFlag == false) && (count > 10) ) //1000ms has passed
     {
         count = 0; //reset timer finished counter
         timeFlag = true; //set global variable for use with rest of code outside this interrupt (timer done)

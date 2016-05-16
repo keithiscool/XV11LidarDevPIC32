@@ -26,7 +26,7 @@ extern unsigned short DistanceArr[180];
 extern unsigned short PreviousDistanceArr[180];
 extern short XCoordMeters[180];
 extern short YCoordMeters[180];
-extern bool LIDARdecode(short offsetDegrees, short getDegrees[4]);
+extern bool LIDARdecode(short getDegrees[4]);
 
 //functions in ObjectDetection.c
 extern short objectDetection(void);

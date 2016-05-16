@@ -69,7 +69,17 @@ void main(void){
     //initialize arrays for object detection
     initObjectDetection();
 
-
+    delay();
+    delay();
+    delay();
+    delay();
+    delay();
+    delay();
+    delay();
+    delay();
+    delay();
+    delay();
+    delay();
 
 
     while(1) {
@@ -85,12 +95,11 @@ void main(void){
 
 ////RUN THE FOLLOWING FUNCTION TO PARSE THE DATA (WILL NOT PRINT THE DEBUG DATA AND WILL NOT LOOK FOR OBJECTS)
 //        unsigned short test[4];
-//        short offsetLidarDegrees = 90;
-//        LIDARdecode(offsetLidarDegrees,test); //simply call to parse the Lidar data (4 distance measurements at a time)
+//        LIDARdecode(test); //simply call to parse the Lidar data (4 distance measurements at a time)
 
 
 
-////        parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
+//////        parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
         objectDetection();
 
 

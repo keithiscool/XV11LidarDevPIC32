@@ -63,16 +63,14 @@ short objectDetection(void) {
 //    unsigned short *DegreeCPY;
 //    DegreeCPY = myDegrees;
     unsigned short i = 0;
-//    unsigned short offset = 90; //offset lidar rotation by 90 degrees clockwise to get it to used forward facing data from 0 to 180 degrees
-    short offset = 88; //offset lidar rotation by 90 degrees clockwise to get it to used forward facing data from 0 to 180 degrees
 
 //    for(i=0;i<4;i++) {
 //        printf("%u \r\n",myDegrees[i]);
 //    }
 
-    if(LIDARdecode(offset, myDegrees) == true) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
+    if(LIDARdecode(myDegrees) == true) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
 
-//        printf("true\r\n");
+        printf("true\r\n");
 //
 //        for(i=0;i<4;i++) {
 //            printf("%u \r\n",myDegrees[i]);
@@ -111,6 +109,7 @@ short objectDetection(void) {
                             arrayofDetectedObjects[index_object].yPos = (( YCoordMeters[arrayofDetectedObjects[index_object].startOfDetectedObject] + YCoordMeters[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
                             arrayofDetectedObjects[index_object].polarDistance = (( DistanceArr[arrayofDetectedObjects[index_object].startOfDetectedObject] + DistanceArr[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
                             arrayofDetectedObjects[index_object].degree = (( arrayofDetectedObjects[index_object].startOfDetectedObject + arrayofDetectedObjects[index_object].endOfDetectedObject ) / 2 );
+                            arrayofDetectedObjects[index_object].xPos -= X_POSITION_OFFSET_LIDAR_PLACEMENT; //correct the offset of the collection beacon (the collection beacon is not in the center of the arena)
                             printf("record_object_degree: %u\r\n",arrayofDetectedObjects[index_object].degree);
 //                        }
 

@@ -112,12 +112,12 @@ void PWM(void){
     OC1CONbits.ON = 0;
     OC1CONbits.OCM = 0b110;
     OC1CONbits.OCTSEL = 0; //select Timer 2 as source for OC1 (PWM)
-    OC1R = 2100; // near 230rpm
-    OC1RS = 2100; // near 230rpm
+//    OC1R = 2100; // near 230rpm
+//    OC1RS = 2100; // near 230rpm
 //    OC1R = 2300; // near 230rpm
 //    OC1RS = 2300; // near 230rpm
-//    OC1R = 2450; // near 260rpm
-//    OC1RS = 2450; // near 260rpm
+    OC1R = 2450; // near 260rpm
+    OC1RS = 2450; // near 260rpm
 
     OC1CONbits.ON = 1;
     T2CONbits.ON = 1;

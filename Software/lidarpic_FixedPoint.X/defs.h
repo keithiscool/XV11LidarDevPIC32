@@ -50,7 +50,7 @@
 //Lidar definitions for object detection with Lidar
 
 //distance between adjacent lidar degree measurements (if the measurement is large, an object is detected)
-#define ObjectDetectionThreshold 400
+#define ObjectDetectionThreshold 900
 //50 possible object struct array elements in "arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE]" can be detected of type "ObjectNode"
 #define OBJECT_ARRAY_STRUCT_SIZE 50
 #define DEGREES_BETWEEN_EACH_OBJECT 5

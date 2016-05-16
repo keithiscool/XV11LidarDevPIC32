@@ -57,7 +57,7 @@ unsigned short CRC_calculator(unsigned char * _this) {
 
 
 //parses data from the lidar and turns the stream into usable data (fetches measurements, flags, warnings and sotres them into arrays)
-bool LIDARdecode(short offsetDegrees, short getDegrees[4]) {
+bool LIDARdecode(short getDegrees[4]) {
     unsigned short i;
 
     if (transmission_in_progress == false) {
@@ -88,30 +88,30 @@ bool LIDARdecode(short offsetDegrees, short getDegrees[4]) {
                 DegreeIndex = (data_buffer[1] - 0xA0) * 4; //pull degree base (1 degree index per packet) out of parsed lidar data
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //Shift the Data from notch being 0 degrees to notch being 90 degrees. (shift 0 degrees clockwise by 90 degrees)
+                //***SEE INCLUDED PICTURE OF REMAPPING LIDAR DEGREES***//
+                //**ReOrientLidarForBeaconAgainstCollectionWall.jpg**//
 
-                DegreeIndex = DegreeIndex + offsetDegrees; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
+                //Shift remap to Polar Coordinate system
+                //Keep degrees in front of collection bin (270 to zero to 90)
+                printf("ORIGINAL: %d\r\n",DegreeIndex);
+                DegreeIndex = DegreeIndex + 90;
+                printf("ORIGINAL: %d\r\n",DegreeIndex);
 
-                if(offsetDegrees < 0) {
-//                    NOTE: The lidar output is now shifted... (normally, we feed in +90 as "offsetDegrees", which makes 0 deg @ 90 degrees right of notch on XV11 lidar
-                    DegreeIndex = 360 + DegreeIndex; //add the negative value (subtract) from 360 to get [270,359] degree elements
+                //Check Rollover Condition where quadrant 1 (270 deg) moves over original 360 degrees
+                if(DegreeIndex > 356) {
+                    //Shift the Data from notch being 270 degrees to notch being 0 degrees. (shift 0 degrees clockwise by 90 degrees)
+                    DegreeIndex = DegreeIndex - 356; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
+                    printf("ROLL: %d\r\n",DegreeIndex);
                 }
 
-                if(DegreeIndex > 359) {
-                    DegreeIndex = DegreeIndex - 360; //add the negative value (subtract) from 360 to get [270,359] degree elements
+////                Offset for Array Indexing (arrays are 0 based)
+//                DegreeIndex++;
+
+//                Throw out data behind lidar (do not populate out of bounds data)
+                if(DegreeIndex > 176) {
+//                    printf("FALSE %d\r\n",DegreeIndex);
+                    return false;
                 }
-
-//                //check if degree elements are behind the arena walls (throw out the unnecessary 180 degrees that will not be used)
-//                if( (DegreeIndex < 0) || (DegreeIndex > 180) ) { //data is "out of bounds" and is not useful data
-//                    for(i=0;i<4;i++) {
-//                        DistanceArr[DegreeIndex+i] = 0;
-//                        YCoordMeters[DegreeIndex+i] = 0;
-//                        XCoordMeters[DegreeIndex+i] = 0;
-//                        PreviousDistanceArr[DegreeIndex+i] = 0;
-//                    }
-//                    return false;
-//                }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 //Packet Index
@@ -198,7 +198,7 @@ bool debugLidarPolarData(void) {
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
-    if(LIDARdecode(88,blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
+    if(LIDARdecode(blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
 
 //        if(AnglesCoveredTotal > 180) {
             //Show first index as zero
@@ -256,7 +256,7 @@ bool debugLidarCartesianData(void) {
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
-    if(LIDARdecode(88,blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
+    if(LIDARdecode(blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
 
         if(AnglesCoveredTotal > 180) {
             //Show first index as zero
