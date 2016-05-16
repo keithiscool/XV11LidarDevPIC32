@@ -69,6 +69,8 @@ void main(void){
     //initialize arrays for object detection
     initObjectDetection();
 
+
+    //Gather data for 5 seconds, then print data out (need to populate as much data as possible at the beginning of code before while() loop
     while(timeFlagFiveSec == false);
 
 

@@ -84,6 +84,7 @@ bool LIDARdecode(short getDegrees[4]) {
             //Now check if the lidar data can pass the CRC error-checking
             if (received_CRC == calculated_CRC) { // Used to see if incoming data passed the CRC
 
+                //DegreeIndex is the index byte in the 90 packets, going from 0xA0 (packet 0, readings 0 to 3) to 0xF9 (packet 89, readings 356 to 359)
                 //offset degrees in order to allow the lidar to be used in the arena beacon mount (hook part opposite of motor is degree 0)
                 DegreeIndex = (data_buffer[1] - 0xA0) * 4; //pull degree base (1 degree index per packet) out of parsed lidar data
 
@@ -91,7 +92,7 @@ bool LIDARdecode(short getDegrees[4]) {
                 //***SEE INCLUDED PICTURE OF REMAPPING LIDAR DEGREES***//
                 //**ReOrientLidarForBeaconAgainstCollectionWall.jpg**//
 
-//Something is not right with DegreeIndex
+////Something is not right with DegreeIndex...
 //                if(timeFlagOneHundMilSec){
 //                    printf("O: %d\r\n",DegreeIndex);
 //                    timeFlagOneHundMilSec = false;
@@ -101,7 +102,7 @@ bool LIDARdecode(short getDegrees[4]) {
                 //Keep degrees in front of collection bin (originally 270 to zero to 90)
                 DegreeIndex = DegreeIndex + 90;
 
-//Something is not right with DegreeIndex
+////Something is not right with DegreeIndex...
                 if(timeFlagOneHundMilSec){
                     printf("O: %d\r\n",DegreeIndex);
                     timeFlagOneHundMilSec = false;
@@ -118,10 +119,10 @@ bool LIDARdecode(short getDegrees[4]) {
 //                DegreeIndex++;
 
 //                Throw out data behind lidar (do not populate out of bounds data)
-                if( (DegreeIndex > 177) && (DegreeIndex < 357) ) {
-                    printf("FALSE %d\r\n",DegreeIndex);
-                    return false;
-                }
+//                if(DegreeIndex > 177) {
+//                    printf("FALSE %d\r\n",DegreeIndex);
+//                    return false;
+//                }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 //Packet Index
@@ -184,6 +185,7 @@ bool LIDARdecode(short getDegrees[4]) {
                 getDegrees[2] = DegreeIndex + 2;
                 getDegrees[3] = DegreeIndex + 3;
 
+                //permit the acquisition of the next packet of 4 distances
                 transmission_in_progress = false;
                 buff_index = 0;
                 return true;

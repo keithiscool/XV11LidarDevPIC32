@@ -60,17 +60,12 @@ bool initObjectDetection(void) {
 short objectDetection(void) {
     //temporary degree values to remember
     short myDegrees[4] = {0, 0, 0, 0};
-//    unsigned short *DegreeCPY;
-//    DegreeCPY = myDegrees;
     unsigned short i = 0;
 
-//    for(i=0;i<4;i++) {
-//        printf("%u \r\n",myDegrees[i]);
-//    }
 
-    if(LIDARdecode(myDegrees) == true) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
+    if( (LIDARdecode(myDegrees) == true) && (myDegrees < 180) ) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
 
-//        printf("true\r\n");
+//        printf("Lidar_true\r\n");
 //
 //        for(i=0;i<4;i++) {
 //            printf("%u \r\n",myDegrees[i]);
@@ -101,8 +96,9 @@ short objectDetection(void) {
                     if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (ObjectStartEdgeDetected == true) ) { // object protruded from surrounding measurements by threshold
                         arrayofDetectedObjects[index_object].endOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
                         printf("object_stop_edge_detected\r\n");
-////                        check if object is wide enough (are there enough degrees between the start and the start of the object?)
-//                        if( ( (arrayofDetectedObjects[index_object].startOfDetectedObject - arrayofDetectedObjects[index_object].endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
+                        
+                        //check if object is wide enough (are there enough degrees between the start and the start of the object?)
+                        if( ( (arrayofDetectedObjects[index_object].startOfDetectedObject - arrayofDetectedObjects[index_object].endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
                             //average and populate the data for the object into the object struct array
                             arrayofDetectedObjects[index_object].qualityOfObject = (( QualityArr[arrayofDetectedObjects[index_object].startOfDetectedObject] + QualityArr[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
                             arrayofDetectedObjects[index_object].xPos = (( XCoordMeters[arrayofDetectedObjects[index_object].startOfDetectedObject] + XCoordMeters[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
@@ -110,8 +106,8 @@ short objectDetection(void) {
                             arrayofDetectedObjects[index_object].polarDistance = (( DistanceArr[arrayofDetectedObjects[index_object].startOfDetectedObject] + DistanceArr[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
                             arrayofDetectedObjects[index_object].degree = (( arrayofDetectedObjects[index_object].startOfDetectedObject + arrayofDetectedObjects[index_object].endOfDetectedObject ) / 2 );
                             arrayofDetectedObjects[index_object].xPos -= X_POSITION_OFFSET_LIDAR_PLACEMENT; //correct the offset of the collection beacon (the collection beacon is not in the center of the arena)
-                            printf("obj_deg: %u / obj_mag %u\r\n",arrayofDetectedObjects[index_object].degree, arrayofDetectedObjects[index_object].polarDistance);
-//                        }
+                            printf("obj_deg: %u / obj_mag: %u\r\n",arrayofDetectedObjects[index_object].degree, arrayofDetectedObjects[index_object].polarDistance);
+                        }
 
                         //CHECK IF THE LAST DETECTED OBJECT IS NOT IN THE SAME DEGREE PATH AS THE NEW DETECTED OBJECT AND THE OBJECT IS NOT IMMEDIATELY NEXT TO THE LAST OBJECT (avoid counting an object twice)
                         if( (arrayofDetectedObjects[index_object-1].degree - arrayofDetectedObjects[index_object-1].degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
@@ -125,6 +121,7 @@ short objectDetection(void) {
                             }
                         }
 
+                        //Object recorded, so reset flag that detects the first edge of the object
                         ObjectStartEdgeDetected = false; //last edge of object detected (reset flag)
 
                     }
