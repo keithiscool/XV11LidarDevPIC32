@@ -58,8 +58,6 @@ struct ObjectNode arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE];
 //keeps track of number of objects detected
 unsigned short index_object = 0;
 
-unsigned int hundredMillis = 0;
-
 //flag used to designate a corner of an object has been detected (object is closer than surroundings)
 static bool ObjectStartEdgeDetected = 0;
 

@@ -1,3 +1,4 @@
 build/default/production/main.o:  \
 main.c  \
-main.h 
+main.h  \
+interrupt_handler.h 

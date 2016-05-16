@@ -8,6 +8,8 @@
 #ifndef LIDAR_DECODER_H
 #define	LIDAR_DECODER_H
 
+#include "interrupt_handler.h"
+
 // To note for dsPIC32: 8bits=char   16bits=short    32bits=integer
 
 struct ringBuff * data;
@@ -31,7 +33,8 @@ extern bool debugLidarCartesianData(void);
 extern int AllMeasurementsTaken(void);
 extern bool LIDARdecode(short getDegrees[4]);
 
-extern short timeFlag;
+extern bool timeFlagOneHundMilSec;
+extern bool timeFlagFiveSec;
 
 bool transmission_in_progress = false;
 

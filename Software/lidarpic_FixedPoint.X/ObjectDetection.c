@@ -134,16 +134,15 @@ short objectDetection(void) {
     }
 
     //Indicate when an object is detected
-    if((timeFlag == true) && (index_object > 0)) {
+    if((timeFlagOneHundMilSec == true) && (index_object > 0)) {
         //blinkLED(1000); //debug led to show object detected
-        hundredMillis++;
         printf("%d objects detected\r\n",index_object);
 //        LATBbits.LATB9 ^= 1; //toggle on LED
         LATBbits.LATB10 ^= 1; //toggle on LED
 //        LATBbits.LATB11 ^= 1; //toggle on LED
 //        LATBbits.LATB12 ^= 1; //toggle on LED
 //        LATBbits.LATB13 ^= 1; //toggle on LED
-        timeFlag = false;
+        timeFlagOneHundMilSec = false;
     }
     
     return 1;

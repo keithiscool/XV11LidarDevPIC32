@@ -91,18 +91,20 @@ bool LIDARdecode(short getDegrees[4]) {
                 //***SEE INCLUDED PICTURE OF REMAPPING LIDAR DEGREES***//
                 //**ReOrientLidarForBeaconAgainstCollectionWall.jpg**//
 
-                if(timeFlag){
-                    printf("O: %d\r\n",DegreeIndex);
-                    timeFlag = false;
-                }
+//Something is not right with DegreeIndex
+//                if(timeFlagOneHundMilSec){
+//                    printf("O: %d\r\n",DegreeIndex);
+//                    timeFlagOneHundMilSec = false;
+//                }
                 
                 //Shift remap to Polar Coordinate system
                 //Keep degrees in front of collection bin (originally 270 to zero to 90)
                 DegreeIndex = DegreeIndex + 90;
 
-                if(timeFlag){
+//Something is not right with DegreeIndex
+                if(timeFlagOneHundMilSec){
                     printf("O: %d\r\n",DegreeIndex);
-                    timeFlag = false;
+                    timeFlagOneHundMilSec = false;
                 }
 
                 //Check Rollover Condition where quadrant 1 (270 deg) moves over original 360 degrees
@@ -116,10 +118,10 @@ bool LIDARdecode(short getDegrees[4]) {
 //                DegreeIndex++;
 
 //                Throw out data behind lidar (do not populate out of bounds data)
-//                if( (DegreeIndex > 177) && (DegreeIndex < 357) ) {
-//                    printf("FALSE %d\r\n",DegreeIndex);
-//                    return false;
-//                }
+                if( (DegreeIndex > 177) && (DegreeIndex < 357) ) {
+                    printf("FALSE %d\r\n",DegreeIndex);
+                    return false;
+                }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                 //Packet Index
