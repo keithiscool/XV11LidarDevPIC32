@@ -69,17 +69,7 @@ void main(void){
     //initialize arrays for object detection
     initObjectDetection();
 
-    delay();
-    delay();
-    delay();
-    delay();
-    delay();
-    delay();
-    delay();
-    delay();
-    delay();
-    delay();
-    delay();
+    while(timeFlagFiveSec == false);
 
 
     while(1) {

@@ -61,19 +61,19 @@ void __ISR(_TIMER_3_VECTOR, IPL1AUTO) Timer3Handler(void)
     count++;
 
 
-    //500ms has passed
-    if( (timeFlag == false) && (count > 5) ) //500ms has passed
+    //5000ms has passed
+    if( (timeFlagFiveSec == false) && (count > 50) ) //5000ms has passed
     {
         count = 0; //reset timer finished counter
+        timeFlag = true; //set global variable for use with rest of code outside this interrupt (timer done)
+    }
+
+    //100ms has passed
+    if( (timeFlagOneHundMilSec == false) && (count > 1) ) //100ms has passed
+    {
         timeFlag = true; //set global variable for use with rest of code outside this interrupt (timer done)
     }
     
-    //1000ms has passed
-    if( (timeFlag == false) && (count > 10) ) //1000ms has passed
-    {
-        count = 0; //reset timer finished counter
-        timeFlag = true; //set global variable for use with rest of code outside this interrupt (timer done)
-    }
 
     IFS0CLR = _IFS0_T3IF_MASK;
 }

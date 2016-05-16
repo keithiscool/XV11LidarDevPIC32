@@ -70,7 +70,7 @@ short objectDetection(void) {
 
     if(LIDARdecode(myDegrees) == true) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
 
-        printf("true\r\n");
+//        printf("true\r\n");
 //
 //        for(i=0;i<4;i++) {
 //            printf("%u \r\n",myDegrees[i]);
@@ -102,7 +102,7 @@ short objectDetection(void) {
                         arrayofDetectedObjects[index_object].endOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
                         printf("object_stop_edge_detected\r\n");
 ////                        check if object is wide enough (are there enough degrees between the start and the start of the object?)
-//                        if( ((arrayofDetectedObjects[index_object].startOfDetectedObject - arrayofDetectedObjects[index_object].endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
+//                        if( ( (arrayofDetectedObjects[index_object].startOfDetectedObject - arrayofDetectedObjects[index_object].endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
                             //average and populate the data for the object into the object struct array
                             arrayofDetectedObjects[index_object].qualityOfObject = (( QualityArr[arrayofDetectedObjects[index_object].startOfDetectedObject] + QualityArr[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
                             arrayofDetectedObjects[index_object].xPos = (( XCoordMeters[arrayofDetectedObjects[index_object].startOfDetectedObject] + XCoordMeters[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
@@ -110,18 +110,18 @@ short objectDetection(void) {
                             arrayofDetectedObjects[index_object].polarDistance = (( DistanceArr[arrayofDetectedObjects[index_object].startOfDetectedObject] + DistanceArr[arrayofDetectedObjects[index_object].endOfDetectedObject] ) / 2 );
                             arrayofDetectedObjects[index_object].degree = (( arrayofDetectedObjects[index_object].startOfDetectedObject + arrayofDetectedObjects[index_object].endOfDetectedObject ) / 2 );
                             arrayofDetectedObjects[index_object].xPos -= X_POSITION_OFFSET_LIDAR_PLACEMENT; //correct the offset of the collection beacon (the collection beacon is not in the center of the arena)
-                            printf("record_object_degree: %u\r\n",arrayofDetectedObjects[index_object].degree);
+                            printf("obj_deg: %u / obj_mag %u\r\n",arrayofDetectedObjects[index_object].degree, arrayofDetectedObjects[index_object].polarDistance);
 //                        }
 
                         //CHECK IF THE LAST DETECTED OBJECT IS NOT IN THE SAME DEGREE PATH AS THE NEW DETECTED OBJECT AND THE OBJECT IS NOT IMMEDIATELY NEXT TO THE LAST OBJECT (avoid counting an object twice)
                         if( (arrayofDetectedObjects[index_object-1].degree - arrayofDetectedObjects[index_object-1].degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
                             if(index_object < OBJECT_ARRAY_STRUCT_SIZE) {
                                 index_object++; //one object has been found, move to next struct array "arrayofDetectedObjects[30] element to populate next set of data when next object is found
-                                printf("object_incremented: %u\r\n",index_object);
+                                printf("object++: %u\r\n",index_object);
                                 LATBbits.LATB11 ^= 1; //turn on LED
                             }else {
                                 index_object = OBJECT_ARRAY_STRUCT_SIZE; //saturate the value if too many objects are detected
-                                printf("Too many objects detected\r\n");
+                                printf("Too many objects\r\n");
                             }
                         }
 

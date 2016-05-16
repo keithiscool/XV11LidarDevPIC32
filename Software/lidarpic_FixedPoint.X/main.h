@@ -6,6 +6,7 @@
 #ifndef MAIN_H
 #define	MAIN_H
 
+#include "interrupt_handler.h"
 
 
 #define RUNMODE true
@@ -26,6 +27,8 @@ unsigned int i = 0;
 
 void delay(void);
 unsigned int v = 0;
+extern bool timeFlagFiveSec;
+extern bool timeFlagOneHundMilSec;
 
 //////////////////////////////////////////////////////////////////////////////
 //LIDAR DATA STUFF

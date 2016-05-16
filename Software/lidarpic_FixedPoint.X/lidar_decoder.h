@@ -31,6 +31,8 @@ extern bool debugLidarCartesianData(void);
 extern int AllMeasurementsTaken(void);
 extern bool LIDARdecode(short getDegrees[4]);
 
+extern short timeFlag;
+
 bool transmission_in_progress = false;
 
 float returned_speed = 0;

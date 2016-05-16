@@ -5,7 +5,8 @@
 #ifndef INTERRUPT_HANDLER_H
 #define	INTERRUPT_HANDLER_H
 
-extern bool timeFlag;
+extern bool timeFlagFiveSec;
+extern bool timeFlagOneHundMilSec;
 
 #endif	/* INTERRUPT_HANDLER_H */
 
