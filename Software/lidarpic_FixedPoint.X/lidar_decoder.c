@@ -111,7 +111,7 @@ bool LIDARdecode(short getDegrees[4]) {
                 //Check Rollover Condition where quadrant 1 (270 deg) moves over original 360 degrees
                 if(DegreeIndex > 356) {
                     //Shift the Data from notch being 270 degrees to notch being 0 degrees. (shift 0 degrees clockwise by 90 degrees)
-                    DegreeIndex = DegreeIndex - 356; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
+                    DegreeIndex = DegreeIndex - 360; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
                     printf("ROLL: %d\r\n",DegreeIndex);
                 }
 

@@ -110,7 +110,7 @@ short objectDetection(void) {
                         }
 
                         //CHECK IF THE LAST DETECTED OBJECT IS NOT IN THE SAME DEGREE PATH AS THE NEW DETECTED OBJECT AND THE OBJECT IS NOT IMMEDIATELY NEXT TO THE LAST OBJECT (avoid counting an object twice)
-                        if( (arrayofDetectedObjects[index_object-1].degree - arrayofDetectedObjects[index_object-1].degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
+//                        if( (arrayofDetectedObjects[index_object-1].degree - arrayofDetectedObjects[index_object-1].degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
                             if(index_object < OBJECT_ARRAY_STRUCT_SIZE) {
                                 index_object++; //one object has been found, move to next struct array "arrayofDetectedObjects[30] element to populate next set of data when next object is found
                                 printf("object++: %u\r\n",index_object);
@@ -119,7 +119,7 @@ short objectDetection(void) {
                                 index_object = OBJECT_ARRAY_STRUCT_SIZE; //saturate the value if too many objects are detected
                                 printf("Too many objects\r\n");
                             }
-                        }
+//                        }
 
                         //Object recorded, so reset flag that detects the first edge of the object
                         ObjectStartEdgeDetected = false; //last edge of object detected (reset flag)
