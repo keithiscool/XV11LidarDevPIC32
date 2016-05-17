@@ -11,8 +11,8 @@ void initialize(void){
      INTEnableSystemMultiVectoredInt();
      IOpins();
      delay();
-     timers();
-     delay();
+//     timers();
+//     delay();
      PWM();
      delay();
      UART();

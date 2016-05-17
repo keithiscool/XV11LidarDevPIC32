@@ -62,7 +62,7 @@ void main(void){
 
     
     //Initialize all distances to '99' so I can see which ones are not getting written to
-    for(i=0;i<360;i++) {
+    for(i=0;i<181;i++) {
         DistanceArr[i] = 1;
     }
     
@@ -71,8 +71,8 @@ void main(void){
 
 
     //Gather data for 5 seconds, then print data out (need to populate as much data as possible at the beginning of code before while() loop
-    while(timeFlagFiveSec == false);
-
+    while(timeFlagFiveSec != true);
+    while(timeFlagFiveSec != true);
 
     while(1) {
 

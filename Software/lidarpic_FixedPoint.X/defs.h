@@ -55,6 +55,7 @@
 #define OBJECT_ARRAY_STRUCT_SIZE 50
 #define DEGREES_BETWEEN_EACH_OBJECT 5
 //offset the x position (in millimeters) of the lidar cartesian data (beacon is not in the center of the arena, but to the right of the collection bin facing the digging area)
+//NOTE: THE OFFSET IS TO THE RIGHT OF CENTER (MUST SUBTRACT FROM THE INITIAL CALCULATED CARTESIAN X-VALUE
 #define X_POSITION_OFFSET_LIDAR_PLACEMENT 787 //offset in millimeters to right of collection bin center of back wall
 
 

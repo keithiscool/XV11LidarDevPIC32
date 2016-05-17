@@ -50,7 +50,6 @@
 
 
 bool initObjectDetection(void) {
-    
     arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE] = emptyObjectStruct; //initialize all struct array elements to zero
 }
 
@@ -63,7 +62,8 @@ short objectDetection(void) {
     unsigned short i = 0;
 
 
-    if( (LIDARdecode(myDegrees) == true) && (myDegrees < 180) ) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
+//    if( (LIDARdecode(myDegrees) == true) && (myDegrees < 180) ) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
+    if(LIDARdecode(myDegrees) == true) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
 
 //        printf("Lidar_true\r\n");
 //

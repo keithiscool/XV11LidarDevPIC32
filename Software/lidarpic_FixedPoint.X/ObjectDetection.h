@@ -12,8 +12,9 @@
 #include "defs.h"
 #include "interrupt_handler.h"
 
-//100ms timer usage flag
-extern bool timeFlag;
+//timer usage flags
+extern bool timeFlagOneHundMilSec;
+extern bool timeFlagFiveSec;
 
 //variables and parsing function from lidar_decoder.c
 //extern unsigned short QualityArr[360];
@@ -21,11 +22,11 @@ extern bool timeFlag;
 //extern unsigned short PreviousDistanceArr[360];
 //extern short XCoordMeters[360];
 //extern short YCoordMeters[360];
-extern unsigned short QualityArr[180];
-extern unsigned short DistanceArr[180];
-extern unsigned short PreviousDistanceArr[180];
-extern short XCoordMeters[180];
-extern short YCoordMeters[180];
+extern unsigned short QualityArr[181];
+extern unsigned short DistanceArr[181];
+extern unsigned short PreviousDistanceArr[181];
+extern short XCoordMeters[181];
+extern short YCoordMeters[181];
 extern bool LIDARdecode(short getDegrees[4]);
 
 //functions in ObjectDetection.c
@@ -33,7 +34,7 @@ extern short objectDetection(void);
 extern bool initObjectDetection(void);
 
 //used to detect differences between adjacenet degree elements
-unsigned short DistanceDifferencesArr[360];
+unsigned short DistanceDifferencesArr[181];
 
 
 struct ObjectNode {

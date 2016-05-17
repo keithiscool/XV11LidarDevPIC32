@@ -48,12 +48,12 @@ unsigned char WarningFlag[4];
 //unsigned short PreviousDistanceArr[360];
 //short XCoordMeters[360];
 //short YCoordMeters[360];
-unsigned short SuccessfulMeasurements[180];
-unsigned short QualityArr[180];
-unsigned short DistanceArr[180];
-unsigned short PreviousDistanceArr[180];
-short XCoordMeters[180];
-short YCoordMeters[180];
+unsigned short SuccessfulMeasurements[181];
+unsigned short QualityArr[181];
+unsigned short DistanceArr[181];
+unsigned short PreviousDistanceArr[181];
+short XCoordMeters[181];
+short YCoordMeters[181];
 short DegreeIndex;
 short AnglesCoveredTotal;
 
