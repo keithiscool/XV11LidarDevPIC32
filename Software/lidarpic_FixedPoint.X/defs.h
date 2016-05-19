@@ -58,8 +58,9 @@
 //NOTE: THE OFFSET IS TO THE RIGHT OF CENTER (MUST SUBTRACT FROM THE INITIAL CALCULATED CARTESIAN X-VALUE
 #define X_POSITION_OFFSET_LIDAR_PLACEMENT 787 //offset in millimeters to right of collection bin center of back wall
 
-//limit on valid distance data magnitude
+//limit on valid distance data magnitude in millimeters
 #define maxDistanceAllowed 6000
+#define minDistanceAllowed 50
 //must read # of distances in order to run object tracking
 #define mostAnglesRead 60
 

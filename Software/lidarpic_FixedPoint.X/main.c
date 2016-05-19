@@ -104,7 +104,7 @@ void main(void){
             LEDmsBlinkHundMS();
         }
         if(debugLidarCartesianData() == true) {
-          LEDmsBlinkHundMS();
+            LEDmsBlinkHundMS();
         }
 
 

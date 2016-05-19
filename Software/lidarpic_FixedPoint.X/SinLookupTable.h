@@ -106,38 +106,82 @@ int SinLookupTableArray[91] = { //Shorts are 16-bits large for PIC32.
     65536
 };
 
-short GetMySinLookup16bit(short Degrees) {
-    Degrees = Degrees%360; // limit degrees between (-360<->360)
 
-    if(Degrees<0) 
-        Degrees=(360+Degrees); // Only deal with positive degree values
 
-    if (Degrees <= 90) return SinLookupTableArray[Degrees]; // 0<Angle<90
-    if (Degrees <= 180) return SinLookupTableArray[(180-Degrees)]; // 90<Angle<180
-//    if (Degrees <= 270) return (-1*(SinLookupTableArray[(Degrees-180)])); // 180<Angle<270
-//    if (Degrees < 360) return (-1*(SinLookupTableArray[(360-Degrees)])); // 270<Angle<360
-    else{
-//        printf("BAD_CARTESIAN_1\r\n");
-//        return 0;
+
+
+//Used unit circle to line up sine and cosine functions using just the first 90 degrees of the generated sine lookup table from excel:
+//Lookup Table in Excel: \XV11LidarDevPIC32\Software\Archive\TestingTrigLookupTable
+
+//Unit Circle (simple)
+//https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Unit_circle_angles_color.svg/2000px-Unit_circle_angles_color.svg.png
+
+
+short GetMySinLookup16bit(short Degrees, bool &negativeNum) {
+//    Degrees = Degrees % 360; // limit degrees between (-360<->360)
+
+    if (Degrees <= 90) {
+        return (SinLookupTableArray[Degrees]); // 0<Angle<90
     }
-}
+    if (Degrees <= 180) {
+        return (SinLookupTableArray[(180-Degrees)]); // 90<Angle<180
+    }
 
-
-short GetMyCosLookup16bit(short Degrees){
-    Degrees = Degrees%360; // limit degrees between (-360<->360)
-
-    if(Degrees<0)
-        Degrees=(360+Degrees); // Only deal with positive degree values
-
-    if (Degrees <= 90) return SinLookupTableArray[(90-Degrees)]; // 0<Angle<90
-    if (Degrees <= 180) return (-1*(SinLookupTableArray[(Degrees-90)])); // 90<Angle<180
-//    if (Degrees <= 270) return (-1*(SinLookupTableArray[(270-Degrees)])); // 180<Angle<270
-//    if (Degrees < 360) return (SinLookupTableArray[(Degrees-270)]); // 270<Angle<360
-    else{
-//        printf("BAD_CARTESIAN_2\r\n");
+    //these should not have to be used.
+    //[180,360] inclusive is behind the collection bucket, so the data is not useful
+    if (Degrees <= 270) {
+        negativeNum = true;
+        return (SinLookupTableArray[(Degrees-180)]); // 180<Angle<270
+    }
+    if (Degrees <= 360) {
+        negativeNum = true;
+        return (SinLookupTableArray[(360-Degrees)]); // 270<Angle<360
+    }
+    else {
+//        printf("BAD_CARTESIAN_1\r\n");
         return 0;
     }
 }
+
+
+
+//Use same lookup table for cosine to save space on pic32 microcontroller
+short GetMyCosLookup16bit(short Degrees, bool &negativeNum) {
+//    Degrees = Degrees % 360; // limit degrees between (-360<->360)
+
+    if (Degrees <= 90) {
+        //take absolute value to line up math with a standard polar unit circle
+        return (SinLookupTableArray[abs(Degrees-90)]); // 0<Angle<90
+    }
+    if (Degrees <= 180) {
+        negativeNum = true;
+        return (SinLookupTableArray[(Degrees-90)]); // 90<Angle<180
+    }
+    if (Degrees <= 270) {
+        negativeNum = true;
+        return (SinLookupTableArray[(Degrees-180)]); // 180<Angle<270
+    }
+    if (Degrees <= 360) {
+        return (SinLookupTableArray[(360-Degrees)]); // 270<Angle<360
+    }
+    else {
+//        printf("BAD_CARTESIAN_1\r\n");
+        return 0;
+    }
+}
+
+//short GetMyCosLookup16bit(short Degrees, bool negativeNum){
+////    Degrees = Degrees % 360; // limit degrees between (-360<->360)
+//
+//    if (Degrees <= 90) return SinLookupTableArray[(90-Degrees)]; // 0<Angle<90
+//    if (Degrees <= 180) return (-1*(SinLookupTableArray[(Degrees-90)])); // 90<Angle<180
+////    if (Degrees <= 270) return (-1*(SinLookupTableArray[(270-Degrees)])); // 180<Angle<270
+////    if (Degrees < 360) return (SinLookupTableArray[(Degrees-270)]); // 270<Angle<360
+//    else{
+////        printf("BAD_CARTESIAN_2\r\n");
+//        return 0;
+//    }
+//}
 
 
 #endif	/* SINLOOKUPTABLE_H */

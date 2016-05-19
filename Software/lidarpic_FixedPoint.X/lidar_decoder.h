@@ -55,6 +55,8 @@ short DegreeIndex = 0;
 short AnglesCoveredTotal = 0;
 bool LidarCalcPerm = false;
 int BadReadings = 0;
+unsigned int TrigValCosine = 0;
+unsigned int TrigValSine = 0;
 
 
 #endif	/* LIDAR_DECODER_H */
