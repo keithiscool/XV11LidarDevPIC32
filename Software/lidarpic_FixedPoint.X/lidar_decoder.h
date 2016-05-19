@@ -7,6 +7,7 @@
 #define	LIDAR_DECODER_H
 
 #include "interrupt_handler.h"
+#include "SinLookupTable.h"
 
 // To note for dsPIC32: 8bits=char   16bits=short    32bits=integer
 
@@ -31,9 +32,11 @@ extern bool debugLidarCartesianData(void);
 extern int AllMeasurementsTaken(void);
 extern bool LIDARdecode(short getDegrees[4]);
 
+//Timer done global variables
 extern bool timeFlagOneHundMilSec;
 extern bool timeFlagFiveSec;
 
+//Lidar Intra-packet (during packet parsing flag)
 bool transmission_in_progress = false;
 
 float returned_speed = 0;
@@ -55,8 +58,21 @@ short DegreeIndex = 0;
 short AnglesCoveredTotal = 0;
 bool LidarCalcPerm = false;
 int BadReadings = 0;
+
+
+//Fixed Point Math Local Variables
 unsigned int TrigValCosine = 0;
 unsigned int TrigValSine = 0;
+bool degreeNegativeCosFlag = false;
+bool degreeNegativeSinFlag = false;
+
+//Make pointer to be used to check if the cartesian x,y point is positive or negative
+bool CosNegativeFlag = 0, SinNegativeFlag = 0;
+bool *negativeNumSinPTR = &SinNegativeFlag;
+bool *negativeNumCosPTR = &CosNegativeFlag;
+//Use same lookup table for cosine to save space on pic32 microcontroller
+extern unsigned short GetMySinLookup16bit(short Degrees, bool *negativeNumSin);
+extern unsigned short GetMyCosLookup16bit(short Degrees, bool *negativeNumCos);
 
 
 #endif	/* LIDAR_DECODER_H */

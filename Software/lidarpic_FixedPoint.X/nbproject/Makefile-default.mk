@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main.c initialize.c interrupt_handler.c lidar_decoder.c uart_handler.c ObjectDetection.c queue.c
+SOURCEFILES_QUOTED_IF_SPACED=main.c initialize.c interrupt_handler.c lidar_decoder.c uart_handler.c ObjectDetection.c queue.c SinLookupTable.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/initialize.o ${OBJECTDIR}/interrupt_handler.o ${OBJECTDIR}/lidar_decoder.o ${OBJECTDIR}/uart_handler.o ${OBJECTDIR}/ObjectDetection.o ${OBJECTDIR}/queue.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/initialize.o.d ${OBJECTDIR}/interrupt_handler.o.d ${OBJECTDIR}/lidar_decoder.o.d ${OBJECTDIR}/uart_handler.o.d ${OBJECTDIR}/ObjectDetection.o.d ${OBJECTDIR}/queue.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/initialize.o ${OBJECTDIR}/interrupt_handler.o ${OBJECTDIR}/lidar_decoder.o ${OBJECTDIR}/uart_handler.o ${OBJECTDIR}/ObjectDetection.o ${OBJECTDIR}/queue.o ${OBJECTDIR}/SinLookupTable.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/initialize.o.d ${OBJECTDIR}/interrupt_handler.o.d ${OBJECTDIR}/lidar_decoder.o.d ${OBJECTDIR}/uart_handler.o.d ${OBJECTDIR}/ObjectDetection.o.d ${OBJECTDIR}/queue.o.d ${OBJECTDIR}/SinLookupTable.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/initialize.o ${OBJECTDIR}/interrupt_handler.o ${OBJECTDIR}/lidar_decoder.o ${OBJECTDIR}/uart_handler.o ${OBJECTDIR}/ObjectDetection.o ${OBJECTDIR}/queue.o
+OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/initialize.o ${OBJECTDIR}/interrupt_handler.o ${OBJECTDIR}/lidar_decoder.o ${OBJECTDIR}/uart_handler.o ${OBJECTDIR}/ObjectDetection.o ${OBJECTDIR}/queue.o ${OBJECTDIR}/SinLookupTable.o
 
 # Source Files
-SOURCEFILES=main.c initialize.c interrupt_handler.c lidar_decoder.c uart_handler.c ObjectDetection.c queue.c
+SOURCEFILES=main.c initialize.c interrupt_handler.c lidar_decoder.c uart_handler.c ObjectDetection.c queue.c SinLookupTable.c
 
 
 CFLAGS=
@@ -136,6 +136,12 @@ ${OBJECTDIR}/queue.o: queue.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/queue.o 
 	@${FIXDEPS} "${OBJECTDIR}/queue.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/queue.o.d" -o ${OBJECTDIR}/queue.o queue.c   
 	
+${OBJECTDIR}/SinLookupTable.o: SinLookupTable.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/SinLookupTable.o.d 
+	@${RM} ${OBJECTDIR}/SinLookupTable.o 
+	@${FIXDEPS} "${OBJECTDIR}/SinLookupTable.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/SinLookupTable.o.d" -o ${OBJECTDIR}/SinLookupTable.o SinLookupTable.c   
+	
 else
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -178,6 +184,12 @@ ${OBJECTDIR}/queue.o: queue.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/queue.o.d 
 	@${RM} ${OBJECTDIR}/queue.o 
 	@${FIXDEPS} "${OBJECTDIR}/queue.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/queue.o.d" -o ${OBJECTDIR}/queue.o queue.c   
+	
+${OBJECTDIR}/SinLookupTable.o: SinLookupTable.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/SinLookupTable.o.d 
+	@${RM} ${OBJECTDIR}/SinLookupTable.o 
+	@${FIXDEPS} "${OBJECTDIR}/SinLookupTable.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/SinLookupTable.o.d" -o ${OBJECTDIR}/SinLookupTable.o SinLookupTable.c   
 	
 endif
 

@@ -175,12 +175,16 @@ bool LIDARdecode(short getDegrees[4]) {
                             //Use fixed point math to do multiplication in 32 bit (unsigned int for pic32), then shrink down to 16 bits by typecasting (short for pic32)
                             //The bitshifting at the end (">>16") shifts the top 16 bits of the 32-bit unsigned int to the least significant bits
                             //the most significant bits are then empty and the remaining 16 bits in the lower part get shoved into a 16-bit unsigned short
-                            if( GetMySinLookup16bit(DegreeIndex+i, degreeNegativeFlag) ) {
+                            if( TrigValSine = GetMySinLookup16bit(DegreeIndex+i, negativeNumSinPTR) ) {
                                 YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValSine ) ) >> 16) ); //max 14 bit value for distance
+                            }else {
+                                YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValSine ) ) >> 16) ); //max 14 bit value for distance
+                            }
+
+                            if( TrigValCosine = GetMyCosLookup16bit(DegreeIndex+i, negativeNumCosPTR) ) {
                                 XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValCosine ) ) >> 16) ); //max 14 bit value for distance
                             }else {
-                                YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMySinLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
-                                XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMyCosLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
+                                XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValCosine ) ) >> 16) ); //max 14 bit value for distance
                             }
 //                            YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMySinLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
 //                            XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMyCosLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
