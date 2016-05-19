@@ -4,6 +4,7 @@
 #include <math.h>
 #include "SinLookupTable.h"
 #include "defs.h"
+
 //////////////////////////////////////////////////////////////////////////////
 // To note for dsPIC32:
 //8bits=char   16bits=short    32bits=integer
@@ -166,6 +167,8 @@ bool LIDARdecode(short getDegrees[4]) {
 //                            //newObject.degree = DegreeIndex+i;
 //                        }
 
+                        short presentDegree = DegreeIndex+i;
+
                         //Pull 4 polar distances (in millimeters) from each 22 byte packet
                         DistanceArr[DegreeIndex+i] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
                         //Copy Quality Info to Quality Array to be Analyzed
@@ -173,26 +176,32 @@ bool LIDARdecode(short getDegrees[4]) {
                         //Compute 4 Cartesian Coordinates for Output only in the data is valid and within range
                         if((DistanceArr[DegreeIndex+i] > minDistanceAllowed) && (DistanceArr[DegreeIndex+i] < maxDistanceAllowed)) { // check if polar distance is useful data
 
-                            //Use fixed point math to do multiplication in 32 bit (unsigned int for pic32), then shrink down to 16 bits by typecasting (short for pic32)
-                            //The bitshifting at the end (">>16") shifts the top 16 bits of the 32-bit unsigned int to the least significant bits
-                            //the most significant bits are then empty and the remaining 16 bits in the lower part get shoved into a 16-bit unsigned short
-                            TrigValSine = GetMySinLookup16bit(DegreeIndex+i, negativeNumSinPTR);
-                            TrigValCosine = GetMyCosLookup16bit(DegreeIndex+i, negativeNumCosPTR);
-                            
-                            if(TrigValSine == true) {
-                                YCoordMilliMeters[DegreeIndex+i] = ( -((short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValSine ) ) >> 16) ); //max 14 bit value for distance
-                            }else {
-                                YCoordMilliMeters[DegreeIndex+i] = ( ( (short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValSine ) ) >> 16) ); //max 14 bit value for distance
-                            }
 
-                            if(TrigValCosine == true) {
-                                XCoordMilliMeters[DegreeIndex+i] = ( ( (short)( (int)DistanceArr[DegreeIndex+i] * ( (int)TrigValCosine ) ) >> 16) ); //max 14 bit value for distance
-                            }else {
-                                XCoordMilliMeters[DegreeIndex+i] = ( ( (short)( (int)DistanceArr[DegreeIndex+i] * ( (int)TrigValCosine ) ) >> 16) ); //max 14 bit value for distance
-                            }
-//                            YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMySinLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
-//                            XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMyCosLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
+                            //Looking @ to convert float to integer: http://www.c-lang.thiyagaraaj.com/archive/c-blog/convert-a-floating-point-value-to-an-integer-in-c
+                            YCoordMilliMeters[DegreeIndex+i] = ( ( DistanceArr[DegreeIndex+i] * ( (short)sin(DegreeIndex+i) ) ) + 0.5);
+                            XCoordMilliMeters[DegreeIndex+i] = ( ( DistanceArr[DegreeIndex+i] * ( (short)cos(DegreeIndex+i) ) ) + 0.5);
+
+//////////////                            //Use fixed point math to do multiplication in 32 bit (unsigned int for pic32), then shrink down to 16 bits by typecasting (short for pic32)
+//////////////                            //The bitshifting at the end (">>16") shifts the top 16 bits of the 32-bit unsigned int to the least significant bits
+//////////////                            //the most significant bits are then empty and the remaining 16 bits in the lower part get shoved into a 16-bit unsigned short
+//////////////                            TrigValSine = GetMySinLookup16bit(DegreeIndex+i, negativeNumSinPTR);
+//////////////                            TrigValCosine = GetMyCosLookup16bit(DegreeIndex+i, negativeNumCosPTR);
+//////////////
+//////////////                            if(TrigValSine == true) {
+//////////////                                YCoordMilliMeters[DegreeIndex+i] = ( -((short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValSine ) ) >> 16) ); //max 14 bit value for distance
+//////////////                            }else {
+//////////////                                YCoordMilliMeters[DegreeIndex+i] = ( ( (short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValSine ) ) >> 16) ); //max 14 bit value for distance
+//////////////                            }
+//////////////
+//////////////                            if(TrigValCosine == true) {
+//////////////                                XCoordMilliMeters[DegreeIndex+i] = ( ( (short)( (int)DistanceArr[DegreeIndex+i] * ( (int)TrigValCosine ) ) >> 16) ); //max 14 bit value for distance
+//////////////                            }else {
+//////////////                                XCoordMilliMeters[DegreeIndex+i] = ( ( (short)( (int)DistanceArr[DegreeIndex+i] * ( (int)TrigValCosine ) ) >> 16) ); //max 14 bit value for distance
+//////////////                            }
+////////////////                            YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMySinLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
+////////////////                            XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMyCosLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
                         }
+                        
                         PreviousDistanceArr[DegreeIndex+i] = DistanceArr[DegreeIndex+i]; //"old" copy of data is kept to compare with the next iteration of "newer" data
 
                         //Prevent the angle of the
@@ -201,7 +210,7 @@ bool LIDARdecode(short getDegrees[4]) {
                         else
                             AnglesCoveredTotal = 180;
 
-                        if(AnglesCoveredTotal > mostAnglesRead) {
+                        if(AnglesCoveredTotal > minAnglesRead) {
                             LidarCalcPerm = true;
                         }
 
@@ -311,17 +320,16 @@ bool debugLidarCartesianData(void) {
 
     printf("\r\n");//new line (carriage return)
     printf("DisplayCartesianData\r\n");
-    printf("XCoordMeters , YCoordMeters:\r\n");
+    printf("XCoordMilliMeters , YCoordMilliMeters:\r\n");
     for(i=0;i<181;i++) {
-//                        while(U1STAbits.TRMT == 1) { //check to see if the UART buffer is empty - if it is, send debug data out UART1
         if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
-            if ((i % PRINT_NUM_PER_LINE) == 0)  //print 4 x,y distances per line
+            if ((i % PRINT_NUM_PER_LINE) == 0) {  //print 4 x,y distances per line
                 printf("\r\n%4d: ",i); //print 4 distances per line '\r\n' causes prompt to carraige return
-
+            }
             printf(" %d,%d//", XCoordMilliMeters[i], YCoordMilliMeters[i]);
-        }
-        else
+        }else {
             i--; //keep index at same value if the UART1 TX debug buffer is full
+        }
     }
 
 //        printf("\r\n--------------------------------\r\n");

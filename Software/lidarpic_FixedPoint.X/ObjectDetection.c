@@ -7,6 +7,7 @@
 
 #include <xc.h>
 #include "ObjectDetection.h"
+#include "math.h"
 
 //struct ObjectNode {
 //    unsigned short startOfDetectedObject;
@@ -47,8 +48,8 @@ short distDiffObjectDetection(void) {
     //data element 176 is the last index received in the 90 packets (4 degrees per packet * 90 packets = 360 degrees total)
     //if data > 180 degrees, this check should protect against that
     if( (LIDARdecode(myDegrees) == true) && (myDegrees[0] < 178) ) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
+        
 //        printf("Lidar_Degrees_Passed_Checksum\r\n");
-//
 //        for(i=0;i<4;i++) {
 //            printf("%u \r\n",myDegrees[i]);
 //        }
@@ -76,21 +77,27 @@ short distDiffObjectDetection(void) {
                     DetectedObject.endOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
                     printf("object_stop_edge_detected\r\n");
 
-                    //check if object is wide enough (are there enough degrees between the start and the start of the object?)
+//                    //check if object is wide enough (are there enough degrees between the start and the start of the object?)
 //                    if( ( (DetectedObject.startOfDetectedObject - DetectedObject.endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
                         //average and populate the data for the object into the object struct array
-                        DetectedObject.qualityOfObject = (( QualityArr[DetectedObject.startOfDetectedObject] + QualityArr[DetectedObject.endOfDetectedObject] ) / 2 );
-                        DetectedObject.xPos = (( XCoordMilliMeters[DetectedObject.startOfDetectedObject] + XCoordMilliMeters[DetectedObject.endOfDetectedObject] ) / 2 );
-                        DetectedObject.yPos = (( YCoordMilliMeters[DetectedObject.startOfDetectedObject] + YCoordMilliMeters[DetectedObject.endOfDetectedObject] ) / 2 );
                         DetectedObject.polarDistance = (( DistanceArr[DetectedObject.startOfDetectedObject] + DistanceArr[DetectedObject.endOfDetectedObject] ) / 2 );
                         DetectedObject.degree = (( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) / 2 );
+                        DetectedObject.qualityOfObject = (( QualityArr[DetectedObject.startOfDetectedObject] + QualityArr[DetectedObject.endOfDetectedObject] ) / 2 );
+                        
+//                        DetectedObject.xPos = (( XCoordMilliMeters[DetectedObject.startOfDetectedObject] + XCoordMilliMeters[DetectedObject.endOfDetectedObject] ) / 2 );
+//                        DetectedObject.yPos = (( YCoordMilliMeters[DetectedObject.startOfDetectedObject] + YCoordMilliMeters[DetectedObject.endOfDetectedObject] ) / 2 );
+                        DetectedObject.xPos = (DetectedObject.polarDistance) * cos(DetectedObject.degree);
                         DetectedObject.xPos -= X_POSITION_OFFSET_LIDAR_PLACEMENT; //correct the offset of the collection beacon (the collection beacon is not in the center of the arena)
+                        DetectedObject.yPos = (DetectedObject.polarDistance) * sin(DetectedObject.degree);
+
+
+                        
+                        
                         printf("obj_deg: %u / obj_mag: %u\r\n",DetectedObject.degree, DetectedObject.polarDistance);
 //                    }
 
                     //Object recorded, so reset flag that detects the first edge of the object
                     ObjectStartEdgeDetected = false; //last edge of object detected (reset flag)
-
                 }
             }
         }

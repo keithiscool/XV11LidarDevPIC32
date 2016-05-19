@@ -61,8 +61,8 @@
 //limit on valid distance data magnitude in millimeters
 #define maxDistanceAllowed 6000
 #define minDistanceAllowed 50
-//must read # of distances in order to run object tracking
-#define mostAnglesRead 60
+//must read # of required distances in order to run object tracking (need to have some data before searching of objects
+#define minAnglesRead 90
 
 
 
