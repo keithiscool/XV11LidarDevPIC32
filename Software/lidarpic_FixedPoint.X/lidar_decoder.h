@@ -42,21 +42,20 @@ float returned_speed = 0;
 unsigned char QualityFlag[4];
 unsigned char InvalidFlag[4];
 unsigned char WarningFlag[4];
-//unsigned int SuccessfulMeasurements[360];
+
 //unsigned short QualityArr[360];
 //unsigned short DistanceArr[360];
 //unsigned short PreviousDistanceArr[360];
 //short XCoordMeters[360];
 //short YCoordMeters[360];
-unsigned short SuccessfulMeasurements[181];
-unsigned short QualityArr[181];
-unsigned short DistanceArr[181];
-unsigned short PreviousDistanceArr[181];
+short QualityArr[181];
+short DistanceArr[181];
+short PreviousDistanceArr[181];
 short XCoordMeters[181];
 short YCoordMeters[181];
-short DegreeIndex;
-short AnglesCoveredTotal;
-
+short DegreeIndex = 0;
+short AnglesCoveredTotal = 0;
+bool LidarCalcPerm = false;
 
 
 #endif	/* LIDAR_DECODER_H */

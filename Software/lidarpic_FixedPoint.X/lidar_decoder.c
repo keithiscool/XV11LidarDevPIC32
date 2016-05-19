@@ -89,8 +89,8 @@ bool LIDARdecode(short getDegrees[4]) {
                 DegreeIndex = (data_buffer[1] - 0xA0) * 4; //pull degree base (1 degree index per packet) out of parsed lidar data
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                //***SEE INCLUDED PICTURE OF REMAPPING LIDAR DEGREES***//
-                //**ReOrientLidarForBeaconAgainstCollectionWall.jpg**//
+            //***SEE INCLUDED PICTURE OF REMAPPING LIDAR DEGREES***//
+            //**ReOrientLidarForBeaconAgainstCollectionWall.jpg**//
 
 ////Something is not right with DegreeIndex...
 //                if(timeFlagOneHundMilSec){
@@ -102,25 +102,16 @@ bool LIDARdecode(short getDegrees[4]) {
                 //Keep degrees in front of collection bin (originally 270 to zero to 90)
                 DegreeIndex = DegreeIndex + 90;
 
-////Something is not right with DegreeIndex...
-                if(timeFlagOneHundMilSec){
-                    printf("O: %d\r\n",DegreeIndex);
-                    timeFlagOneHundMilSec = false;
-                }
-
                 //Check Rollover Condition where quadrant 1 (270 deg) moves over original 360 degrees
-                if(DegreeIndex > 356) {
+                if(DegreeIndex > 359) {
                     //Shift the Data from notch being 270 degrees to notch being 0 degrees. (shift 0 degrees clockwise by 90 degrees)
-                    DegreeIndex = DegreeIndex - 360; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
-                    printf("ROLL: %d\r\n",DegreeIndex);
+                    DegreeIndex = DegreeIndex - 356; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
+//                    printf("ROLL: %d\r\n",DegreeIndex);
                 }
 
-////                Offset for Array Indexing (arrays are 0 based)
-//                DegreeIndex++;
-
-//                Throw out data behind lidar (do not populate out of bounds data)
+////                Throw out data behind lidar (do not populate out of bounds data)
 //                if(DegreeIndex > 177) {
-//                    printf("FALSE %d\r\n",DegreeIndex);
+////                    printf("FALSE %d\r\n",DegreeIndex);
 //                    return false;
 //                }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,28 +153,32 @@ bool LIDARdecode(short getDegrees[4]) {
                         //Copy Quality Info to Quality Array to be Analyzed
                         QualityArr[DegreeIndex+i] = QualityFlag[i];
                         //Compute 4 Cartesian Coordinates for Output
-                        if((DistanceArr[DegreeIndex+i] > 0) && (DistanceArr[DegreeIndex+i] < 10000)) { // check if polar distance is useful data
+                        if((DistanceArr[DegreeIndex+i] > 0) && (DistanceArr[DegreeIndex+i] < maxDistanceAllowed)) { // check if polar distance is useful data
                             YCoordMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
                             XCoordMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
                         }
-                        SuccessfulMeasurements[DegreeIndex+i] = 1;
                         PreviousDistanceArr[DegreeIndex+i] = DistanceArr[DegreeIndex+i]; //"old" copy of data is kept to compare with the next iteration of "newer" data
-                        AnglesCoveredTotal++;
+                        
+                        if(AnglesCoveredTotal < 181)
+                            AnglesCoveredTotal++;
+                        else
+                            AnglesCoveredTotal = 180;
+                        
+                        if(AnglesCoveredTotal > mostAnglesRead) {
+                            LidarCalcPerm = true;
+                        }
+
+                        //record which degree measurements were determined from the parsed input (used in object detection)
+                        getDegrees[i] = DegreeIndex + i;
+
                     } else { //The data is not valid and has invalid flags within the present 22byte packet
                         //data is invalid and should not be used
                         DistanceArr[DegreeIndex+i] = 0;
                         XCoordMeters[DegreeIndex+i] = 0;
                         YCoordMeters[DegreeIndex+i] = 0;
-                        SuccessfulMeasurements[DegreeIndex+i] = 0;
                         PreviousDistanceArr[DegreeIndex+i] = 0;
                     }
                 }
-
-                //record which degree measurements were determined from the parsed input (used in object detection)
-                getDegrees[0] = DegreeIndex;
-                getDegrees[1] = DegreeIndex + 1;
-                getDegrees[2] = DegreeIndex + 2;
-                getDegrees[3] = DegreeIndex + 3;
 
                 //permit the acquisition of the next packet of 4 distances
                 transmission_in_progress = false;
@@ -212,7 +207,7 @@ bool debugLidarPolarData(void) {
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
     if(LIDARdecode(blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
 
-//        if(AnglesCoveredTotal > 180) {
+//        if(AnglesCoveredTotal > 181) {
             //Show first index as zero
             //printf("Degree:\r\n%4d: ",0);
 
@@ -224,7 +219,7 @@ bool debugLidarPolarData(void) {
 
                 printf("\r\n");//new line (carriage return)
                 printf("DisplayPolarData\r\n");
-                for(i=0;i<180;i++) {
+                for(i=0;i<181;i++) {
                     if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
                         if ((i % PRINT_NUM_PER_LINE) == 0) { //print 24 distances per line
                             printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
@@ -238,7 +233,7 @@ bool debugLidarPolarData(void) {
 ////                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
 //                printf("\r\n");//new line (carriage return)
 //                printf("DisplayQualityData\r\n");
-//                for(i=0;i<180;i++) {
+//                for(i=0;i<181;i++) {
 //                    if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
 //                        if ((i % PRINT_NUM_PER_LINE) == 0) { //print 24 quality elements per line
 //                            printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
@@ -270,7 +265,7 @@ bool debugLidarCartesianData(void) {
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
     if(LIDARdecode(blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
 
-        if(AnglesCoveredTotal > 180) {
+        if(AnglesCoveredTotal > 181) {
             //Show first index as zero
             //printf("Degree:\r\n%4d: ",0);
 
@@ -283,7 +278,7 @@ bool debugLidarCartesianData(void) {
             printf("\r\n");//new line (carriage return)
             printf("DisplayCartesianData\r\n");
             printf("XCoordMeters , YCoordMeters:\r\n");
-            for(i=0;i<180;i++) {
+            for(i=0;i<181;i++) {
 //                        while(U1STAbits.TRMT == 1) { //check to see if the UART buffer is empty - if it is, send debug data out UART1
                 if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
                     if ((i % PRINT_NUM_PER_LINE) == 0)  //print 4 x,y distances per line
@@ -299,7 +294,7 @@ bool debugLidarCartesianData(void) {
 ////                        printf("\x1b[0J"); // ANSI Terminal code: (ESC[2J == clear screen below cursor)
 //            printf("\r\n");//new line (carriage return)
 //            printf("DisplayQualityData\r\n");
-//            for(i=0;i<180;i++) {
+//            for(i=0;i<181;i++) {
 //                if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART
 //                    if ((i % PRINT_NUM_PER_LINE) == 0) { //print 24 quality elements per line
 //                        printf("\r\n%4u: ",i); //print 16 distances per line '\r\n' causes prompt to carraige return
@@ -322,32 +317,6 @@ bool debugLidarCartesianData(void) {
     }
     return true;
 }
-
-
-
-
-
-//check to see if  all distances have measurement values
-//NOTE: THIS WILL NEVER PASS BECAUSE SOME DATA POINTS WILL ALWAYS BE "INVALID DATA", THUS LESS THAN 360 DEGREES HAVE "GOOD DATA"
-int AllMeasurementsTaken(void) {
-    unsigned int j = 0;
-
-    //Verify that all 360 degrees have a distance measurement
-    for(j=0;j<360;j++) {
-        AnglesCoveredTotal += SuccessfulMeasurements[j];
-    }
-
-    if(AnglesCoveredTotal >=359) {
-        return 1;
-    }else {
-        AnglesCoveredTotal = 0;
-        return 0;
-    }
-
-    return 0;
-}
-
-
 
 
 

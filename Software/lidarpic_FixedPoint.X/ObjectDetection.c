@@ -9,46 +9,6 @@
 #include "ObjectDetection.h"
 
 
-/* MOTOVATION FOR USING LINKED LIST: NEED VARIABLE ARRAY OF STRUCTS "ObjectNode" SIZE FOR EACH DISCOVERED OBJECT LIDAR SEES
- * Let's imagine a conductor who can only enter the train through the first car and
- * can walk through the train down the line as long as the connector connects to
- * another car. This is how the program will traverse the linked list. The conductor
- * will be a pointer to node, and it will first point to root, and then, if the
- * root's pointer to the next node is pointing to something, the "conductor"
- * (not a technical term) will be set to point to the next node. In this fashion,
- * the list can be traversed. Now, as long as there is a pointer to something,
- * the traversal will continue. Once it reaches a null pointer (or dummy node),
- * meaning there are no more nodes (train cars) then it will be at the end of the
- * list, and a new node can subsequently be added if so desired.*/
-
-//From the "C-Programming Reference", linked lists are similar to a conductor moving between train cars
-//short linkedListSetup(struct ) {
-//
-//
-//
-//    root = malloc( sizeof(struct ObjectNode) );
-//    root->next = 0;
-//    conductor = root; //start the beginning of the
-//    if ( conductor != 0 ) {
-//        while ( conductor->next != 0) {
-//            conductor = conductor->next;
-//        }
-//    }
-//    /* Creates a node at the end of the list */
-//    conductor->next = malloc( sizeof(struct ObjectNode) );
-//    conductor = conductor->next;
-//
-//    if ( conductor == 0 ) {
-//        printf( "Out of memory" );
-//        return 0;
-//    }
-//    /* initialize the new memory */
-//    conductor->next = 0;
-//
-//    return 0;
-//}
-
-
 bool initObjectDetection(void) {
     arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE] = emptyObjectStruct; //initialize all struct array elements to zero
 }
@@ -110,7 +70,7 @@ short objectDetection(void) {
                         }
 
                         //CHECK IF THE LAST DETECTED OBJECT IS NOT IN THE SAME DEGREE PATH AS THE NEW DETECTED OBJECT AND THE OBJECT IS NOT IMMEDIATELY NEXT TO THE LAST OBJECT (avoid counting an object twice)
-//                        if( (arrayofDetectedObjects[index_object-1].degree - arrayofDetectedObjects[index_object-1].degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
+                        if( (arrayofDetectedObjects[index_object-1].degree - arrayofDetectedObjects[index_object-1].degree) > DEGREES_BETWEEN_EACH_OBJECT ) {
                             if(index_object < OBJECT_ARRAY_STRUCT_SIZE) {
                                 index_object++; //one object has been found, move to next struct array "arrayofDetectedObjects[30] element to populate next set of data when next object is found
                                 printf("object++: %u\r\n",index_object);
@@ -119,7 +79,7 @@ short objectDetection(void) {
                                 index_object = OBJECT_ARRAY_STRUCT_SIZE; //saturate the value if too many objects are detected
                                 printf("Too many objects\r\n");
                             }
-//                        }
+                        }
 
                         //Object recorded, so reset flag that detects the first edge of the object
                         ObjectStartEdgeDetected = false; //last edge of object detected (reset flag)

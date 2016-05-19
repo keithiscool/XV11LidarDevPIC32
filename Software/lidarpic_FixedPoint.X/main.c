@@ -70,16 +70,17 @@ void main(void){
     initObjectDetection();
 
 
-    //Gather data for 5 seconds, then print data out (need to populate as much data as possible at the beginning of code before while() loop
-    while(timeFlagFiveSec != true);
-    while(timeFlagFiveSec != true);
+//    //Gather data for 5 seconds, then print data out (need to populate as much data as possible at the beginning of code before while() loop
+//    while(timeFlagFiveSec != true);
+//    while(timeFlagFiveSec != true);
+
 
     while(1) {
 
 //RUN ONE OF THE FOLLOWING FUNCTIONS TO PARSE AND PRINT DATA TO UART 6
-//        if(debugLidarPolarData() == true) {
-//
-//        }
+        if(debugLidarPolarData() == true) {
+
+        }
 //        if(debugLidarCartesianData() == true) {
 //
 //        }
@@ -92,7 +93,7 @@ void main(void){
 
 
 //////        parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
-        objectDetection();
+//        objectDetection();
 
 
 
@@ -100,7 +101,7 @@ void main(void){
 
         //kick the dma to UART 6 if the buffer exceeds the scond level count
         if(queue_send() == true) {
-//            LATBbits.LATB10 ^= 0;    //toggle on LED 2
+            LATBbits.LATB10 ^= 1;    //toggle on LED 2
         }
     }
 }
@@ -134,9 +135,15 @@ void _general_exception_handler(void) {
     asm volatile("mfc0 %0,$13" : "=r" (_excep_code));
     asm volatile("mfc0 %0,$14" : "=r" (_excep_addr));
     _excep_code = (_excep_code & 0x0000007C) >> 2;
-//    LATEbits.LATE3 = 0; //test 2 on
+
     while (1)
     {
+        LATBbits.LATB9 = 1;
+        LATBbits.LATB10 = 1;
+        LATBbits.LATB11 = 1;
+        LATBbits.LATB12 = 0;
+        LATBbits.LATB13 = 0;
+
         // Examine _excep_code to identify the type of exception
         // Examine _excep_addr to find the address that caused the exception
     }

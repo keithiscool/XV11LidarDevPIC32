@@ -4,30 +4,30 @@
 #include "uart_handler.h"
 
 
-////Simple UART TX1 Called when Printf() is used (not using DMA)
-//void _mon_putc(char c) {
-//    if (U1STAbits.UTXBF == 1) { // uart transmit FIFO full
-//        int v;
-//        for(v=0; v<500; v++); //delay for a few clock cycles
-//    }
-//    U1TXREG = c;
-//}
-
-
-
-//Called when Printf() is used (working, but needs formatting for output)
+//Simple UART TX1 Called when Printf() is used (not using DMA)
 void _mon_putc(char c) {
-    static char dmaOutputArr[SIZE_OF_DMA_ARRAY];
-
-//    if(DMA_Counter > SIZE_OF_DMA_ARRAY) {
-    if(SIZE_OF_DMA_ARRAY < DMA_Counter) {
-        DMA_Counter = 0;
-        queue_put(dmaOutputArr, sizeof(dmaOutputArr));
+    if (U6STAbits.UTXBF == 1) { // uart transmit FIFO full
+        short v;
+        for(v=0; v<500; v++); //delay for a few clock cycles
     }
-
-    dmaOutputArr[DMA_Counter] = c; //copy the new char into the DMA temporary array
-    DMA_Counter++;
+    U6TXREG = c;
 }
+
+
+//DMA IS CAUSING SOME ISSUES, TO USE IT, THIS IS NEEDED INSTEAD OF THE TOP MON_PUTC()
+////Called when Printf() is used (working, but needs formatting for output)
+//void _mon_putc(char c) {
+//    static char dmaOutputArr[SIZE_OF_DMA_ARRAY];
+//
+////    if(DMA_Counter > SIZE_OF_DMA_ARRAY) {
+//    if(SIZE_OF_DMA_ARRAY < DMA_Counter) {
+//        DMA_Counter = 0;
+//        queue_put(dmaOutputArr, sizeof(dmaOutputArr));
+//    }
+//
+//    dmaOutputArr[DMA_Counter] = c; //copy the new char into the DMA temporary array
+//    DMA_Counter++;
+//}
 
 
 

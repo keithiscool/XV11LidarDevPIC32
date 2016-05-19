@@ -11,14 +11,14 @@ void initialize(void){
      INTEnableSystemMultiVectoredInt();
      IOpins();
      delay();
-//     timers();
-//     delay();
+     timers();
+     delay();
      PWM();
      delay();
      UART();
      delay();
-     DMA();
-     delay();
+//     DMA();
+//     delay();
      INTEnableInterrupts(); //enable interrupts
      beginLIDARdecoder(returned_data, &buffer_five);
 }
@@ -112,12 +112,12 @@ void PWM(void){
     OC1CONbits.ON = 0;
     OC1CONbits.OCM = 0b110;
     OC1CONbits.OCTSEL = 0; //select Timer 2 as source for OC1 (PWM)
-//    OC1R = 2100; // near 230rpm
-//    OC1RS = 2100; // near 230rpm
+    OC1R = 2100; // near 230rpm
+    OC1RS = 2100; // near 230rpm
 //    OC1R = 2300; // near 230rpm
 //    OC1RS = 2300; // near 230rpm
-    OC1R = 2450; // near 260rpm
-    OC1RS = 2450; // near 260rpm
+//    OC1R = 2450; // near 260rpm
+//    OC1RS = 2450; // near 260rpm
 
     OC1CONbits.ON = 1;
     T2CONbits.ON = 1;
@@ -151,12 +151,12 @@ void UART(void){
     U6MODEbits.PDSEL = 0b00; // 8-bit no parity
     U6MODEbits.STSEL = 0; // 1 stop bit
     IFS2bits.U6TXIF = 0;
-//    IEC0bits.U1TXIE = 1; // transmit interrupt enable
+    IEC0bits.U1TXIE = 1; // transmit interrupt enable
     IPC12bits.U6IP = 1; // priority 1
     IPC12bits.U6IS = 1; // sub priority 1
 //    U1STAbits.UTXISEL = 0b01; // interrupt when transmit complete
 //    U1STAbits.URXISEL = 0; // interrupt generated with every reception
-    U6STAbits.URXEN = 1; // enable uart recieve
+    U6STAbits.URXEN = 0; // DISABLE uart recieve
     U6STAbits.UTXEN = 1; // enable uart transmit
     U6MODEbits.ON = 1; // enable whole uart module
     // uart 6 error
