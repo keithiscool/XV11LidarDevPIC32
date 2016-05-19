@@ -96,22 +96,36 @@ void main(void){
     timeFlagFiveSec = false; //reset timer flag
 
     LEDmsBlinkHundMS();
+
+    unsigned short dummyArray[4]; //do not need degree measurements for each parsing of data
+
     
+    timeFlagFiveSec = false; //reset timer flag
+    timeFlagOneHundMilSec = false; //reset timer flag
+
+
     while(1) {
 
-//RUN ONE OF THE FOLLOWING FUNCTIONS TO PARSE AND PRINT DATA TO UART 6
-        if(debugLidarPolarData() == true) {
-            LEDmsBlinkHundMS();
-        }
-        if(debugLidarCartesianData() == true) {
-            LEDmsBlinkHundMS();
-        }
+        //read all 360 degrees, 4 at a time
+        if(LIDARdecode(dummyArray) == true) { //88 is rotation offset for lidar (rotate clockwise if positive)
 
+            if(timeFlagOneHundMilSec == true) {
+                //RUN ONE OF THE FOLLOWING FUNCTIONS TO PARSE AND PRINT DATA TO UART 6
+                if(debugLidarPolarData() == true) {
+                    LEDmsBlinkHundMS();
+                }
+                if(debugLidarCartesianData() == true) {
+                    LEDmsBlinkHundMS();
+                }
+                LEDmsBlinkHundMS();
+                timeFlagOneHundMilSec = false;
+            }
 
+        }
 ////parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
-//        if(distDiffObjectDetection() == true) {
-//            LEDmsBlinkHundMS();
-//        }
+        if(distDiffObjectDetection() == true) {
+            LATBbits.LATB13 ^= 1;
+        }
 
 
 
