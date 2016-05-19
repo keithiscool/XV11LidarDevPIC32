@@ -91,9 +91,7 @@ void main(void){
 
     LEDmsBlinkHundMS();
 
-    //Gather data for 10 seconds, then use object detection function (need to populate as much data as possible at the beginning of code before while() loop
-    while(timeFlagFiveSec != true);
-    timeFlagFiveSec = false; //reset timer flag
+    //Gather data for 5 seconds, then use object detection function (need to populate as much data as possible at the beginning of code before while() loop
     while(timeFlagFiveSec != true);
     timeFlagFiveSec = false; //reset timer flag
 

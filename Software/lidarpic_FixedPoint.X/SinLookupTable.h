@@ -6,6 +6,11 @@
 #define	SINLOOKUPTABLE_H
 
 
+//This code is tested in Software/Archive/TestingTrigLookupTable
+/*
+ * This lookup table is used for fixed point sine and cosine calculation to
+ * get x,y position in arena
+*/
 
 int SinLookupTableArray[91] = { //Shorts are 16-bits large for PIC32.
     0,
@@ -112,8 +117,8 @@ short GetMySinLookup16bit(short Degrees) {
 //    if (Degrees <= 270) return (-1*(SinLookupTableArray[(Degrees-180)])); // 180<Angle<270
 //    if (Degrees < 360) return (-1*(SinLookupTableArray[(360-Degrees)])); // 270<Angle<360
     else{
-            printf("BAD_CART1\r\n");
-            return 0;
+//        printf("BAD_CARTESIAN_1\r\n");
+//        return 0;
     }
 }
 
@@ -129,7 +134,7 @@ short GetMyCosLookup16bit(short Degrees){
 //    if (Degrees <= 270) return (-1*(SinLookupTableArray[(270-Degrees)])); // 180<Angle<270
 //    if (Degrees < 360) return (SinLookupTableArray[(Degrees-270)]); // 270<Angle<360
     else{
-        printf("BAD_CART2\r\n");
+//        printf("BAD_CARTESIAN_2\r\n");
         return 0;
     }
 }

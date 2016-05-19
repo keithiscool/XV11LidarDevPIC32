@@ -115,7 +115,7 @@ bool LIDARdecode(short getDegrees[4]) {
                 //Check Rollover Condition where quadrant 1 (270 deg) moves over original 360 degrees
                 if(DegreeIndex > 359) {
                     //Shift the Data from notch being 270 degrees to notch being 0 degrees. (shift 0 degrees clockwise by 90 degrees)
-                    DegreeIndex = DegreeIndex - 360; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
+                    DegreeIndex = DegreeIndex - 360; //offset degrees to be used in object recognition (if "offsetDegrees" goes over 360, thisshifts the degrees)
 //                    printf("ROLL: %d\r\n",DegreeIndex);
                 }
 
@@ -161,20 +161,22 @@ bool LIDARdecode(short getDegrees[4]) {
                 for (i = 0; i < 4; i++) {
                     if (!InvalidFlag[i]) { // the data is valid within the present 22byte packet
 
-                        if(PreviousDistanceArr[DegreeIndex+i] != DistanceArr[DegreeIndex+i]) {
-                            //VERIFY THERE WAS A CHANGE IN CASE THE OBJECT BEING TRACKED IS MOVING
-                        }
+//                        if(PreviousDistanceArr[DegreeIndex+i] != DistanceArr[DegreeIndex+i]) {
+//                            ////VERIFY THERE WAS A CHANGE IN CASE THE OBJECT BEING TRACKED IS MOVING
+//                            //newObject.degree = DegreeIndex+i;
+//                        }
 
                         //Pull 4 polar distances (in millimeters) from each 22 byte packet
                         DistanceArr[DegreeIndex+i] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
                         //Copy Quality Info to Quality Array to be Analyzed
                         QualityArr[DegreeIndex+i] = QualityFlag[i];
-                        //Compute 4 Cartesian Coordinates for Output
-                        if((DistanceArr[DegreeIndex+i] > 0) && (DistanceArr[DegreeIndex+i] < maxDistanceAllowed)) { // check if polar distance is useful data
-//                            YCoordMilliMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
-//                            XCoordMilliMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
-                            YCoordMilliMeters[DegreeIndex+i] = ((short)(((unsigned int)DistanceArr[DegreeIndex+i]*(unsigned int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
-                            XCoordMilliMeters[DegreeIndex+i] = ((short)(((unsigned int)DistanceArr[DegreeIndex+i]*(unsigned int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
+                        //Compute 4 Cartesian Coordinates for Output only in the data is valid and within range
+                        if((DistanceArr[DegreeIndex+i] > 1) && (DistanceArr[DegreeIndex+i] < maxDistanceAllowed)) { // check if polar distance is useful data
+                            //Use fixed point math to do multiplication in 32 bit (unsigned int for pic32), then shrink down to 16 bits by typecasting (short for pic32)
+                            //The bitshifting at the end (">>16") shifts the top 16 bits of the 32-bit unsigned int to the least significant bits
+                            //the most significant bits are then empty and the remaining 16 bits in the lower part get shoved into a 16-bit unsigned short
+                            YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMySinLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
+                            XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMyCosLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
                         }
                         PreviousDistanceArr[DegreeIndex+i] = DistanceArr[DegreeIndex+i]; //"old" copy of data is kept to compare with the next iteration of "newer" data
 
