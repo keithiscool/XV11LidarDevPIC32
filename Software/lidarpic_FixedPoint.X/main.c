@@ -105,24 +105,24 @@ void main(void){
         if(debugLidarPolarData() == true) {
             LEDmsBlinkHundMS();
         }
-//        if(debugLidarCartesianData() == true) {
-//          LEDmsBlinkHundMS();
-//        }
+        if(debugLidarCartesianData() == true) {
+          LEDmsBlinkHundMS();
+        }
 
 
-//////        parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
-//        if(objectDetection() == true) {
+////parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
+//        if(distDiffObjectDetection() == true) {
 //            LEDmsBlinkHundMS();
 //        }
 
 
 
 
-
-        //kick the dma to UART 6 if the buffer exceeds the scond level count
-        if(queue_send() == true) {
-            LATBbits.LATB10 ^= 1;    //toggle on LED 2
-        }
+////NOT USING DMA FOR SMALL DATA TRANSMISSIONS
+//        //kick the dma to UART 6 if the buffer exceeds the second level count
+//        if(queue_send() == true) {
+//            LATBbits.LATB10 ^= 1;    //toggle on LED 2
+//        }
     }
 }
 

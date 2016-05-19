@@ -46,7 +46,7 @@ float fix2float(int16_t a){
 ////////////////////////////////////////////////////////////////////////////////
 
 int main(void){
-    int Degrees = -542;
+    int Degrees = 85;
     int Original = Degrees;
     int output;
 

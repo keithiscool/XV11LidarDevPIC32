@@ -99,21 +99,31 @@ bool LIDARdecode(short getDegrees[4]) {
 //                }
 
                 //Shift remap to Polar Coordinate system
-                //Keep degrees in front of collection bin (originally 270 to zero to 90)
+                //Keep degrees in front of collection bin (originally 270 to zero to 90), but converted to 0 to 90 to 180 to match conventional polar degrees
                 DegreeIndex = DegreeIndex + 90;
+/****************************************************************/
+//For Reed: THIS IS WEIRD...
+//I DO NOT KNOW WHY THE 1ST DEGREE IN EACH GROUP OF 4 DISTANCES CAUSES THE PROCESSOR TO HALT...
+//Attempt to ignore the information for the distances behind the collection bin
+/****************************************************************/
+//////Throw out data behind lidar (do not populate out of bounds data)
+//                if(DegreeIndex > 177) {
+////                    printf("FALSE %d\r\n",DegreeIndex);
+//                    return false;
+//                }
 
                 //Check Rollover Condition where quadrant 1 (270 deg) moves over original 360 degrees
                 if(DegreeIndex > 359) {
                     //Shift the Data from notch being 270 degrees to notch being 0 degrees. (shift 0 degrees clockwise by 90 degrees)
-                    DegreeIndex = DegreeIndex - 356; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
+                    DegreeIndex = DegreeIndex - 360; //offset degrees to be used in object recognition (if "offsetDegrees" is negative, this, shifts the degrees)
 //                    printf("ROLL: %d\r\n",DegreeIndex);
                 }
 
 
 /****************************************************************/
-//For Reed: THIS IS WEIRD...
-//I DO NOT KNOW WHY THE 1ST DEGREE IN EACH GROUP OF 4 DISTANCES CAUSES THE PROCESSOR TO HALT...
-//Attempt to ignore the information for the distances behind the collection bin
+//For Reed: THIS IS ALSO KIND OF WEIRD...
+//I DO NOT KNOW WHY THE 1ST DEGREE IN EACH GROUP OF 4 DISTANCES CAUSES THE PROCESSOR TO HALT AROUND 177 DEGREES...
+//I am Attempting to ignore the information for the distances behind the collection bin (only use [0,180] inclusive degrees
 /****************************************************************/
 //////Throw out data behind lidar (do not populate out of bounds data)
 //                if(DegreeIndex > 177) {
@@ -161,8 +171,10 @@ bool LIDARdecode(short getDegrees[4]) {
                         QualityArr[DegreeIndex+i] = QualityFlag[i];
                         //Compute 4 Cartesian Coordinates for Output
                         if((DistanceArr[DegreeIndex+i] > 0) && (DistanceArr[DegreeIndex+i] < maxDistanceAllowed)) { // check if polar distance is useful data
-                            YCoordMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
-                            XCoordMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
+//                            YCoordMilliMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
+//                            XCoordMilliMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
+                            YCoordMilliMeters[DegreeIndex+i] = ((short)(((unsigned int)DistanceArr[DegreeIndex+i]*(unsigned int)GetMySinLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
+                            XCoordMilliMeters[DegreeIndex+i] = ((short)(((unsigned int)DistanceArr[DegreeIndex+i]*(unsigned int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
                         }
                         PreviousDistanceArr[DegreeIndex+i] = DistanceArr[DegreeIndex+i]; //"old" copy of data is kept to compare with the next iteration of "newer" data
 
@@ -182,14 +194,14 @@ bool LIDARdecode(short getDegrees[4]) {
                     } else { //The data is not valid and has invalid flags within the present 22byte packet
                         //data is invalid and should not be used
                         DistanceArr[DegreeIndex+i] = 0;
-                        XCoordMeters[DegreeIndex+i] = 0;
-                        YCoordMeters[DegreeIndex+i] = 0;
+                        YCoordMilliMeters[DegreeIndex+i] = 0;
+                        XCoordMilliMeters[DegreeIndex+i] = 0;
                         PreviousDistanceArr[DegreeIndex+i] = 0;
-                        BadReadings++;
+                        BadReadings++; //mark each distance measurement as a "bad reading" if the invalid flags are set in their data packets
                         getDegrees[i] = 0;
                     }
                 }
-
+                //successful CRC parsed packet
                 //permit the acquisition of the next packet of 4 distances
                 transmission_in_progress = false;
                 buff_index = 0;
@@ -217,7 +229,7 @@ bool debugLidarPolarData(void) {
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
-    if(LIDARdecode(blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
+    if(LIDARdecode(blah) == true) { //88 is rotation offset for lidar (rotate clockwise if positive)
 
 //        if(AnglesCoveredTotal > 181) {
             //Show first index as zero
@@ -276,9 +288,9 @@ bool debugLidarCartesianData(void) {
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
 
     //read all 360 degrees, disable uart 4 input from lidar, then print data out
-    if(LIDARdecode(blah) == 1) { //88 is rotation offset for lidar (rotate clockwise if positive)
+    if(LIDARdecode(blah) == true) { //90 is rotation offset for lidar (rotate clockwise if positive)
 
-        if(AnglesCoveredTotal > 181) {
+//        if(AnglesCoveredTotal > 181) {
             //Show first index as zero
             //printf("Degree:\r\n%4d: ",0);
 
@@ -297,7 +309,7 @@ bool debugLidarCartesianData(void) {
                     if ((i % PRINT_NUM_PER_LINE) == 0)  //print 4 x,y distances per line
                         printf("\r\n%4d: ",i); //print 4 distances per line '\r\n' causes prompt to carraige return
 
-                    printf(" %d,%d//", XCoordMeters[i], YCoordMeters[i]);
+                    printf(" %d,%d//", XCoordMilliMeters[i], YCoordMilliMeters[i]);
                 }
                 else
                     i--; //keep index at same value if the UART1 TX debug buffer is full
@@ -324,7 +336,7 @@ bool debugLidarCartesianData(void) {
                 printf("===========\r\n");
             }
 
-        }
+//        }
         U4STAbits.URXEN = 1; // enable uart transmit (Allow Receive Data from Lidar)
         U4MODEbits.ON = 1; // enable whole uart module
     }

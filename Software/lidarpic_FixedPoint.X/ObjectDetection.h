@@ -10,7 +10,7 @@
 #include <stdio.h>      /* printf, scanf, puts */
 #include <stdlib.h>     /* realloc, free, exit, NULL */
 #include "defs.h"
-#include "interrupt_handler.h"
+//#include "interrupt_handler.h"
 
 //timer usage flags
 extern bool timeFlagOneHundMilSec;
@@ -22,16 +22,17 @@ extern bool timeFlagFiveSec;
 //extern unsigned short PreviousDistanceArr[360];
 //extern short XCoordMeters[360];
 //extern short YCoordMeters[360];
-extern unsigned short QualityArr[181];
-extern unsigned short DistanceArr[181];
-extern unsigned short PreviousDistanceArr[181];
-extern short XCoordMeters[181];
-extern short YCoordMeters[181];
+extern short QualityArr[181];
+extern short DistanceArr[181];
+extern short PreviousDistanceArr[181];
+extern short XCoordMilliMeters[181];
+extern short YCoordMilliMeters[181];
 extern bool LIDARdecode(short getDegrees[4]);
 
 //functions in ObjectDetection.c
-extern short objectDetection(void);
-extern bool initObjectDetection(void);
+//extern short objectDetection(void);
+//extern bool initObjectDetection(void);
+//extern bool sendRobotLocation(short degree);
 
 //used to detect differences between adjacenet degree elements
 unsigned short DistanceDifferencesArr[181];
@@ -51,16 +52,18 @@ struct ObjectNode {
 
 //Empty Object struct used to "reset to zero" the arrayofDetectedObjects[] struct array elements
 static struct ObjectNode emptyObjectStruct = {0,0,0,0,0,0,0};
-
-
-
 //Declaration of discovered objects "array of structs"
-struct ObjectNode arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE];
+//struct ObjectNode arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE];
+struct ObjectNode DetectedObject;
 //keeps track of number of objects detected
 unsigned short index_object = 0;
 
+
 //flag used to designate a corner of an object has been detected (object is closer than surroundings)
 static bool ObjectStartEdgeDetected = 0;
+
+//flag to signify the object (Robot CHRISTEE) is found
+bool RobotDetected = false;
 
 
 //Using Linked List
