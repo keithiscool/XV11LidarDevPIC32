@@ -172,16 +172,20 @@ bool LIDARdecode(short getDegrees[4]) {
                         QualityArr[DegreeIndex+i] = QualityFlag[i];
                         //Compute 4 Cartesian Coordinates for Output only in the data is valid and within range
                         if((DistanceArr[DegreeIndex+i] > minDistanceAllowed) && (DistanceArr[DegreeIndex+i] < maxDistanceAllowed)) { // check if polar distance is useful data
+
                             //Use fixed point math to do multiplication in 32 bit (unsigned int for pic32), then shrink down to 16 bits by typecasting (short for pic32)
                             //The bitshifting at the end (">>16") shifts the top 16 bits of the 32-bit unsigned int to the least significant bits
                             //the most significant bits are then empty and the remaining 16 bits in the lower part get shoved into a 16-bit unsigned short
-                            if( TrigValSine = GetMySinLookup16bit(DegreeIndex+i, negativeNumSinPTR) ) {
-                                YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValSine ) ) >> 16) ); //max 14 bit value for distance
+                            TrigValSine = GetMySinLookup16bit(DegreeIndex+i, negativeNumSinPTR);
+                            TrigValCosine = GetMyCosLookup16bit(DegreeIndex+i, negativeNumCosPTR);
+                            
+                            if(TrigValSine == true) {
+                                YCoordMilliMeters[DegreeIndex+i] = ( -((short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValSine ) ) >> 16) ); //max 14 bit value for distance
                             }else {
                                 YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValSine ) ) >> 16) ); //max 14 bit value for distance
                             }
 
-                            if( TrigValCosine = GetMyCosLookup16bit(DegreeIndex+i, negativeNumCosPTR) ) {
+                            if(TrigValSine == true) {
                                 XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValCosine ) ) >> 16) ); //max 14 bit value for distance
                             }else {
                                 XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)TrigValCosine ) ) >> 16) ); //max 14 bit value for distance

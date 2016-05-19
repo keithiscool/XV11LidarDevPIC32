@@ -109,17 +109,17 @@ void main(void){
         //read all 360 degrees, 4 at a time
         if(LIDARdecode(dummyArray) == true) { //88 is rotation offset for lidar (rotate clockwise if positive)
 
-            if(timeFlagOneHundMilSec == true) {
+//            if(timeFlagOneHundMilSec == true) {
                 //RUN ONE OF THE FOLLOWING FUNCTIONS TO PARSE AND PRINT DATA TO UART 6
                 if(debugLidarPolarData() == true) {
-                    LEDmsBlinkHundMS();
+//                    LEDmsBlinkHundMS();
                 }
                 if(debugLidarCartesianData() == true) {
-                    LEDmsBlinkHundMS();
+//                    LEDmsBlinkHundMS();
                 }
-                LEDmsBlinkHundMS();
-                timeFlagOneHundMilSec = false;
-            }
+//                LEDmsBlinkHundMS();
+//                timeFlagOneHundMilSec = false;
+//            }
 
         }
 ////parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects

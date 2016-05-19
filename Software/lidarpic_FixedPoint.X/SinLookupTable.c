@@ -10,7 +10,7 @@
 
 
 
-unsigned int SinLookupTableArray[91] = { //Shorts are 16-bits large for PIC32.
+unsigned short SinLookupTableArray[91] = { //Shorts are 16-bits large for PIC32.
     0,
     1144,
     2287,
@@ -101,7 +101,7 @@ unsigned int SinLookupTableArray[91] = { //Shorts are 16-bits large for PIC32.
     65446,
     65496,
     65526,
-    65536
+    65534
 };
 
 

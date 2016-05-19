@@ -14,7 +14,7 @@
 
 
 
-extern unsigned int SinLookupTableArray[91];
+extern unsigned short SinLookupTableArray[91];
 
 
 //Used unit circle to line up sine and cosine functions using just the first 90 degrees of the generated sine lookup table from excel:

@@ -59,9 +59,9 @@ int main(void){
 
 
 
-    int16_t SinTableTestVal2 = 27697;
+    int16_t SinTableTestVal2 = 48703; //48703 == 48 degrees in 16 bit (out of 65535)
 //    int16_t InputDistance = 16384; //Maximum input Distance as 14bit unsigned integer from XV11
-    int16_t InputDistance = 624;
+    int16_t InputDistance = 512; //raw distance in millimeters
 //    printf("LookupTableArray: Element 21 is: %d\n",LookupTableArray[21]);
     int16_t FinalMaxVal2 = (int16_t)(((int32_t)SinTableTestVal2*(int32_t)InputDistance)>>16); //max 14 bit value for distance
 
