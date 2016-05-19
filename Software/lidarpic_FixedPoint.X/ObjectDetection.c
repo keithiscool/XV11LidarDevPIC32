@@ -37,7 +37,7 @@ bool sendRobotLocation(short degree) {
 
 //Check whether the change in Distance between each degree is large -> indicates object or wall
 //this function compares the ditances between polar magnitudes 4-at-a-time
-short objectDetection(void) {
+short distDiffObjectDetection(void) {
     //temporary array degree values to remember
     short myDegrees[4] = {0, 0, 0, 0};
     short i = 0;
@@ -77,7 +77,7 @@ short objectDetection(void) {
                     printf("object_stop_edge_detected\r\n");
 
                     //check if object is wide enough (are there enough degrees between the start and the start of the object?)
-                    if( ( (DetectedObject.startOfDetectedObject - DetectedObject.endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
+//                    if( ( (DetectedObject.startOfDetectedObject - DetectedObject.endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
                         //average and populate the data for the object into the object struct array
                         DetectedObject.qualityOfObject = (( QualityArr[DetectedObject.startOfDetectedObject] + QualityArr[DetectedObject.endOfDetectedObject] ) / 2 );
                         DetectedObject.xPos = (( XCoordMilliMeters[DetectedObject.startOfDetectedObject] + XCoordMilliMeters[DetectedObject.endOfDetectedObject] ) / 2 );
@@ -86,7 +86,7 @@ short objectDetection(void) {
                         DetectedObject.degree = (( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) / 2 );
                         DetectedObject.xPos -= X_POSITION_OFFSET_LIDAR_PLACEMENT; //correct the offset of the collection beacon (the collection beacon is not in the center of the arena)
                         printf("obj_deg: %u / obj_mag: %u\r\n",DetectedObject.degree, DetectedObject.polarDistance);
-                    }
+//                    }
 
                     //Object recorded, so reset flag that detects the first edge of the object
                     ObjectStartEdgeDetected = false; //last edge of object detected (reset flag)

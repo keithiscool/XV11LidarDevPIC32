@@ -109,8 +109,12 @@ short GetMySinLookup16bit(short Degrees) {
 
     if (Degrees <= 90) return SinLookupTableArray[Degrees]; // 0<Angle<90
     if (Degrees <= 180) return SinLookupTableArray[(180-Degrees)]; // 90<Angle<180
-    if (Degrees <= 270) return (-1*(SinLookupTableArray[(Degrees-180)])); // 180<Angle<270
-    if (Degrees < 360) return (-1*(SinLookupTableArray[(360-Degrees)])); // 270<Angle<360
+//    if (Degrees <= 270) return (-1*(SinLookupTableArray[(Degrees-180)])); // 180<Angle<270
+//    if (Degrees < 360) return (-1*(SinLookupTableArray[(360-Degrees)])); // 270<Angle<360
+    else{
+            printf("BAD_CART1\r\n");
+            return 0;
+    }
 }
 
 
@@ -122,8 +126,12 @@ short GetMyCosLookup16bit(short Degrees){
 
     if (Degrees <= 90) return SinLookupTableArray[(90-Degrees)]; // 0<Angle<90
     if (Degrees <= 180) return (-1*(SinLookupTableArray[(Degrees-90)])); // 90<Angle<180
-    if (Degrees <= 270) return (-1*(SinLookupTableArray[(270-Degrees)])); // 180<Angle<270
-    if (Degrees < 360) return (SinLookupTableArray[(Degrees-270)]); // 270<Angle<360
+//    if (Degrees <= 270) return (-1*(SinLookupTableArray[(270-Degrees)])); // 180<Angle<270
+//    if (Degrees < 360) return (SinLookupTableArray[(Degrees-270)]); // 270<Angle<360
+    else{
+        printf("BAD_CART2\r\n");
+        return 0;
+    }
 }
 
 
