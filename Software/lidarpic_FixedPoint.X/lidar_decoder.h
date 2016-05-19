@@ -1,7 +1,5 @@
-/* 
- * File:   lidar_decoder.h
+/* File:   lidar_decoder.h
  * Author: Igor
- *
  * Created on July 5, 2015, 8:14 AM
  */
 
@@ -56,6 +54,7 @@ short YCoordMeters[181];
 short DegreeIndex = 0;
 short AnglesCoveredTotal = 0;
 bool LidarCalcPerm = false;
+int BadReadings = 0;
 
 
 #endif	/* LIDAR_DECODER_H */

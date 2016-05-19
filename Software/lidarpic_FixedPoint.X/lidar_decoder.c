@@ -185,6 +185,8 @@ bool LIDARdecode(short getDegrees[4]) {
                         XCoordMeters[DegreeIndex+i] = 0;
                         YCoordMeters[DegreeIndex+i] = 0;
                         PreviousDistanceArr[DegreeIndex+i] = 0;
+                        BadReadings++;
+                        getDegrees[i] = 0;
                     }
                 }
 
@@ -207,7 +209,9 @@ bool LIDARdecode(short getDegrees[4]) {
 }
 
 
+
 //used to print out the parsed Polar data from xv11 lidar to a serial monitor
+//this can also print quality data
 bool debugLidarPolarData(void) {
     unsigned short i = 0;
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
@@ -266,6 +270,7 @@ bool debugLidarPolarData(void) {
 
 
 //used to print out the parsed X,Y (cartesian) data from xv11 lidar to a serial monitor
+//this can also print quality data
 bool debugLidarCartesianData(void) {
     unsigned short i = 0;
     unsigned short blah[4]; //do not need degree measurements for each parsing of data
@@ -288,7 +293,7 @@ bool debugLidarCartesianData(void) {
             printf("XCoordMeters , YCoordMeters:\r\n");
             for(i=0;i<181;i++) {
 //                        while(U1STAbits.TRMT == 1) { //check to see if the UART buffer is empty - if it is, send debug data out UART1
-                if(U1STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
+                if(U6STAbits.UTXBF == 0) { //check to see if the UART buffer is not full - if it is not full, send debug data out UART1
                     if ((i % PRINT_NUM_PER_LINE) == 0)  //print 4 x,y distances per line
                         printf("\r\n%4d: ",i); //print 4 distances per line '\r\n' causes prompt to carraige return
 
