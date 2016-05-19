@@ -97,7 +97,7 @@ bool LIDARdecode(short getDegrees[4]) {
 //                    printf("O: %d\r\n",DegreeIndex);
 //                    timeFlagOneHundMilSec = false;
 //                }
-                
+
                 //Shift remap to Polar Coordinate system
                 //Keep degrees in front of collection bin (originally 270 to zero to 90)
                 DegreeIndex = DegreeIndex + 90;
@@ -109,7 +109,13 @@ bool LIDARdecode(short getDegrees[4]) {
 //                    printf("ROLL: %d\r\n",DegreeIndex);
                 }
 
-////                Throw out data behind lidar (do not populate out of bounds data)
+
+/****************************************************************/
+//For Reed: THIS IS WEIRD...
+//I DO NOT KNOW WHY THE 1ST DEGREE IN EACH GROUP OF 4 DISTANCES CAUSES THE PROCESSOR TO HALT...
+//Attempt to ignore the information for the distances behind the collection bin
+/****************************************************************/
+//////Throw out data behind lidar (do not populate out of bounds data)
 //                if(DegreeIndex > 177) {
 ////                    printf("FALSE %d\r\n",DegreeIndex);
 //                    return false;
@@ -145,7 +151,7 @@ bool LIDARdecode(short getDegrees[4]) {
                     if (!InvalidFlag[i]) { // the data is valid within the present 22byte packet
 
                         if(PreviousDistanceArr[DegreeIndex+i] != DistanceArr[DegreeIndex+i]) {
-
+                            //VERIFY THERE WAS A CHANGE IN CASE THE OBJECT BEING TRACKED IS MOVING
                         }
 
                         //Pull 4 polar distances (in millimeters) from each 22 byte packet
@@ -158,12 +164,13 @@ bool LIDARdecode(short getDegrees[4]) {
                             XCoordMeters[DegreeIndex+i] = ((short)(((int)DistanceArr[DegreeIndex+i]*(int)GetMyCosLookup16bit(DegreeIndex+i))>>16)); //max 14 bit value for distance
                         }
                         PreviousDistanceArr[DegreeIndex+i] = DistanceArr[DegreeIndex+i]; //"old" copy of data is kept to compare with the next iteration of "newer" data
-                        
+
+                        //Prevent the angle of the
                         if(AnglesCoveredTotal < 181)
                             AnglesCoveredTotal++;
                         else
                             AnglesCoveredTotal = 180;
-                        
+
                         if(AnglesCoveredTotal > mostAnglesRead) {
                             LidarCalcPerm = true;
                         }
