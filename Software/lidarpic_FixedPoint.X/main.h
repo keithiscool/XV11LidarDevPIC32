@@ -9,26 +9,21 @@
 #include "interrupt_handler.h"
 
 
-#define RUNMODE true
-#define TESTMODE false
-bool operationMode = TESTMODE;
-
-
 extern void initialize(void);
 extern bool timeFlag;
-
+extern bool LidarCalcPerm;
+extern bool timeFlagFiveSec;
+extern bool timeFlagOneHundMilSec;
 
 unsigned short returned_data[10];
 
-extern bool Done_Printing_Debug(void);
+
 bool FirstTimePrinting = true;
 unsigned int DATA[4];
 unsigned int i = 0;
 
 void delay(void);
 unsigned int v = 0;
-extern bool timeFlagFiveSec;
-extern bool timeFlagOneHundMilSec;
 
 //////////////////////////////////////////////////////////////////////////////
 //LIDAR DATA STUFF

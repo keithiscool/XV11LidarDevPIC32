@@ -69,12 +69,15 @@ void main(void){
     //initialize arrays for object detection
     initObjectDetection();
 
-
+    unsigned short test[4];
+    while( (LidarCalcPerm != true) && (timeFlagFiveSec != true) ) {
+        //RUN THE FOLLOWING FUNCTION TO PARSE THE DATA (WILL NOT PRINT THE DEBUG DATA AND WILL NOT LOOK FOR OBJECTS)
+        LIDARdecode(test); //simply call to parse the Lidar data (4 distance measurements at a time)
+    }
+    
 //    //Gather data for 5 seconds, then print data out (need to populate as much data as possible at the beginning of code before while() loop
 //    while(timeFlagFiveSec != true);
-//    while(timeFlagFiveSec != true);
-
-
+    
     while(1) {
 
 //RUN ONE OF THE FOLLOWING FUNCTIONS TO PARSE AND PRINT DATA TO UART 6
