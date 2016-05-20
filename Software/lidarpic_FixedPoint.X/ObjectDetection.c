@@ -58,8 +58,6 @@ short distDiffObjectDetection(void) {
             
             if( (DistanceArr[myDegrees[i]] > minDistanceAllowed) && ( (myDegrees[i] > objectTrackLower) && (myDegrees[i] < objectTrackUpper) ) ) {
                 presentDegree = myDegrees[i];
-                continue; //skip to next degree if it is not valid data
-            }
 
             //take magnitude difference from present distance measurement and the one previous (this distance will be used to detect objects if the gap between adjacent distances is large
 //            DistanceDifferencesArr[myDegrees[i]] = abs( DistanceArr[myDegrees[i]] - DistanceArr[myDegrees[i-1]] );
@@ -87,8 +85,9 @@ short distDiffObjectDetection(void) {
 //                    if( ( (DetectedObject.startOfDetectedObject - DetectedObject.endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
                         //average and populate the data for the object into the object struct array
                         DetectedObject.polarDistance = (( DistanceArr[DetectedObject.startOfDetectedObject] + DistanceArr[DetectedObject.endOfDetectedObject] ) / 2 );
+
 //                       CONVERT TO RADIANS: RADIANS == deg * M_PI / 180.0;
-//                        DetectedObject.degree = (( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) / 2 );
+//                       DetectedObject.degree = (( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) / 2 );
                         DetectedObject.degree = ( ( ( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) * M_PI ) / 360 );
 
 
@@ -101,15 +100,15 @@ short distDiffObjectDetection(void) {
                         DetectedObject.xPos -= X_POSITION_OFFSET_LIDAR_PLACEMENT; //correct the offset of the collection beacon (the collection beacon is not in the center of the arena)
 
                         printf("obj_deg: %d / obj_mag: %d / X: %d / Y: %d\r\n",DetectedObject.degree, DetectedObject.polarDistance, DetectedObject.xPos, DetectedObject.yPos);
-//                    }
+                        printf("start: %d / stop: %d \r\n",DetectedObject.startOfDetectedObject, DetectedObject.endOfDetectedObject);
+                    }
 
                     //Object recorded, so reset flag that detects the first edge of the object
                     ObjectStartEdgeDetected = false; //last edge of object detected (reset flag)
 
-                }
 //            }
                 lastDegree = presentDegree;
-
+            }
         }
     }
 
