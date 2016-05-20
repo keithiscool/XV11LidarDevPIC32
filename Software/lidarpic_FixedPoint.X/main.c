@@ -8,7 +8,6 @@
 #include "main.h"
 #include <math.h>
 #include <string.h>
-#include "defs.h"
 
 
 // PIC32MX575F512H Configuration Bit Settings
@@ -99,6 +98,7 @@ void main(void){
     LEDmsBlinkHundMS();
 
     unsigned short dummyArray[4]; //do not need degree measurements for each parsing of data
+
     
     timeFlagFiveSec = false; //reset timer flag
     timeFlagOneHundMilSec = false; //reset timer flag
@@ -111,10 +111,9 @@ void main(void){
 //
 ////            if(timeFlagOneHundMilSec == true) {
 //                //RUN ONE OF THE FOLLOWING FUNCTIONS TO PARSE AND PRINT DATA TO UART 6
-////                if(debugLidarPolarData() == true) {
-//////                    LEDmsBlinkHundMS();
-////                }
-//
+//                if(debugLidarPolarData() == true) {
+////                    LEDmsBlinkHundMS();
+//                }
 //                if(debugLidarCartesianData() == true) {
 ////                    LEDmsBlinkHundMS();
 //                }
@@ -122,14 +121,17 @@ void main(void){
 ////                timeFlagOneHundMilSec = false;
 ////            }
 //
-//            if(AnglesCoveredTotal > minAnglesRead) {
-//                //parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
-//            }
 //        }
 
-            if(distDiffObjectDetection() == true) {
-                LATBbits.LATB13 ^= 1;
-            }
+
+        
+////parse the data 4 measurements at a time and use the parsed distance data from the lidar to locate objects
+        if(distDiffObjectDetection() == true) {
+            LATBbits.LATB11 ^= 1;
+        }
+
+
+
 
 ////NOT USING DMA FOR SMALL DATA TRANSMISSIONS
 //        //kick the dma to UART 6 if the buffer exceeds the second level count

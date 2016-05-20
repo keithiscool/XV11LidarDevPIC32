@@ -10,6 +10,7 @@
 #include <stdio.h>      /* printf, scanf, puts */
 #include <stdlib.h>     /* realloc, free, exit, NULL */
 #include "defs.h"
+#include "math.h"
 //#include "interrupt_handler.h"
 
 //timer usage flags
@@ -64,6 +65,11 @@ static bool ObjectStartEdgeDetected = 0;
 
 //flag to signify the object (Robot CHRISTEE) is found
 bool RobotDetected = false;
+
+
+//track object with degrees that are not adjacent (I have too many zeros as distances in output)
+short lastDegree = 0;
+short presentDegree = 0;
 
 
 //Using Linked List
