@@ -67,11 +67,6 @@ static bool ObjectStartEdgeDetected = 0;
 bool RobotDetected = false;
 
 
-//track object with degrees that are not adjacent (I have too many zeros as distances in output)
-short lastDegree = 0;
-short presentDegree = 0;
-
-
 //Using Linked List
 //struct ObjectNode *root; //This won't change, or we would lose the list in memory (this is the first
 //struct ObjectNode *conductor; //This will point to each node as it traverses the list

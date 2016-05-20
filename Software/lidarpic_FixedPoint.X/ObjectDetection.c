@@ -41,6 +41,9 @@ short distDiffObjectDetection(void) {
     //temporary array degree values to remember
     short myDegrees[4] = {0, 0, 0, 0};
     short i = 0;
+    //track object with degrees that are not adjacent (I have too many zeros as distances in output)
+    static short lastDegree = 0;
+    static short presentDegree = 0;
 
     //Acquire 4 distances at a time and constantly pull in data (do not print out data)
     //Exclude any data between 180 and 0 degrees because that is behind the collection bin
@@ -49,66 +52,55 @@ short distDiffObjectDetection(void) {
     if(LIDARdecode(myDegrees) == true) {//&& (myDegrees[0] < 178) ) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
 //        printf("distDiffObjectDetection\r\n");
 //
-//        for(i=0;i<4;i++) {
-//            printf("%u \r\n",myDegrees[i]);
-//        }
             
         //run through each distance measurement in each 22 byte parsed packet from "LIDARdecode"
         for(i=0;i<4;i++) {
             
             if( (DistanceArr[myDegrees[i]] > minDistanceAllowed) && ( (myDegrees[i] > objectTrackLower) && (myDegrees[i] < objectTrackUpper) ) ) {
                 presentDegree = myDegrees[i];
-
-            //take magnitude difference from present distance measurement and the one previous (this distance will be used to detect objects if the gap between adjacent distances is large
-//            DistanceDifferencesArr[myDegrees[i]] = abs( DistanceArr[myDegrees[i]] - DistanceArr[myDegrees[i-1]] );
-            DistanceDifferencesArr[myDegrees[i]] = abs( DistanceArr[presentDegree] - DistanceArr[lastDegree] );
-//                printf("dist_diff_calc\r\n");
-
-            //check both of the adjacent measurements are valid (data is not zero)
-//                if( DistanceDifferencesArr[myDegrees[i]] && DistanceDifferencesArr[myDegrees[i-1]] ) {
-//            if( (DistanceArr[myDegrees[i]] > 0) && (DistanceArr[myDegrees[i-1]] > 0) ) {
 //                    printf("valid_measurements\r\n");
+
+                //take magnitude difference from present distance measurement and the one previous (this distance will be used to detect objects if the gap between adjacent distances is large
+                DistanceDifferencesArr[myDegrees[i]] = abs( DistanceArr[presentDegree] - DistanceArr[lastDegree] );
+//                printf("dist_diff_calc\r\n");
 
                 //are the magnitudes different between degree measurements (first edge of object detected)
                 if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (ObjectStartEdgeDetected == false) ) { // object protruded from surrounding measurements by threshold
                     DetectedObject.startOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
                     ObjectStartEdgeDetected = true; //first edge of object detected
-                    printf("Deg: %d starting_edge\r\n", myDegrees[i]);
+                    printf("Deg: %d starting_edge\r\n", DetectedObject.startOfDetectedObject);
                 }
 
                 //if a difference in magnitude is detected and there is already an object detected (last edge of object detected)
                 if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (ObjectStartEdgeDetected == true) ) { // object protruded from surrounding measurements by threshold
                     DetectedObject.endOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
-                    printf("Deg: %d stop_edge\r\n", myDegrees[i]);
+                    printf("Deg: %d stop_edge\r\n", DetectedObject.endOfDetectedObject);
 
                     //check if object is wide enough (are there enough degrees between the start and the start of the object?)
-//                    if( ( (DetectedObject.startOfDetectedObject - DetectedObject.endOfDetectedObject) > DEGREES_BETWEEN_EACH_OBJECT) ) {
+//                    if( ( ( abs(DetectedObject.startOfDetectedObject - DetectedObject.endOfDetectedObject) ) > DEGREES_BETWEEN_EACH_OBJECT) ) {
                         //average and populate the data for the object into the object struct array
                         DetectedObject.polarDistance = (( DistanceArr[DetectedObject.startOfDetectedObject] + DistanceArr[DetectedObject.endOfDetectedObject] ) / 2 );
 
-//                       CONVERT TO RADIANS: RADIANS == deg * M_PI / 180.0;
-//                       DetectedObject.degree = (( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) / 2 );
+                        ////THANK YOU TO RYAN FOR REALIZING THE POSSIBILITY FOR THE TRIG FUNCTIONS USING RADIANS AND NOT DEGREES
+                        //CONVERT TO RADIANS: RADIANS == deg * M_PI / 180.0;
+                        DetectedObject.degree = (( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) / 2 );
                         DetectedObject.degree = ( ( ( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) * M_PI ) / 360 );
-
 
                         DetectedObject.qualityOfObject = (( QualityArr[DetectedObject.startOfDetectedObject] + QualityArr[DetectedObject.endOfDetectedObject] ) / 2 );
 
-//                        DetectedObject.yPos = (( YCoordMilliMeters[DetectedObject.startOfDetectedObject] + YCoordMilliMeters[DetectedObject.endOfDetectedObject] ) / 2 );
-//                        DetectedObject.xPos = (( XCoordMilliMeters[DetectedObject.startOfDetectedObject] + XCoordMilliMeters[DetectedObject.endOfDetectedObject] ) / 2 );
                         DetectedObject.yPos = DetectedObject.polarDistance * cos(DetectedObject.degree);
                         DetectedObject.xPos = DetectedObject.polarDistance * sin(DetectedObject.degree);
                         DetectedObject.xPos -= X_POSITION_OFFSET_LIDAR_PLACEMENT; //correct the offset of the collection beacon (the collection beacon is not in the center of the arena)
 
                         printf("obj_deg: %d / obj_mag: %d / X: %d / Y: %d\r\n",DetectedObject.degree, DetectedObject.polarDistance, DetectedObject.xPos, DetectedObject.yPos);
                         printf("start: %d / stop: %d \r\n",DetectedObject.startOfDetectedObject, DetectedObject.endOfDetectedObject);
-                    }
+//                    }
 
                     //Object recorded, so reset flag that detects the first edge of the object
                     ObjectStartEdgeDetected = false; //last edge of object detected (reset flag)
-
-//            }
-                lastDegree = presentDegree;
+                }
             }
+            lastDegree = presentDegree;
         }
     }
 
