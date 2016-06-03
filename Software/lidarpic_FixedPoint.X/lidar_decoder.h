@@ -44,20 +44,20 @@ unsigned char QualityFlag[4];
 unsigned char InvalidFlag[4];
 unsigned char WarningFlag[4];
 
-//unsigned short QualityArr[360];
-//unsigned short DistanceArr[360];
-//unsigned short PreviousDistanceArr[360];
-//short XCoordMeters[360];
-//short YCoordMeters[360];
-unsigned short QualityArr[181];
-unsigned short DistanceArr[181];
-unsigned short PreviousDistanceArr[181];
-unsigned short XCoordMilliMeters[181];
-unsigned short YCoordMilliMeters[181];
+
+//Only use 180 degrees facing downrange towards digging area (lidar mounted on collection bin wall)
+short QualityArr[181];
+short RawDistanceArr[181];
+short DistanceArr[181];
+short PreviousDistancesAvgSum[181];
+short avgPreviousDistancesCount[181];
+short XCoordMilliMeters[181];
+short YCoordMilliMeters[181];
 short DegreeIndex = 0;
 short AnglesCoveredTotal = 0;
 bool LidarCalcPerm = false;
 int BadReadings = 0;
+unsigned short presentDegVal = 0;
 
 
 //Fixed Point Math Local Variables

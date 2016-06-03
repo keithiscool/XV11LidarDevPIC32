@@ -18,14 +18,10 @@ extern bool timeFlagOneHundMilSec;
 extern bool timeFlagFiveSec;
 
 //variables and parsing function from lidar_decoder.c
-//extern unsigned short QualityArr[360];
-//extern unsigned short DistanceArr[360];
-//extern unsigned short PreviousDistanceArr[360];
-//extern short XCoordMeters[360];
-//extern short YCoordMeters[360];
+//Arrays are only 181 in length to get "arena facing" 180 degrees, inclusive
 extern short QualityArr[181];
 extern short DistanceArr[181];
-extern short PreviousDistanceArr[181];
+extern short PreviousDistancesAvgSum[181];
 extern short XCoordMilliMeters[181];
 extern short YCoordMilliMeters[181];
 extern bool LIDARdecode(short getDegrees[4]);
@@ -43,11 +39,12 @@ struct ObjectNode {
     unsigned short startOfDetectedObject;
     unsigned short endOfDetectedObject;
     unsigned short degree;
-    unsigned short polarDistance;
+    short polarDistance;
     unsigned short qualityOfObject; //if the object is shiny or reflective, number is higher (above 100)
     short xPos;
     short yPos;
-//    struct ObjectNode *next; //used for linked list to point to the adjacent struct
+    short velocity;
+    char orientation; //North, South, East, West
 };
 
 
@@ -67,33 +64,20 @@ static bool ObjectStartEdgeDetected = 0;
 bool RobotDetected = false;
 
 
-//Using Linked List
-//struct ObjectNode *root; //This won't change, or we would lose the list in memory (this is the first
-//struct ObjectNode *conductor; //This will point to each node as it traverses the list
 
-
-
-
-////Object Detection "Objects" using C programming (cannot use classes in C)
-//typedef struct DetectedRock{
-//    short xPos;
-//    short yPos;
-//    short size;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////Kalman filter variables:
+//
+//struct kalmanFilter {
+//    float P[2][2]; // Error covariance matrix - This is a 2x2 matrix
+//    float Q_angle; // Process noise variance for the accelerometer
+//    float Q_bias; // Process noise variance for the gyro bias
+//    float R_measure; // Measurement noise variance - this is actually the variance of the measurement noise
+//    float rateOfMovement; // Unbiased rate calculated from the rate and the calculated bias - you have to call getAngle to update the rate
+//    float locationOfRobot;
 //};
 //
-//typedef struct DetectedCrater{
-//    short xPos;
-//    short yPos;
-//    short craterRadius;
-//    short craterDepth; //crater depth is approximately the difference in polar ditances while sweeping lidar vertically
-//};
-//
-//typedef struct DetectedRobot{
-//    short x;
-//    short y;
-//    short startingXPos;
-//    short startingYPos;
-//};
+//extern void initKalmanFilter(void);
 
 
 #endif	/* OBJECTDETECTION_H */

@@ -31,6 +31,18 @@
 void beginLIDARdecoder(unsigned short * _output_data, struct ringBuff* _input_data) {
     data = _input_data;
     output_data = _output_data;
+    
+    short i = 0;
+    //Initialize all distances to '99' so I can see which ones are not getting written to
+    for(i=0;i<181;i++) {
+        DistanceArr[i] = 1;
+        RawDistanceArr[i] = 1;
+        PreviousDistancesAvgSum[i] = 1;
+        XCoordMilliMeters[i] = 1;
+        YCoordMilliMeters[i] = 1;
+        QualityArr[i];
+    }
+    
 }
 
 
@@ -159,20 +171,25 @@ bool LIDARdecode(short getDegrees[4]) {
                 //Now pull the 4 distance measurements out of the current 22 byte packet
                 //Increments the Distance Index (Degree Index after it updates tje current distance value)
                 for (i = 0; i < 4; i++) {
+                    
+                    presentDegVal = DegreeIndex+i;
+
                     if (!InvalidFlag[i]) { // the data is valid within the present 22byte packet
 
 //                        if(PreviousDistanceArr[DegreeIndex+i] != DistanceArr[DegreeIndex+i]) {
 //                            ////VERIFY THERE WAS A CHANGE IN CASE THE OBJECT BEING TRACKED IS MOVING
 //                            //newObject.degree = DegreeIndex+i;
 //                        }
+                        
 
                         //Pull 4 polar distances (in millimeters) from each 22 byte packet
-                        DistanceArr[DegreeIndex+i] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
+                        RawDistanceArr[presentDegVal] = data_buffer[4+(i*4)] + ((unsigned char)(data_buffer[5+(i*4)] & 0x3F) << 8);
                         //Copy Quality Info to Quality Array to be Analyzed
-                        QualityArr[DegreeIndex+i] = QualityFlag[i];
+                        QualityArr[presentDegVal] = QualityFlag[presentDegVal];
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                        //Compute 4 Cartesian Coordinates for Output only in the data is valid and within range
+//                        //NOTE: THIS CALCULATES THE SINE AND COSINE VALUES FOR CONVERTING TO CARTESIAN USING A TRIG LOOKUP TABLE FOR INTEGERS, NOT FLOATS. ALSO, THIS USES FIXED POINT MATH
 //                        if((DistanceArr[DegreeIndex+i] > minDistanceAllowed) && (DistanceArr[DegreeIndex+i] < maxDistanceAllowed)) { // check if polar distance is useful data
 //
 //                            //Use fixed point math to do multiplication in 32 bit (unsigned int for pic32), then shrink down to 16 bits by typecasting (short for pic32)
@@ -195,9 +212,25 @@ bool LIDARdecode(short getDegrees[4]) {
 ////                            YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMySinLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
 ////                            XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMyCosLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
 //                        }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+                        //Now, implement a simple rolling average in order to predict where the robot is located
+                        //The rolling average is for each degree polar magnitude
+                        if( (RawDistanceArr[presentDegVal] > minDistanceAllowed) && (DistanceArr[presentDegVal] > maxDistanceAllowed) ) {
+                            if(avgPreviousDistancesCount[presentDegVal] < AvgDistNum) {
+                                PreviousDistancesAvgSum[presentDegVal] += DistanceArr[presentDegVal]; //"old" copy of data is kept to compare with the next iteration of "newer" data
+                                avgPreviousDistancesCount[presentDegVal] += 1;
+                            }
+                            else if(avgPreviousDistancesCount[presentDegVal] >= AvgDistNum) {
+                                PreviousDistancesAvgSum[presentDegVal] / avgPreviousDistancesCount[presentDegVal]; //take the average of the previous polar distance measurements (now the actual position of each degree is highly probable
+                                avgPreviousDistancesCount[presentDegVal] = 0; //reset counter to take the
+                            }
+                        }
 
-                        PreviousDistanceArr[DegreeIndex+i] = DistanceArr[DegreeIndex+i]; //"old" copy of data is kept to compare with the next iteration of "newer" data
+                        //Take the weighted sum of the previous values and the present value to determine the "averaged" and non-jittered distance measurement
+                        //multiply the scaler out in floating point, then take integer part of the answer after multiplication
+                        DistanceArr[presentDegVal] = (short)( ( ( (int)PreviousDistancesAvgSum[presentDegVal] * PrevDistScaler) + ( (int)RawDistanceArr[presentDegVal] * PresentDistScaler) ) / 100 );
+
 
                         //Prevent the angle of the lidar from exceeding 180 degrees (do not need data behind lidar)
                         if(AnglesCoveredTotal < 181)
@@ -209,17 +242,13 @@ bool LIDARdecode(short getDegrees[4]) {
                             LidarCalcPerm = true;
                         }
 
-                        //record which degree measurements were determined from the parsed input (used in object detection)
-                        getDegrees[i] = DegreeIndex + i;
-
                     } else { //The data is not valid and has invalid flags within the present 22byte packet
                         //data is invalid and should not be used
-                        DistanceArr[DegreeIndex+i] = 0;
-                        YCoordMilliMeters[DegreeIndex+i] = 0;
-                        XCoordMilliMeters[DegreeIndex+i] = 0;
-                        PreviousDistanceArr[DegreeIndex+i] = 0;
+                        DistanceArr[presentDegVal] = 0;
+                        YCoordMilliMeters[presentDegVal] = 0;
+                        XCoordMilliMeters[presentDegVal] = 0;
+                        avgPreviousDistancesCount[presentDegVal] = 0;
                         BadReadings++; //mark each distance measurement as a "bad reading" if the invalid flags are set in their data packets
-                        getDegrees[i] = 0;
                     }
                 }
                 //successful CRC parsed packet

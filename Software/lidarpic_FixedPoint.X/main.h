@@ -33,18 +33,13 @@ extern bool debugLidarCartesianData(void);
 extern bool initObjectDetection(void);
 extern bool distDiffObjectDetection(void);
 extern short objectDetection(void);
-//
-extern short AnglesCoveredTotal;
 
+//extern short AnglesCoveredTotal;
 //extern float returned_speed;
-//extern unsigned char QualityFlag[4];
-//extern unsigned char InvalidFlag[4];
-//extern unsigned char WarningFlag[4];
-//extern unsigned short QualityArr[360];
-extern unsigned short DistanceArr[360];
-//
-//extern short XCoordMeters[360];
-//extern short YCoordMeters[360];
+//extern unsigned short QualityArr[181];
+//extern unsigned short DistanceArr[181];
+//extern short XCoordMeters[181];
+//extern short YCoordMeters[181];
 //extern unsigned short DegreeIndex;
 //extern unsigned short GoodReadings;
 //extern unsigned short BadReadings;

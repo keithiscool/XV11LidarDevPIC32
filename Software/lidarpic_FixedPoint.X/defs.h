@@ -64,9 +64,14 @@
 //must read # of distances in order to run object tracking
 #define minAnglesRead 60
 
-//define limits for object tracking
+//define limits for object tracking (I eliminated the edge degrees to prevent the detection of the arena walls and possibly judges near the collection bin arena wall)
 #define objectTrackUpper 170
 #define objectTrackLower 10
+
+//Take rolling sum of previous values and determine the actual polar magnitudes with fairly high certainty
+#define AvgDistNum 3 //quantity of the numbers being averaged for each degree in "PreviousDistancesAvgSum[181]"
+#define PresentDistScaler 60 //percent in integer format
+#define PrevDistScaler 40 //percent in integer format
 
 
 #endif	/* DEFS_H */

@@ -68,15 +68,9 @@ void LEDmsBlinkHundMS(void) {
 
 
 void main(void){
-
-    initialize();
     printf("PIC_RESET\r\n");
-
-    
-    //Initialize all distances to '99' so I can see which ones are not getting written to
-    for(i=0;i<181;i++) {
-        DistanceArr[i] = 1;
-    }
+    initialize(); //beginLIDARdecoder() is called here (all arrays are initially set to 1s)
+    printf("INIT_FINSIHED\r\n");
     
     //initialize arrays for object detection
     initObjectDetection();
@@ -98,15 +92,15 @@ void main(void){
     LEDmsBlinkHundMS();
 
     unsigned short dummyArray[4]; //do not need degree measurements for each parsing of data
-
     
     timeFlagFiveSec = false; //reset timer flag
     timeFlagOneHundMilSec = false; //reset timer flag
 
-
+    printf("BEGIN_WHILE_LOOP\r\n");
     while(1) {
 
-//        //read all 360 degrees, 4 at a time
+        
+//        //read degrees, 4 at a time and then print the data out to UART 6
 //        if(LIDARdecode(dummyArray) == true) { //88 is rotation offset for lidar (rotate clockwise if positive)
 //
 ////            if(timeFlagOneHundMilSec == true) {
