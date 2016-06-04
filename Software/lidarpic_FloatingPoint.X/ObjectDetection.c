@@ -26,6 +26,7 @@ bool initObjectDetection(void) {
 }
 
 
+//Send Object Detection Info to Navigation Processor on Robot
 bool sendRobotLocation(void) {
     if(timeFlagOneHundMilSecObjDet == true) {
 
@@ -36,6 +37,8 @@ bool sendRobotLocation(void) {
         printf("obj_deg: %d / obj_mag: %d / X: %d / Y: %d / Quality: %d\r\n",
                 DetectedObject.degree, DetectedObject.polarDistance, DetectedObject.xPos, DetectedObject.yPos, DetectedObject.qualityOfObject);
         printf("start: %d / stop: %d \r\n",DetectedObject.startOfDetectedObject, DetectedObject.endOfDetectedObject);
+
+        LATBbits.LATB10 ^= 1; //toggle on LED to signify a detected object with LED_B10 (LED 2)
 
         timeFlagOneHundMilSecObjDet = false;
     }
@@ -95,7 +98,7 @@ short distDiffObjectDetection(void) {
                         //also divide "deg" by 2 to get the center of DetectedObject.startOfDetectedObject and DetectedObject.endOfDetectedObject
                         DetectedObject.degree = ( ( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) * M_PI ) / 90;
 
-                        //Do the math in floating point to reduce error (fixed point math was not working for cosine terms and had +/- 10to50mm sometimes
+                        //Do the math using floating point math to reduce error (fixed point math was not working for cosine terms and had +/- 10to50mm sometimes
 //                        float oldY = ((float)DetectedObject.polarDistance) * sin(DetectedObject.degree);
                         DetectedObject.yPos = (short)( (double)DetectedObject.polarDistance * (double)sin(DetectedObject.degree) );
 //                        float oldX = ((float)DetectedObject.polarDistance) * cos(DetectedObject.degree);
@@ -118,14 +121,6 @@ short distDiffObjectDetection(void) {
             lastDegree = presentDegree;
         }
     }
-
-    //Indicate when an object is detected
-    if( (timeFlagOneHundMilSec == true) && (index_object > 0) ) {
-        //blinkLED(1000); //debug led to show object detected
-        printf("obj\r\n deg: %4d mag: %4d\r\n", DetectedObject.degree, DetectedObject.polarDistance);
-        LATBbits.LATB10 ^= 1; //toggle on LED to signify a detected object with LED_B10 (LED 2)
-        timeFlagOneHundMilSec = false;
-    }
-    
+  
     return 1;
 }

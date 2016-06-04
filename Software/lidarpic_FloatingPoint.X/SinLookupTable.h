@@ -11,10 +11,7 @@
  * This lookup table is used for fixed point sine and cosine calculation to
  * get x,y position in arena
 */
-
-
-
-extern unsigned short SinLookupTableArray[91];
+//////extern unsigned short SinLookupTableArray[91];
 
 
 //Used unit circle to line up sine and cosine functions using just the first 90 degrees of the generated sine lookup table from excel:
