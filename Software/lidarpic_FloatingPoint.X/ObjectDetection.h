@@ -39,6 +39,7 @@ struct ObjectNode {
     short startOfDetectedObject;
     short endOfDetectedObject;
     short degree;
+    double radians;
     short polarDistance;
     short qualityOfObject; //if the object is shiny or reflective, number is higher (above 100)
     short xPos;
@@ -48,7 +49,7 @@ struct ObjectNode {
 
 
 //Empty Object struct used to "reset to zero" the arrayofDetectedObjects[] struct array elements
-static struct ObjectNode emptyObjectStruct = {0,0,0,0,0,0,0};
+static struct ObjectNode emptyObjectStruct = {0,0,0,0,0,0,0,0};
 //Declaration of discovered objects "array of structs"
 //struct ObjectNode arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE];
 struct ObjectNode DetectedObject;
