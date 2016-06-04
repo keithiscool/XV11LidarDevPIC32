@@ -68,9 +68,9 @@ void LEDmsBlinkHundMS(void) {
 
 
 void main(void){
-
-    initialize();
     printf("PIC_RESET\r\n");
+    initialize();
+    printf("INIT_PASSED\r\n");
 
     
     //Initialize all distances to '99' so I can see which ones are not getting written to
@@ -99,13 +99,14 @@ void main(void){
 
     unsigned short dummyArray[4]; //do not need degree measurements for each parsing of data
 
-    
     timeFlagFiveSec = false; //reset timer flag
     timeFlagOneHundMilSec = false; //reset timer flag
 
-
+    printf("BEGIN_WHILE\r\n");
     while(1) {
 
+        //NOTE: THIS IS DEBUGGING CODE USED TO SEE WHAT THE LIDAR SEES
+        //NOTE: THE CARTESIANDATA() WILL NOT WORK (FIXED POINT MATH IS NOT CORRECT WITH COSINE TERM)
 //        //read all 360 degrees, 4 at a time
 //        if(LIDARdecode(dummyArray) == true) { //88 is rotation offset for lidar (rotate clockwise if positive)
 //
@@ -132,7 +133,7 @@ void main(void){
 
 
 
-
+        //NOTE: NOT USING DMA!!! IT CAUSED A DELAY IN THE DEBUG CODE AND MESSED WITH STD_OUT FORMATTING TOO MUCH
 ////NOT USING DMA FOR SMALL DATA TRANSMISSIONS
 //        //kick the dma to UART 6 if the buffer exceeds the second level count
 //        if(queue_send() == true) {

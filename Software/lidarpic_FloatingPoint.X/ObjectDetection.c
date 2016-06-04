@@ -27,7 +27,7 @@ bool initObjectDetection(void) {
 
 
 bool sendRobotLocation(void) {
-//    if( (timeFlagOneHundMilSec == true) && (RobotDetected == true) ) {
+    if(timeFlagOneHundMilSecObjDet == true) {
 
 //        printf("Deg: %d / Dist: %d / Qual: %d / X: %d / Y: %d\r\n",degree, DistanceArr[degree],
 //            QualityArr[degree], XCoordMilliMeters[degree], XCoordMilliMeters[degree]);
@@ -37,8 +37,8 @@ bool sendRobotLocation(void) {
                 DetectedObject.degree, DetectedObject.polarDistance, DetectedObject.xPos, DetectedObject.yPos, DetectedObject.qualityOfObject);
         printf("start: %d / stop: %d \r\n",DetectedObject.startOfDetectedObject, DetectedObject.endOfDetectedObject);
 
-//        timeFlagOneHundMilSec = false;
-//    }
+        timeFlagOneHundMilSecObjDet = false;
+    }
 }
 
 
@@ -81,21 +81,26 @@ short distDiffObjectDetection(void) {
                     DetectedObject.endOfDetectedObject = myDegrees[i]; //found end of an object (object's corner was detected)
 //                    printf("Deg: %d stop_edge\r\n", DetectedObject.endOfDetectedObject);
 
+                    
+            //NOTE: THIS BROKE THE CODE (THIS CONDITION NEVER PASSED... NOT SURE WHY)
 //                    check if object is wide enough (are there enough degrees between the start and the start of the object?)
 //                    if( ( ( abs(DetectedObject.startOfDetectedObject - DetectedObject.endOfDetectedObject) ) > DEGREES_BETWEEN_EACH_OBJECT) ) {
 
                     //average and populate the data for the object into the object struct array
-                        DetectedObject.polarDistance = (( DistanceArr[DetectedObject.startOfDetectedObject] + DistanceArr[DetectedObject.endOfDetectedObject] ) / 2 );
+                    DetectedObject.polarDistance = (( DistanceArr[DetectedObject.startOfDetectedObject] + DistanceArr[DetectedObject.endOfDetectedObject] ) / 2 );
+                    DetectedObject.qualityOfObject = (( QualityArr[DetectedObject.startOfDetectedObject] + QualityArr[DetectedObject.endOfDetectedObject] ) / 2 );
 
 ////THANK YOU TO RYAN FOR REALIZING THE POSSIBILITY FOR THE TRIG FUNCTIONS USING RADIANS AND NOT DEGREES
                         //CONVERT TO RADIANS: RADIANS == (deg/2) * M_PI / 180 == deg * M_PI / 90
                         //also divide "deg" by 2 to get the center of DetectedObject.startOfDetectedObject and DetectedObject.endOfDetectedObject
                         DetectedObject.degree = ( ( DetectedObject.startOfDetectedObject + DetectedObject.endOfDetectedObject ) * M_PI ) / 90;
 
-                        DetectedObject.qualityOfObject = (( QualityArr[DetectedObject.startOfDetectedObject] + QualityArr[DetectedObject.endOfDetectedObject] ) / 2 );
-
-                        DetectedObject.yPos = DetectedObject.polarDistance * cos(DetectedObject.degree);
-                        DetectedObject.xPos = DetectedObject.polarDistance * sin(DetectedObject.degree);
+                        //Do the math in floating point to reduce error (fixed point math was not working for cosine terms and had +/- 10to50mm sometimes
+//                        float oldY = ((float)DetectedObject.polarDistance) * sin(DetectedObject.degree);
+                        DetectedObject.yPos = (short)( (double)DetectedObject.polarDistance * (double)sin(DetectedObject.degree) );
+//                        float oldX = ((float)DetectedObject.polarDistance) * cos(DetectedObject.degree);
+                        DetectedObject.xPos = (short)( (double)DetectedObject.polarDistance * (double)cos(DetectedObject.degree) );
+//                        printf("OldX: %f / NewX: %d / OldY: %f / NewY: %d\r\n", oldX, DetectedObject.xPos, oldY, DetectedObject.yPos);
                         DetectedObject.xPos -= X_POSITION_OFFSET_LIDAR_PLACEMENT; //correct the offset of the collection beacon (the collection beacon is not in the center of the arena)
 
                         //check theat the entire object is located within the forward facing 180 degrees (prevent the larger degrees from only see one edge of a new object)

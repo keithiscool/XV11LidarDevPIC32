@@ -116,7 +116,7 @@ bool LIDARdecode(short getDegrees[4]) {
                 if(DegreeIndex > 359) {
                     //Shift the Data from notch being 270 degrees to notch being 0 degrees. (shift 0 degrees clockwise by 90 degrees)
                     DegreeIndex = DegreeIndex - 360; //offset degrees to be used in object recognition (if "offsetDegrees" goes over 360, thisshifts the degrees)
-//                    printf("ROLL: %d\r\n",DegreeIndex);
+//                    printf("ROLLOVER: %d\r\n",DegreeIndex);
                 }
 
 
@@ -171,7 +171,9 @@ bool LIDARdecode(short getDegrees[4]) {
                         //Copy Quality Info to Quality Array to be Analyzed
                         QualityArr[DegreeIndex+i] = QualityFlag[i];
 
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //NOTE: THE FOLLOWING FIXED POINT MATH USING A LOOKUP TABLE FOR CARTESIAN (X,Y) COORDINATES DOES NOT WORK!!!
+                //PLEASE FIX THIS IF YOU PLAN TO USE IT. THE COSINE PORTION IS NOT GIVING THE CORRECT VALUE OUT (I THINK THE SINE PART WORKS...)
 //                        //Compute 4 Cartesian Coordinates for Output only in the data is valid and within range
 //                        if((DistanceArr[DegreeIndex+i] > minDistanceAllowed) && (DistanceArr[DegreeIndex+i] < maxDistanceAllowed)) { // check if polar distance is useful data
 //
@@ -195,7 +197,7 @@ bool LIDARdecode(short getDegrees[4]) {
 ////                            YCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMySinLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
 ////                            XCoordMilliMeters[DegreeIndex+i] = ( ( (unsigned short)( (unsigned int)DistanceArr[DegreeIndex+i] * ( (unsigned int)GetMyCosLookup16bit(DegreeIndex+i) ) ) >> 16) ); //max 14 bit value for distance
 //                        }
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                         PreviousDistanceArr[DegreeIndex+i] = DistanceArr[DegreeIndex+i]; //"old" copy of data is kept to compare with the next iteration of "newer" data
 

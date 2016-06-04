@@ -16,6 +16,7 @@
 //timer usage flags
 extern bool timeFlagOneHundMilSec;
 extern bool timeFlagFiveSec;
+extern bool timeFlagOneHundMilSecObjDet;
 
 //variables and parsing function from lidar_decoder.c
 extern short QualityArr[181];

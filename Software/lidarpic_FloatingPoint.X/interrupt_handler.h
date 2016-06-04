@@ -7,6 +7,7 @@
 
 extern bool timeFlagFiveSec;
 extern bool timeFlagOneHundMilSec;
+extern bool timeFlagOneHundMilSecObjDet;
 
 #endif	/* INTERRUPT_HANDLER_H */
 
