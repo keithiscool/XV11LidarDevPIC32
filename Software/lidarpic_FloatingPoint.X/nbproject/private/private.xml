@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/1">
+        <file>file:/C:/Users/Keith/Documents/GitHub/XV11LidarDevPIC32/Software/lidarpic_FixedPoint.X/main.c</file>
+        <file>file:/C:/Users/Keith/Documents/GitHub/XV11LidarDevPIC32/Software/lidarpic_FixedPoint.X/ObjectDetection.c</file>
+        <file>file:/C:/Users/Keith/Documents/GitHub/XV11LidarDevPIC32/Software/lidarpic_FixedPoint.X/lidar_decoder.c</file>
+        <file>file:/C:/Users/Keith/Documents/GitHub/XV11LidarDevPIC32/Software/lidarpic_FixedPoint.X/defs.h</file>
+        <file>file:/C:/Users/Keith/Documents/GitHub/XV11LidarDevPIC32/Software/lidarpic_FixedPoint.X/ObjectDetection.h</file>
+        <file>file:/C:/Users/Keith/Documents/GitHub/XV11LidarDevPIC32/Software/lidarpic_FixedPoint.X/lidar_decoder.h</file>
+        <file>file:/C:/Users/Keith/Documents/GitHub/XV11LidarDevPIC32/Software/lidarpic_FixedPoint.X/main.h</file>
+        <file>file:/C:/Users/Keith/Documents/GitHub/XV11LidarDevPIC32/Software/lidarpic_FixedPoint.X/initialize.c</file>
+    </open-files>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/C:/Users/Igor/repos/lidarpicfirsttest/lidarpic.X/uart_handler.c</file>
+            <file>file:/C:/Users/Igor/repos/lidarpicfirsttest/lidarpic.X/lidar_decoder.c</file>
+            <file>file:/C:/Users/Igor/repos/lidarpicfirsttest/lidarpic.X/initialize.c</file>
+            <file>file:/C:/Users/Igor/repos/lidarpicfirsttest/lidarpic.X/uart_handler.h</file>
+            <file>file:/C:/Users/Igor/repos/lidarpicfirsttest/lidarpic.X/lidar_decoder.h</file>
+            <file>file:/C:/Users/Igor/repos/lidarpicfirsttest/lidarpic.X/main.c</file>
+        </group>
+    </open-files>
+</project-private>
