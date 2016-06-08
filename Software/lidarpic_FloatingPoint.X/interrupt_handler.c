@@ -7,6 +7,8 @@
 bool timeFlagOneHundMilSec = false;
 bool timeFlagFiveSec = false;
 bool timeFlagOneHundMilSecObjDet = false;
+bool timeFlagOneHundMilSecObjectVelocity = false;
+short timeHundMillisSinceObjectMoved = 0;
 
 //100ms timer (PR = 31250, prescaler = 256)
 void __ISR(_TIMER_3_VECTOR, IPL1AUTO) Timer3Handler(void)
@@ -31,6 +33,13 @@ void __ISR(_TIMER_3_VECTOR, IPL1AUTO) Timer3Handler(void)
     if( (timeFlagOneHundMilSecObjDet == false) && (count > 1) ) //100ms has passed
     {
         timeFlagOneHundMilSecObjDet = true; //set global variable for use with rest of code outside this interrupt (timer done)
+    }
+
+    //100ms has passed (used in ObjectDetection.c while printing out the discovered object properties)
+    if( (timeFlagOneHundMilSecObjectVelocity == false) && (count > 1) ) //100ms has passed
+    {
+        timeFlagOneHundMilSecObjectVelocity = true; //set global variable for use with rest of code outside this interrupt (timer done)
+        timeHundMillisSinceObjectMoved++; //count number of "hundred milliseconds" have passed since the object was seen last
     }
     
 

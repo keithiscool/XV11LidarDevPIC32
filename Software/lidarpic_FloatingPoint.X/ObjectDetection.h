@@ -34,6 +34,9 @@ extern bool LIDARdecode(short getDegrees[4]);
 //used to detect differences between adjacenet degree elements
 unsigned short DistanceDifferencesArr[181];
 
+enum robotCompass {N = 1, S = 2, E = 3, W = 4, NE = 5, NW = 6, SE = 7, SW = 8};
+extern short timeHundMillisSinceObjectMoved;
+
 
 struct ObjectNode {
     short startOfDetectedObject;
@@ -44,12 +47,15 @@ struct ObjectNode {
     short qualityOfObject; //if the object is shiny or reflective, number is higher (above 100)
     short xPos;
     short yPos;
+    short bearing;
+    short velocity;
+    char compass[3]; //space for two compass letters and the null character of the string
 //    struct ObjectNode *next; //used for linked list to point to the adjacent struct
 };
 
 
 //Empty Object struct used to "reset to zero" the arrayofDetectedObjects[] struct array elements
-static struct ObjectNode emptyObjectStruct = {0,0,0,0,0,0,0,0};
+static struct ObjectNode emptyObjectStruct = {0,0,0,0,0,0,0,0,0,0,{0,0} };
 //Declaration of discovered objects "array of structs"
 //struct ObjectNode arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE];
 struct ObjectNode DetectedObject;
@@ -64,11 +70,9 @@ static bool ObjectStartEdgeDetected = 0;
 bool RobotDetected = false;
 
 
-//Using Linked List
+//Using Linked List to track more than one object at once (I wrote the code to only look for one object)
 //struct ObjectNode *root; //This won't change, or we would lose the list in memory (this is the first
 //struct ObjectNode *conductor; //This will point to each node as it traverses the list
-
-
 
 
 ////Object Detection "Objects" using C programming (cannot use classes in C)

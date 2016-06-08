@@ -8,6 +8,8 @@
 extern bool timeFlagFiveSec;
 extern bool timeFlagOneHundMilSec;
 extern bool timeFlagOneHundMilSecObjDet;
+extern bool timeFlagOneHundMilSecObjectVelocity;
+extern short timeHundMillisSinceObjectMoved;
 
 #endif	/* INTERRUPT_HANDLER_H */
 

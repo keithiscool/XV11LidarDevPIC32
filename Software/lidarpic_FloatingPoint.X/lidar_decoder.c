@@ -207,6 +207,7 @@ bool LIDARdecode(short getDegrees[4]) {
                         else
                             AnglesCoveredTotal = 180;
 
+                        //if a minimum number of angles are read, continue to run the code in main.c (while loop is never reached if LidarCalcPerm is not true
                         if(AnglesCoveredTotal > minAnglesRead) {
                             LidarCalcPerm = true;
                         }

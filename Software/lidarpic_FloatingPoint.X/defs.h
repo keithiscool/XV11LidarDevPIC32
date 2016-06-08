@@ -68,6 +68,9 @@
 #define objectTrackUpper 170
 #define objectTrackLower 10
 
+//threshold of object tracking the robot (the robot must be at least this reflective)
+#define ROBOT_QUALITY_THRESHOLD 30
+
 
 #endif	/* DEFS_H */
 
