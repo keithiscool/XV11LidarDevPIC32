@@ -8,16 +8,6 @@
 #include <xc.h>
 #include "ObjectDetection.h"
 
-//struct ObjectNode {
-//    unsigned short startOfDetectedObject;
-//    unsigned short endOfDetectedObject;
-//    unsigned short degree;
-//    unsigned short polarDistance;
-//    unsigned short qualityOfObject; //if the object is shiny or reflective, number is higher (above 100)
-//    short xPos;
-//    short yPos;
-////    struct ObjectNode *next; //used for linked list to point to the adjacent struct
-//};
 
 
 bool initObjectDetection(void) {
@@ -29,14 +19,11 @@ bool initObjectDetection(void) {
 //Send Object Detection Info to Navigation Processor on Robot
 bool sendRobotLocation(void) {
     if(timeFlagOneHundMilSecObjDet == true) {
-
-//        printf("Deg: %d / Dist: %d / Qual: %d / X: %d / Y: %d\r\n",degree, DistanceArr[degree],
-//            QualityArr[degree], XCoordMilliMeters[degree], XCoordMilliMeters[degree]);
     
         printf("----\r\n");
-        printf("obj_deg: %d / obj_rad: %g / obj_mag: %d / X: %d / Y: %d / Quality: %d\r\n",
-                DetectedObject.degree, DetectedObject.radians, DetectedObject.polarDistance, DetectedObject.xPos, DetectedObject.yPos, DetectedObject.qualityOfObject);
-        printf("start: %d / stop: %d \r\n",DetectedObject.startOfDetectedObject, DetectedObject.endOfDetectedObject);
+//        printf("obj_deg: %d / obj_rad: %g / obj_mag: %d / X: %d / Y: %d / Quality: %d\r\n", DetectedObject.degree, DetectedObject.radians, DetectedObject.polarDistance, DetectedObject.xPos, DetectedObject.yPos, DetectedObject.qualityOfObject);
+        printf("obj_deg: %d / obj_mag: %d / X: %d / Y: %d / Quality: %d\r\n", DetectedObject.degree, DetectedObject.polarDistance, DetectedObject.xPos, DetectedObject.yPos, DetectedObject.qualityOfObject);
+        printf("start: %d / stop: %d / diam: %d\r\n",DetectedObject.startOfDetectedObject, DetectedObject.endOfDetectedObject, DetectedObject.diameter);
 
         LATBbits.LATB10 ^= 1; //toggle on LED to signify a detected object with LED_B10 (LED 2)
 
@@ -48,8 +35,9 @@ bool sendRobotLocation(void) {
 //<> == average
 //Determine robot velocity == [sqrt(x^2 + y^2)]/<time duration since last reading>
 void calculateVelocity(short objectXpos, short lastObjectXpos, short objectYpos, short lastObjectYpos) {
-    DetectedObject.velocity = sqrt( (objectXpos^2 + objectYpos^2) ) / timeHundMillisSinceObjectMoved;
-    DetectedObject.bearing = (short)atan2( ( (double)abs(objectYpos-lastObjectYpos) ), ( (double)abs(objectXpos-lastObjectXpos) ) );
+//    DetectedObject.velocity = (short)sqrt( (objectXpos^2 + objectYpos^2) ) / timeHundMillisSinceObjectMoved; //Units in [millimeters/100ms counts]
+    DetectedObject.velocity = (short)(sqrt( (objectXpos^2 + objectYpos^2) * 10) / timeHundMillisSinceObjectMoved); //Units in [millimeters/second]
+    DetectedObject.bearing = (short)(atan2( ( (double)abs(objectYpos-lastObjectYpos) ), ( (double)abs(objectXpos-lastObjectXpos) ) ) );
     timeHundMillisSinceObjectMoved = 0;
 }
 
@@ -61,51 +49,49 @@ bool findRobotVector(void) {
     static short lastYpos = 0;
     static short lastVelocity = 0;
     static short lastBearing = 0;
+    static short lastObjectSize = 0;
     static char lastCompass[3] = "00";
-    static short count = 0; //only run function after robot has been detected previously
 
-    if(count > 5) { //wait to populate some
+    //check to see if the object moved (translation in x,y plane)
+    if( (abs(DetectedObject.xPos-lastXpos) > objectMovedThreshold) || (abs(DetectedObject.yPos-lastYpos) > objectMovedThreshold) ) {
 
-        if( (lastXpos > DetectedObject.xPos) && (lastYpos < DetectedObject.yPos) ) { //robot is moving NorthWest
-            strcpy(DetectedObject.compass,"NW");
-        }
-        else if( (lastXpos < DetectedObject.xPos) && (lastYpos < DetectedObject.yPos) ) { //robot is moving NorthEast
-            strcpy(DetectedObject.compass,"NE");
-        }
-        else if( (lastXpos > DetectedObject.xPos) && (lastYpos > DetectedObject.yPos) ) { //robot is moving SouthWest
-            strcpy(DetectedObject.compass,"SW");
-        }
-        else if( (lastXpos < DetectedObject.xPos) && (lastYpos > DetectedObject.yPos) ) { //robot is moving SouthEast
-            strcpy(DetectedObject.compass,"SE");
-        }
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        else if(lastYpos < DetectedObject.yPos) { //robot is moving North
-            strcpy(DetectedObject.compass,"_N");
-        }
-        else if(lastYpos > DetectedObject.yPos) { //robot is moving South
-            strcpy(DetectedObject.compass,"_S");
-        }
-        else if(lastXpos > DetectedObject.xPos) { //robot is moving West
-            strcpy(DetectedObject.compass,"_W");
-        }
-        else if(lastXpos < DetectedObject.xPos) { //robot is moving East
-            strcpy(DetectedObject.compass,"_E");
-        }
-        else { //the robot did not move, so it does not have a velocity vector
-            //I suggest using the gyro to find the robot orientation while the robot does not move translationally
-            strcpy(DetectedObject.compass,"00");
-            DetectedObject.bearing = 0;
-            DetectedObject.velocity = 0;
-            return false;
-        }
+            if( (lastXpos > DetectedObject.xPos) && (lastYpos < DetectedObject.yPos) ) { //robot is moving NorthWest
+                strcpy(DetectedObject.compass,"NW");
+            }
+            else if( (lastXpos < DetectedObject.xPos) && (lastYpos < DetectedObject.yPos) ) { //robot is moving NorthEast
+                strcpy(DetectedObject.compass,"NE");
+            }
+            else if( (lastXpos > DetectedObject.xPos) && (lastYpos > DetectedObject.yPos) ) { //robot is moving SouthWest
+                strcpy(DetectedObject.compass,"SW");
+            }
+            else if( (lastXpos < DetectedObject.xPos) && (lastYpos > DetectedObject.yPos) ) { //robot is moving SouthEast
+                strcpy(DetectedObject.compass,"SE");
+            }
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            else if(lastYpos < DetectedObject.yPos) { //robot is moving North
+                strcpy(DetectedObject.compass,"_N");
+            }
+            else if(lastYpos > DetectedObject.yPos) { //robot is moving South
+                strcpy(DetectedObject.compass,"_S");
+            }
+            else if(lastXpos > DetectedObject.xPos) { //robot is moving West
+                strcpy(DetectedObject.compass,"_W");
+            }
+            else if(lastXpos < DetectedObject.xPos) { //robot is moving East
+                strcpy(DetectedObject.compass,"_E");
+            }
+            else { //the robot did not move, so it does not have a velocity vector
+                //I suggest using the gyro to find the robot orientation while the robot does not move translationally
+                strcpy(DetectedObject.compass,"00");
+                DetectedObject.bearing = 0;
+                DetectedObject.velocity = 0;
+                return false;
+            }
 
-        if(DetectedObject.compass == lastCompass) { //robot headed in same direction as last measurement
-            calculateVelocity(DetectedObject.xPos, lastXpos, DetectedObject.yPos, lastYpos);
+            if(DetectedObject.compass == lastCompass) { //robot headed in same direction as last measurement
+                calculateVelocity(DetectedObject.xPos, lastXpos, DetectedObject.yPos, lastYpos);
+            }
         }
-
-        count--; //avoid overflow of counter
-    }
-    count++;
 
     //record the last measurements taken in order to calculate the velocity vector the next iteration this function is called
     lastXpos = DetectedObject.xPos;
@@ -138,7 +124,7 @@ short distDiffObjectDetection(void) {
         //run through each distance measurement in each 22 byte parsed packet from "LIDARdecode"
         for(i=0;i<4;i++) {
             //only take certain degree measurements and valid distance measurements
-            if( (DistanceArr[myDegrees[i]] > minDistanceAllowed) && (myDegrees[i] > objectTrackLower) && (myDegrees[i] < objectTrackUpper) ) {
+            if( (DistanceArr[myDegrees[i]] > minDistanceAllowed) && (myDegrees[i] > objectTrackLowerDegree) && (myDegrees[i] < objectTrackUpperDegree) ) {
                 presentDegree = myDegrees[i];
 
                 //take magnitude difference from present distance measurement and the one previous (this distance will be used to detect objects if the gap between adjacent distances is large
@@ -161,11 +147,11 @@ short distDiffObjectDetection(void) {
 //                    if( ( ( abs(DetectedObject.startOfDetectedObject - DetectedObject.endOfDetectedObject) ) > DEGREES_BETWEEN_EACH_OBJECT) ) {
 
                         //average and populate the data for the object into the object struct array
-                        DetectedObject.polarDistance = (( DistanceArr[DetectedObject.startOfDetectedObject] + DistanceArr[DetectedObject.endOfDetectedObject] ) / 2 );
-                        DetectedObject.qualityOfObject = (( QualityArr[DetectedObject.startOfDetectedObject] + QualityArr[DetectedObject.endOfDetectedObject] ) / 2 );
+                        DetectedObject.polarDistance = ( (DistanceArr[DetectedObject.startOfDetectedObject] + DistanceArr[DetectedObject.endOfDetectedObject] ) / 2 );
+                        DetectedObject.qualityOfObject = ( (QualityArr[DetectedObject.startOfDetectedObject] + QualityArr[DetectedObject.endOfDetectedObject] ) / 2 );
 
                         //only use objects that are reflective enough -- the robot bucket should be reflective (need to tune this threshold)
-                        if(DetectedObject.qualityOfObject > ROBOT_QUALITY_THRESHOLD) {
+                        if( (DetectedObject.qualityOfObject > ROBOT_QUALITY_LOWER_THRESHOLD) && (DetectedObject.qualityOfObject < ROBOT_QUALITY_UPPER_THRESHOLD) ) {
 
 ////THANK YOU TO RYAN FOR REALIZING THE POSSIBILITY FOR THE TRIG FUNCTIONS USING RADIANS AND NOT DEGREES
                             //CONVERT TO RADIANS: RADIANS == (deg/2) * M_PI / 180
@@ -180,6 +166,14 @@ short distDiffObjectDetection(void) {
                             DetectedObject.xPos = (short)( (double)DetectedObject.polarDistance * cos(DetectedObject.radians) );
     //                        printf("OldX: %f / NewX: %d / OldY: %f / NewY: %d\r\n", oldX, DetectedObject.xPos, oldY, DetectedObject.yPos);
                             DetectedObject.xPos -= X_POSITION_OFFSET_LIDAR_PLACEMENT; //correct the offset of the collection beacon (the collection beacon is not in the center of the arena)
+
+                            //Calculate the size of the object (Side-Angle-Side - Use Law of Cosines to Get Unknown Side)
+                            //a^2 = b^2 + c^2 - 2bc*cos(A)
+                            //sqrt(a) == object diameter
+                            short b = DistanceArr[DetectedObject.startOfDetectedObject]; //side
+                            short A = DetectedObject.endOfDetectedObject - DetectedObject.startOfDetectedObject; //angle
+                            short c = DistanceArr[DetectedObject.endOfDetectedObject]; //side
+                            DetectedObject.diameter = (short)sqrt( (b^2 + c^2) - (2*b*c*(short)cos(A) ) ); //Diameter of object in millimeters
 
                             //check theat the entire object is located within the forward facing 180 degrees (prevent the larger degrees from only see one edge of a new object)
                             if(DetectedObject.startOfDetectedObject < DetectedObject.endOfDetectedObject) {

@@ -65,12 +65,15 @@
 #define minAnglesRead 60
 
 //define limits for object tracking
-#define objectTrackUpper 170
-#define objectTrackLower 10
+//NOTE: AVOID USING THE ENDS BECAUSE THEY OVERLAP WHEN I SHIFTED THE LIDAR ORIENTATION(lidar_decoder.c, line 103, "DegreeIndex = DegreeIndex + 90;")
+#define objectTrackUpperDegree 170
+#define objectTrackLowerDegree 10
 
 //threshold of object tracking the robot (the robot must be at least this reflective)
-#define ROBOT_QUALITY_THRESHOLD 30
-
+#define ROBOT_QUALITY_LOWER_THRESHOLD 35//40 //30
+#define ROBOT_QUALITY_UPPER_THRESHOLD 110 //100
+//Robot must have moved this far in either the x or y plane in order to run the velocity and bearing calulations
+#define objectMovedThreshold 50
 
 #endif	/* DEFS_H */
 

@@ -39,23 +39,24 @@ extern short timeHundMillisSinceObjectMoved;
 
 
 struct ObjectNode {
-    short startOfDetectedObject;
-    short endOfDetectedObject;
-    short degree;
-    double radians;
-    short polarDistance;
-    short qualityOfObject; //if the object is shiny or reflective, number is higher (above 100)
-    short xPos;
-    short yPos;
-    short bearing;
-    short velocity;
-    char compass[3]; //space for two compass letters and the null character of the string
+    short startOfDetectedObject; //Units: [degrees]
+    short endOfDetectedObject; //Units: [degrees]
+    short diameter; //Units: [millimeters]
+    short degree; //Units: [degrees]
+    double radians; //Units: [radians]
+    short polarDistance; //Units: [millimeters]
+    short qualityOfObject; //if the object is shiny or reflective, number is higher (above 100) //Units: [reflectiveness(Lumens)]
+    short xPos; //Units: [millimeters]
+    short yPos; //Units: [millimeters]
+    short bearing; //Units: [degrees]
+    short velocity; //Units: [millimeters/sec]
+    char compass[3]; //space for two compass letters and the null character of the string //Units: [compass 8 common directions]
 //    struct ObjectNode *next; //used for linked list to point to the adjacent struct
 };
 
 
 //Empty Object struct used to "reset to zero" the arrayofDetectedObjects[] struct array elements
-static struct ObjectNode emptyObjectStruct = {0,0,0,0,0,0,0,0,0,0,{0,0} };
+static struct ObjectNode emptyObjectStruct = {0,0,0,0,0,0,0,0,0,0,0,{0,0} };
 //Declaration of discovered objects "array of structs"
 //struct ObjectNode arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE];
 struct ObjectNode DetectedObject;
