@@ -36,7 +36,7 @@ bool sendRobotLocation(void) {
 //Determine robot velocity == [sqrt(x^2 + y^2)]/<time duration since last reading>
 void calculateVelocity(short objectXpos, short lastObjectXpos, short objectYpos, short lastObjectYpos) {
 //    DetectedObject.velocity = (short)sqrt( (objectXpos^2 + objectYpos^2) ) / timeHundMillisSinceObjectMoved; //Units in [millimeters/100ms counts]
-    DetectedObject.velocity = (short)(sqrt( (objectXpos^2 + objectYpos^2) * 10) / timeHundMillisSinceObjectMoved); //Units in [millimeters/second]
+    DetectedObject.velocity = (short)( (sqrt(objectXpos^2 + objectYpos^2) * 10 ) / timeHundMillisSinceObjectMoved); //Units in [millimeters/second]
     DetectedObject.bearing = (short)(atan2( ( (double)abs(objectYpos-lastObjectYpos) ), ( (double)abs(objectXpos-lastObjectXpos) ) ) );
     timeHundMillisSinceObjectMoved = 0;
 }
