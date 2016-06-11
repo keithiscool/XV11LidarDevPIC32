@@ -32,8 +32,7 @@ bool sendRobotLocation(void) {
 }
 
 
-//<> == average
-//Determine robot velocity == [sqrt(x^2 + y^2)]/<time duration since last reading>
+//Determine robot velocity == [sqrt(x^2 + y^2)]/<average time duration since last reading>
 void calculateVelocity(short objectXpos, short lastObjectXpos, short objectYpos, short lastObjectYpos) {
     DetectedObject.velocity = (short)(sqrt( ( ( (objectXpos-lastObjectXpos)^2) + ( (objectYpos-lastObjectYpos)^2) ) * 10 ) / timeHundMillisSinceObjectMoved); //Units in [millimeters/100ms counts]
 //    DetectedObject.bearing = (short)(atan2( ( (double)abs(objectYpos-lastObjectYpos) ), ( (double)abs(objectXpos-lastObjectXpos) ) ) ); //this is incorrect -- need to used sign and magnitude (absolute value should not be here)
@@ -120,29 +119,42 @@ short distDiffObjectDetection(void) {
     //Exclude any data between 180 and 0 degrees because that is behind the collection bin
     //data element 176 is the last index received in the 90 packets (4 degrees per packet * 90 packets = 360 degrees total)
     //if data > 180 degrees, this check should protect against that
-    if(LIDARdecode(myDegrees) == true) {//&& (myDegrees[0] < 178) ) { //Acquire 4 distances at a time and constantly pull in data (do not print out data)
+    if(LIDARdecode(myDegrees) == true) { //Acquire 4 distances at a time and constantly pull in data (do not print out "debug data" located in main.c)
+        //PREVENT ANY DEGREES LARGER THAN 180 FROM BEING USE IN THE OBJECT_TRACKING FUNCTIONS (DO NOT WASTE PROCESSOR TIME WITH UNUSED DATA BEHIND COLLECTION BIN WALL)
+        //NOTE:THIS CONDITION DOES NOT ALLOW THE CODE TO CONTINUE PAST THIS POINT
+        //    if( (LIDARdecode(myDegrees) == true) && (myDegrees[0] < 178) ) { //Acquire 4 distances at a time and constantly pull in data (do not print out "debug data" located in main.c)
 //        printf("distDiffObjectDetection\r\n");
 //
             
         //run through each distance measurement in each 22 byte parsed packet from "LIDARdecode"
         for(i=0;i<4;i++) {
+
+            short distanceDifferencesSign = 0; //detecting if the difference between the object and the surroundings (wall) is positive(first/leading edge) or negative(second/trailing edge)
+
             //only take certain degree measurements and valid distance measurements
+            //NOTE: THE MINIMUM DISTANCE THE LIDAR WILL SEE IS ALSO DETERMINED HERE WITH "minDistanceAllowed"!!!
             if( (DistanceArr[myDegrees[i]] > minDistanceAllowed) && (myDegrees[i] > objectTrackLowerDegree) && (myDegrees[i] < objectTrackUpperDegree) ) {
                 presentDegree = myDegrees[i];
 
                 //take magnitude difference from present distance measurement and the one previous (this distance will be used to detect objects if the gap between adjacent distances is large
-                DistanceDifferencesArr[myDegrees[i]] = abs( DistanceArr[presentDegree] - DistanceArr[lastDegree] );
+                DistanceDifferencesArr[presentDegree] = DistanceArr[presentDegree] - DistanceArr[lastDegree];
+                if(DistanceDifferencesArr[presentDegree] > 0)
+                    distanceDifferencesSign = positiveEdge;
+                else if(DistanceDifferencesArr[presentDegree] < 0)
+                    distanceDifferencesSign = negativeEdge;
+
+//                printf("deg: %d / diff: %d / Sign: %d\r\n", presentDegree, DistanceDifferencesArr[presentDegree], distanceDifferencesSign);
 
                 //are the magnitudes different between degree measurements (first edge of object detected)
-                if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (ObjectStartEdgeDetected == false) ) { // object protruded from surrounding measurements by threshold
+                if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (distanceDifferencesSign == positiveEdge) && (ObjectStartEdgeDetected == false) ) { // object protruded from surrounding measurements by threshold
                     DetectedObject.startOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
                     ObjectStartEdgeDetected = true; //first edge of object detected
-//                    printf("Deg: %d starting_edge\r\n", DetectedObject.startOfDetectedObject);
+                    printf("Deg: %d starting_edge\r\n", DetectedObject.startOfDetectedObject);
                 }
                 //if a difference in magnitude is detected and there is already an object detected (last edge of object detected)
-                else if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (ObjectStartEdgeDetected == true) && (myDegrees[i] != DetectedObject.startOfDetectedObject) ) { // object protruded from surrounding measurements by threshold
+                else if( (abs(DistanceDifferencesArr[myDegrees[i]] ) > ObjectDetectionThreshold) && (distanceDifferencesSign == negativeEdge) && (ObjectStartEdgeDetected == true) && (myDegrees[i] != DetectedObject.startOfDetectedObject) ) { // object protruded from surrounding measurements by threshold
                     DetectedObject.endOfDetectedObject = myDegrees[i]; //found end of an object (object's opposite corner was detected)
-//                    printf("Deg: %d stop_edge\r\n", DetectedObject.endOfDetectedObject);
+                    printf("Deg: %d stop_edge\r\n", DetectedObject.endOfDetectedObject);
 
                     
 ////NOTE: THIS BROKE THE CODE (THIS CONDITION NEVER PASSED... NOT SURE WHY)

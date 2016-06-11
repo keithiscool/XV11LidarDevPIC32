@@ -49,16 +49,19 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Lidar definitions for object detection with Lidar
 
-//distance between adjacent lidar degree measurements (if the measurement is large, an object is detected)
-#define ObjectDetectionThreshold 900
-//50 possible object struct array elements in "arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE]" can be detected of type "ObjectNode"
-#define OBJECT_ARRAY_STRUCT_SIZE 50
-#define DEGREES_BETWEEN_EACH_OBJECT 5
+//distance between adjacent lidar degree measurements and the surrounding arena wall (if the adjacent measurements difference between object and wall is large, an object is detected)
+#define ObjectDetectionThreshold 1500//900
+
+////50 possible object struct array elements in "arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE]" can be detected of type "ObjectNode"
+//#define OBJECT_ARRAY_STRUCT_SIZE 50
+//#define DEGREES_BETWEEN_EACH_OBJECT 5
+
 //offset the x position (in millimeters) of the lidar cartesian data (beacon is not in the center of the arena, but to the right of the collection bin facing the digging area)
 //NOTE: THE OFFSET IS TO THE RIGHT OF CENTER (MUST SUBTRACT FROM THE INITIAL CALCULATED CARTESIAN X-VALUE
+//NOTE: SEE FILE: "MathCalcs.pdf" TO SEE THE OFFSET OF THE LIDAR IN THE ARENA
 #define X_POSITION_OFFSET_LIDAR_PLACEMENT 787 //offset in millimeters to right of collection bin center of back wall
 
-//limit on valid distance data magnitude in millimeters
+//limits on valid distance data magnitude in millimeters
 #define maxDistanceAllowed 6000
 #define minDistanceAllowed 50
 //must read # of distances in order to run object tracking
@@ -70,10 +73,16 @@
 #define objectTrackLowerDegree 10
 
 //threshold of object tracking the robot (the robot must be at least this reflective)
-#define ROBOT_QUALITY_LOWER_THRESHOLD 35//40 //30
-#define ROBOT_QUALITY_UPPER_THRESHOLD 110 //100
+//Lower threshold for metal plate is 86
+//upper threshold for aluminium plate is 119
+#define ROBOT_QUALITY_LOWER_THRESHOLD 80//50//35//40 //30
+#define ROBOT_QUALITY_UPPER_THRESHOLD 130//150//110 //100
 //Robot must have moved this far in either the x or y plane in order to run the velocity and bearing calulations
 #define objectMovedThreshold 50
+
+//Keep track of positive versus negative distanceDifferencesArr[] "drop of must be positive for first edge and must be negative for second edge (drop off)
+#define positiveEdge 1
+#define negativeEdge 2
 
 #endif	/* DEFS_H */
 

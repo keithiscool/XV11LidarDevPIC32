@@ -32,7 +32,7 @@ extern bool LIDARdecode(short getDegrees[4]);
 //extern bool sendRobotLocation(short degree);
 
 //used to detect differences between adjacenet degree elements
-unsigned short DistanceDifferencesArr[181];
+short DistanceDifferencesArr[181];
 
 enum robotCompass {N = 1, S = 2, E = 3, W = 4, NE = 5, NW = 6, SE = 7, SW = 8};
 extern short timeHundMillisSinceObjectMoved;
@@ -65,7 +65,7 @@ unsigned short index_object = 0;
 
 
 //flag used to designate a corner of an object has been detected (object is closer than surroundings)
-static bool ObjectStartEdgeDetected = 0;
+bool ObjectStartEdgeDetected = 0;
 
 //flag to signify the object (Robot CHRISTEE) is found
 bool RobotDetected = false;
