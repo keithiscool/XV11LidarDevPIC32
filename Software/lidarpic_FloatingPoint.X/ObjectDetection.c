@@ -35,9 +35,9 @@ bool sendRobotLocation(void) {
 //<> == average
 //Determine robot velocity == [sqrt(x^2 + y^2)]/<time duration since last reading>
 void calculateVelocity(short objectXpos, short lastObjectXpos, short objectYpos, short lastObjectYpos) {
-//    DetectedObject.velocity = (short)sqrt( (objectXpos^2 + objectYpos^2) ) / timeHundMillisSinceObjectMoved; //Units in [millimeters/100ms counts]
-    DetectedObject.velocity = (short)( (sqrt(objectXpos^2 + objectYpos^2) * 10 ) / timeHundMillisSinceObjectMoved); //Units in [millimeters/second]
-    DetectedObject.bearing = (short)(atan2( ( (double)abs(objectYpos-lastObjectYpos) ), ( (double)abs(objectXpos-lastObjectXpos) ) ) );
+    DetectedObject.velocity = (short)(sqrt( ( ( (objectXpos-lastObjectXpos)^2) + ( (objectYpos-lastObjectYpos)^2) ) * 10 ) / timeHundMillisSinceObjectMoved); //Units in [millimeters/100ms counts]
+//    DetectedObject.bearing = (short)(atan2( ( (double)abs(objectYpos-lastObjectYpos) ), ( (double)abs(objectXpos-lastObjectXpos) ) ) ); //this is incorrect -- need to used sign and magnitude (absolute value should not be here)
+    DetectedObject.bearing = (short)(atan2( ( (double)(objectYpos-lastObjectYpos) ), ( (double)(objectXpos-lastObjectXpos) ) ) * (180/M_PI) ); //bearing is converted from radians to degrees
     timeHundMillisSinceObjectMoved = 0;
 }
 
@@ -49,7 +49,7 @@ bool findRobotVector(void) {
     static short lastYpos = 0;
     static short lastVelocity = 0;
     static short lastBearing = 0;
-    static short lastObjectSize = 0;
+    static short lastObjectDiameter = 0;
     static char lastCompass[3] = "00";
 
     //check to see if the object moved (translation in x,y plane)
@@ -80,11 +80,13 @@ bool findRobotVector(void) {
             else if(lastXpos < DetectedObject.xPos) { //robot is moving East
                 strcpy(DetectedObject.compass,"_E");
             }
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             else { //the robot did not move, so it does not have a velocity vector
                 //I suggest using the gyro to find the robot orientation while the robot does not move translationally
                 strcpy(DetectedObject.compass,"00");
                 DetectedObject.bearing = 0;
                 DetectedObject.velocity = 0;
+                DetectedObject.diameter = 0;
                 return false;
             }
 
@@ -99,6 +101,7 @@ bool findRobotVector(void) {
     lastVelocity = DetectedObject.velocity;
     strcpy(lastCompass, DetectedObject.compass);
     lastBearing = DetectedObject.bearing;
+    lastObjectDiameter = DetectedObject.diameter;
     return true;
 }
 
