@@ -143,19 +143,19 @@ short distDiffObjectDetection(void) {
                 else if(DistanceDifferencesArr[presentDegree] < 0)
                     distanceDifferencesSign = negativeEdge;
 
-//                printf("deg: %d / diff: %d / Sign: %d\r\n", presentDegree, DistanceDifferencesArr[presentDegree], distanceDifferencesSign);
-
                 //are the magnitudes different between degree measurements (first edge of object detected)
-                if( (DistanceDifferencesArr[myDegrees[i]] > ObjectDetectionThreshold) && (distanceDifferencesSign == positiveEdge) && (ObjectStartEdgeDetected == false) ) { // object protruded from surrounding measurements by threshold
-                    DetectedObject.startOfDetectedObject = myDegrees[i]; //found start of an object (object's corner was detected)
+                if( (DistanceDifferencesArr[presentDegree] > ObjectDetectionThreshold) && (distanceDifferencesSign == positiveEdge) && (ObjectStartEdgeDetected == false) ) { // object protruded from surrounding measurements by threshold
+                    DetectedObject.startOfDetectedObject = presentDegree; //found start of an object (object's corner was detected)
                     ObjectStartEdgeDetected = true; //first edge of object detected
-                    printf("Deg: %d starting_edge\r\n", DetectedObject.startOfDetectedObject);
+//                    printf("Deg: %d starting_edge\r\n", DetectedObject.startOfDetectedObject);
                 }
                 //if a difference in magnitude is detected and there is already an object detected (last edge of object detected)
-                else if( (abs(DistanceDifferencesArr[myDegrees[i]] ) > ObjectDetectionThreshold) && (distanceDifferencesSign == negativeEdge) && (ObjectStartEdgeDetected == true) && (myDegrees[i] != DetectedObject.startOfDetectedObject) ) { // object protruded from surrounding measurements by threshold
-                    DetectedObject.endOfDetectedObject = myDegrees[i]; //found end of an object (object's opposite corner was detected)
-                    printf("Deg: %d stop_edge\r\n", DetectedObject.endOfDetectedObject);
-
+//                else if( (abs(DistanceDifferencesArr[myDegrees[i]] ) > ObjectDetectionThreshold) && (distanceDifferencesSign == negativeEdge) && (ObjectStartEdgeDetected == true) && (presentDegree != DetectedObject.startOfDetectedObject) ) { // object protruded from surrounding measurements by threshold
+                else if( (DistanceDifferencesArr[presentDegree] < -ObjectDetectionThreshold) && (distanceDifferencesSign == negativeEdge) && (ObjectStartEdgeDetected == true) && (presentDegree != DetectedObject.startOfDetectedObject) ) { // object protruded from surrounding measurements by threshold
+                    DetectedObject.endOfDetectedObject = presentDegree; //found end of an object (object's opposite corner was detected)
+                    printf("%d starting_edge / ", DetectedObject.startOfDetectedObject);
+                    printf("%d stop_edge\r\n", DetectedObject.endOfDetectedObject);
+                    printf("deg: %d / diff: %d / Sign: %d / LastDeg: %d\r\n", presentDegree, DistanceDifferencesArr[presentDegree], distanceDifferencesSign, lastDegree);
                     
 ////NOTE: THIS BROKE THE CODE (THIS CONDITION NEVER PASSED... NOT SURE WHY)
 //                    check if object is wide enough (are there enough degrees between the start and the start of the object?)
@@ -211,7 +211,7 @@ short distDiffObjectDetection(void) {
                     ObjectStartEdgeDetected = false; //last edge of object detected (reset flag)
                 }
             }
-            
+
             lastDegree = presentDegree;
         }
     }

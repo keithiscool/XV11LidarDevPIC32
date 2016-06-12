@@ -50,7 +50,7 @@
 //Lidar definitions for object detection with Lidar
 
 //distance between adjacent lidar degree measurements and the surrounding arena wall (if the adjacent measurements difference between object and wall is large, an object is detected)
-#define ObjectDetectionThreshold 1500//900
+#define ObjectDetectionThreshold 1000//1500//900
 
 ////50 possible object struct array elements in "arrayofDetectedObjects[OBJECT_ARRAY_STRUCT_SIZE]" can be detected of type "ObjectNode"
 //#define OBJECT_ARRAY_STRUCT_SIZE 50
